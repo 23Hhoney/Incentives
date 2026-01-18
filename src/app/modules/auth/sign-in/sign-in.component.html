@@ -1,0 +1,133 @@
+<div class="h-full flex flex-col">
+    <div class="flex flex-col login-wrapper sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 sign-in-body">
+
+        <div style="justify-content: center !important;
+        display: flex;" class="relative  flex-auto items-center h-full overflow-hidden dark:border-r">
+            
+            <div class="z-10 relative w-full max-w-2xl">
+                <div class="loginContent welcome">
+                    
+                    <h1 class="mt-4">Welcome to</h1>
+                    <img src="assets/images/kohler_logo_lightBlue.png" style="width: 377px;" class="login_lightBlue">
+                </div>
+                
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-5 d-flex  align-items-center  p-sm-5 p-4"
+            style="background: #00000000 !important;">
+            <div class="w-px-400">
+                <div class="loginContainer">
+                    <div class="app-brand mb-4">
+    
+                        <img src="assets/images/kohler_logo.png" class="img-fluid login-logo-wid" />
+                        <div class="app-brand-link">
+                            Sign in
+                        </div>
+                    </div>
+    
+                    <fuse-alert class="mt-8 -mb-4" *ngIf="showAlert" [appearance]="'outline'" [showIcon]="false"
+                        [type]="alert.type" [@shake]="alert.type === 'error'">
+                        {{alert.message}}
+                    </fuse-alert>
+                    <form id="formLogin" class="mb-0 needs-validation" [formGroup]="signInForm" #signInNgForm="ngForm">
+                        <div class="mb-4">
+                            <div class="mb-3">
+                                <label style="font-size: 16px; color: white;" for="userID">{{ emailLabel }}</label>
+                                <input id="login-input-field" matInput type="text" [formControlName]="'email'" class="form-control mt-1"
+                                       id="email" [placeholder]="emailPlaceholder">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="mb-2 form-password-toggle">
+                            <label style="font-size: 16px;color: white;" for="password">Password</label>
+                        
+                            <div class="relative">
+                                <input matInput [type]="hide ? 'password' : 'text'" required="" class="form-control mt-1"
+                                    [formControlName]="'password'" #passwordField placeholder="Enter your Password"
+                                    aria-describedby="password" />
+                                <button type="button" mat-icon-button (click)="togglePasswordVisibility()"
+                                    class="absolute right-0 top-1/2 transform -translate-y-1/2 mr-2" aria-label="Toggle password visibility">
+                                    <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                                </button>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <div class="w-1/2">
+                                <div class="link-forgotpswd">
+                                    <a style="font-size: 11.9px;color: white;" [routerLink]="['/forgot-password']">Forgot Password?</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-6">
+                            <button class=" btn btn-large d-grid w-full" style="height: 38px; background-color: #000000 !important; border-radius: 4px;"
+                                (click)="signIn()">Sign In
+                            </button>
+                        </div>
+                        <div class="login-with-google-body w-full" [ngStyle]="{'display': !showGoogleSignIn ? 'none' : ''}">
+                            <button type="button" class="login-with-google-btn" #loginButton (click)="googleLogin()">
+                              Sign in with Google
+                            </button>
+                        </div>
+    
+                        <!-- <div class="divider mt-6">
+                            <div class="divider-text">or continue with</div>
+                        </div> -->
+    
+                        <!-- <div class="grid grid-cols-3  row sociorow">
+                            <div class="social-stl sociologin">
+                                <span class="sp googleln-icon"></span>
+                            </div>
+                            <div class="social-stl sociologin">
+                                <span class="sp apple-icon"></span>
+                            </div>
+                            <div class="social-stl sociologin">
+                                <span class="sp facebook-icon"></span>
+                            </div>
+                        </div> -->
+                        <!-- <div class="divider">
+                            <div class="divider-text">Dont have an account yet? <span style="font-weight: bold;" class="ml-1 hover:underline"
+                                    [routerLink]="['/sign-up']">Sign up
+                            </span></div>
+                        </div> -->
+    
+    
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer style="background-color: #01244a !important;">
+        <div class="w-full">
+            <div class="flex flex-row w-full justify-between footer-container" style="padding-left: 5rem !important;
+        padding-right: 5rem !important;">
+                <div class="col-span-3 mb-0">
+                    <img src="assets/images/kohler_light.png" alt="Kohler Logo" class="w-40 h-10">
+                    <div class="mt-2 pr-2 socialmedia">
+                        <ul class="flex space-x-4">
+                            <li><a href="https://www.linkedin.com/company/kohler"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                            <li><a href="https://x.com/kohler?lang=en&mx=2"><i class="fa-brands fa-x-twitter"></i></a></li>
+                            <li><a href="https://www.instagram.com/kohler/?hl=en"><i class="fa-brands fa-instagram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-span-4 col-start-4 mb-0">
+                    <div class="text-right contact-us-container">
+                        <div class="mb-4">
+                            <a routerLink="/contactus" class="text-gray-700" style="font-size: 20px; color: #fff !important">Contact Us</a>
+                        </div>
+                        <div class="mt-4 footernav">
+                            <ul class="text-gray-600 flex flex-row footermenu" style="font-size: 16px !important;">
+                                <li style="text-decoration: none;">Copyright © 2024 Kohler Co.</li>
+                                <li><a routerLink="/terms-of-use" class="">Terms of Use.</a></li>
+                                <li><a routerLink="/privacypolicy" class="">Privacy Policy.</a></li>
+                                <li><a href="https://kohler.service-now.com/gdp/form.do" target="_blank" class="">Subject Access Request.</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+

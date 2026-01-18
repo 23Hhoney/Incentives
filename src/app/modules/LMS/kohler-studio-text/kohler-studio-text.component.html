@@ -1,0 +1,38 @@
+<div class="container h-full" style="
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;" appCopyPrevent>
+    <div class="flex-container blackcontainer quizbtn">
+        <a (click)="navigateBack()" class="cursor-pointer">
+            <img src="assets/images/arrow-left-white.png" style="height: 49px;">
+        </a>
+        <a (click)="navigateToAnotherComponent()" class="cursor-pointer">
+            <img src="assets/images/arrow-right-white.png" style="height: 49px;">
+        </a>
+    </div>
+    <div class="flex flex-wrap flex-1" style="padding: 10px">
+        <div style="width: 100%; display: flex; justify-content: center;">
+            <mat-spinner *ngIf="loader; else showContent"></mat-spinner>
+        </div>
+        <ng-template #showContent>
+            <div class="w-full flex flex-col items-center" style="margin-bottom: 20px;">
+                <div class="text-center" style="height: calc(100vh - 340px); align-items: center; display: flex;" *ngIf="NoDataAvailable; else dataAvailable">
+                    <span class="text-3xl font-black" style="font-family: HelveticaNeueBold !important; text-transform: capitalize;">
+                        No Content Available. Please Contact System Administrator on 
+                        <a href="mailto: tritonsupport@kohlerpreferredpartners.com">tritonsupport@kohlerpreferredpartners.com</a>
+                    </span>
+                </div>
+                <ng-template #dataAvailable>
+                    <div class="text-center">
+                        <h1 style="text-transform: capitalize; font-size: 40px !important;">{{TextSlideData?.header}}</h1>
+                    </div>
+                    <div class="text-center">
+                        <div matInput class="view-body-message">
+                            <app-view-html [html]="TextSlideData?.body" style="border-top: 0px !important;"></app-view-html>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+        </ng-template>
+    </div>
+</div>

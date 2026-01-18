@@ -1,0 +1,112 @@
+<div class="flex flex-col flex-auto min-w-0" appCopyPrevent>
+  <div class="container">
+    <!-- <div class="flex flex-wrap">
+      <div class="col-lg-12 col-md-12 col-sm-12 flex flex-col justify-between">
+       
+          <div class="flex-row items-center bredcrumb1">
+          
+          </div>
+       
+      </div>
+    </div> -->
+    <div class="container mt-3">
+      <div class="flex-row align-items-center">
+        <span
+        class="mb-2 textsmallblue" 
+        [routerLink]="'/academy-curriculums'">&lt;&lt; Academy Curriculums </span>
+        <span *ngIf="SubCourseName"
+          class="mb-2 textsmallblue" 
+          [routerLink]="'/others/'+masterCourseId"> &lt;&lt; {{SubCourseName}}</span>
+        <!-- <a mat-button [routerLink]="['/academy-curriculums']" class="textsmallno">
+          <div class="mb-2 textsmallblue">&lt;&lt; ACADEMY CURRICULUMS</div>
+        </a>
+        <span>&nbsp;</span> <span>&nbsp;</span> <span>&nbsp;</span> -->
+        <!-- <a mat-button [routerLink]="['/others:subCourseId']" class="textsmallno">
+          <div class="mb-2 textsmallblue">&lt;&lt; {{SubCourseName}}</div>
+        </a> -->
+      </div>
+    </div>
+  </div>
+   
+  <div class="container mt-4 mb-4 containheight">
+    <div class="">
+      <!-- KOHLER x Studio McGee Part 3 START -->
+      <div class="w-full flex flex-col justify-between">
+        <div class="container mb-4">
+            <div class=" flex flex-wrap pl-2">
+                <div class="flex justify-between pl-2">
+                    <div class="flex flex-row align-center">
+                        <div class="ms-2 c-details">
+                            <span class="textmedium">* {{CourseName}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+      <hr class="container mb-4 mt-4 hr-cus">
+      <!-- <div class="col-lg-12 col-md-12 col-sm-12 flex flex-col justify-between">
+        <div class="mb-2">
+              <div class="flex flex-row self-center">
+                <span class="text-5xl">{{CourseName}}</span>
+          </div>
+        </div>
+      </div> -->
+      <!-- KOHLER x Studio McGee Part 3 END -->
+
+      <div class="w-full d-flex flex-column justify-between">
+        <div class="container mb-3">
+            <div class=" flex flex-wrap">
+                <div class="flex justify-between">
+                    <div class="flex flex-row align-center">
+                        <div class="ms-2 c-details">
+                            <h6 class="ml-3 pl-2 textmediu">KOHLER</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="new w-full text-center pt-4 pb-2">
+      <a (click)="navigateToAnotherComponent()" class="btn inline-block btn-outline-light btnnew round py-3 px-6 text-2xl">Launch Course &gt;&gt;</a>
+    </div>
+
+    <hr class="container mb-4 mt-4 hr-cus">
+
+      <!-- <div class="w-full">
+        <div class="col-lg-12 col-md-12 col-sm-12 flex flex-col justify-between">
+          <div class="container mb-2">
+              <span style="font-weight: bolder !important;color: black;font-family: HelveticaNeuebold;">KOHLER</span>
+          </div>
+        </div>
+  
+        <div class="new w-full flex flex-col justify-center items-center">
+          <a (click)="navigateToAnotherComponent()" class="btn btn-outline-light btn-lg btnnew">
+            Launch Course >>
+          </a>
+        </div>
+      </div> -->
+
+
+      <!-- <mat-divider class="container mb-3 mt-3"></mat-divider> -->
+
+      <div class="w-full text-center">
+        <div class="mt-4 mb-4 pt-1 pb-1">
+            <div class="text-center">
+                <h3 class="font-black mt-4 pt-2 pb-4 mb-2">RELATED CONTENT</h3>
+            </div>
+        </div>
+      </div>
+
+      <div class="w-full flex flex-col justify-center items-center">
+        <div class="flex flex-col items-center">
+          <img src="assets/images/news1.jpg" class="img-fluid">
+          <div class="w-full text-left mt-4">
+            <h4 class="imagecap mb-6" style="font-family: HelveticaNeueBold !important;">{{CourseName}} <span>Course</span></h4>
+            <span class="pb-2">Course</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

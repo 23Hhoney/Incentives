@@ -1,0 +1,72 @@
+<div [classList]="containerClasses" *ngIf="!withTimePicker&&!singlePicker">
+    <mat-form-field appearance="outline" class="w-100-p">
+        <mat-label>{{label}}</mat-label>
+        <input type="text" matInput ngxDaterangepickerMd 
+        value="selected"
+        [autoApply]="true" 
+        [timePicker]="withTimePicker"
+        [locale]="locale"
+        [singleDatePicker]="singlePicker"
+        [timePicker24Hour]="withTimePicker"
+        [ngModelOptions]="{standalone: true}"
+        [disabled]="disabled"
+        [(ngModel)]="selected" placeholder="Date Range"
+        (ngModelChange)="updateRange($event)"/>
+    </mat-form-field>
+    
+</div>
+<div [classList]="containerClasses" *ngIf="withTimePicker&&!singlePicker">
+    <mat-form-field appearance="outline" class="w-100-p">
+        <mat-label>{{label}}</mat-label>
+        <input type="text" matInput ngxDaterangepickerMd 
+        value="selected"
+        [autoApply]="true" 
+        [timePicker]="withTimePicker"
+        [locale]="locale"
+        [timePicker24Hour]="withTimePicker"
+        [singleDatePicker]="singlePicker"
+        [ngModelOptions]="{standalone: true}"
+        [disabled]="disabled"
+        [(ngModel)]="selected" placeholder="Date Range"
+        (ngModelChange)="updateRange($event)"/>
+    </mat-form-field>
+    
+</div>
+<div [classList]="containerClasses" *ngIf="singlePicker&& !withTimePicker">
+    <mat-form-field appearance="outline" class="w-100-p">
+        <mat-label>{{label}}</mat-label>
+        <input type="text" matInput ngxDaterangepickerMd 
+        value="selected"
+        [autoApply]="true" 
+        [timePicker]="withTimePicker"
+        [locale]="locale"
+        [timePicker24Hour]="withTimePicker"
+        [singleDatePicker]="singlePicker"
+        [ngModelOptions]="{standalone: true}"
+        [disabled]="disabled"
+        [(ngModel)]="selected" placeholder="Date Range"
+        (ngModelChange)="updateRange($event)"/>
+    </mat-form-field>
+    
+</div>
+<div [classList]="containerClasses" *ngIf="singlePicker&&withTimePicker">
+    <mat-form-field appearance="outline" class="w-100-p">
+        <mat-label>{{label}}</mat-label>
+        <input type="text" matInput ngxDaterangepickerMd 
+        value="selected"
+        [autoApply]="true" 
+        [timePicker]="withTimePicker"
+        [locale]="locale"
+        [timePicker24Hour]="withTimePicker"
+        [singleDatePicker]="singlePicker"
+        [ngModelOptions]="{standalone: true}"
+        [disabled]="disabled"
+        [(ngModel)]="selected" placeholder="Date Range"
+        (ngModelChange)="updateRange($event)"/>
+    </mat-form-field>
+    
+</div>
+
+    
+
+

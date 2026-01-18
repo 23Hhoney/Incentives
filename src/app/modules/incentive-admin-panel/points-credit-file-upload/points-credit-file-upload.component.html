@@ -1,0 +1,134 @@
+<div class="container mx-auto px-4">
+  <!-- File Upload Section -->
+  <div class="w-full space-y-6 mt-8">
+    <div class="flex flex-col lg:flex-row items-center justify-start w-full space-x-4 space-y-4 lg:space-y-0" >
+      <div *ngIf="showDropBox" class="flex flex-col items-center" style="width: 21% !important;">
+        <button (click)="fileInput.click()" class="bg-[#03202E] text-white px-4 py-2 rounded-lg flex items-center">
+          <svg class="h-6 w-6 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293l2.414 2.414A1 1 0 0012.414 8H21a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z"></path>
+          </svg>
+          Choose Upload File
+        </button>
+        <input type="file" accept=".csv" (change)="onFileSelect($event)" class="hidden" #fileInput />
+      </div>
+
+      <div *ngIf="showDropBox" class="text-gray-500 font-semibold" style="width: 3% !important;">OR</div>
+
+      <div *ngIf="showDropBox" class="flex items-center justify-start w-full space-x-4">
+        <div 
+          (drop)="onFileDrop($event)" 
+          (dragover)="onDragOver($event)" 
+          (dragleave)="onDragLeave($event)" 
+          class="border-2 border-dashed border-gray-300 rounded-lg p-2 flex flex-col items-center cursor-pointer bg-[#FAFAFB] w-full max-w-xs h-36"
+        >
+          <div class="flex items-center justify-center h-16 w-16 rounded-full mb-2">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M32 50.8718L32 32V35.2821" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+              <path d="M22.9746 41.0256L32.0003 32L41.0259 41.0256" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+              <path d="M38.565 50.8045C42.2744 50.495 45.8202 49.1406 48.7913 46.8981C51.7623 44.6557 54.0369 41.6171 55.3515 38.1346C56.666 34.6521 56.9665 30.8683 56.2183 27.222C55.4701 23.5756 53.7037 20.216 51.1239 17.5326C48.5442 14.8492 45.2567 12.9519 41.6426 12.0608C38.0285 11.1696 34.2359 11.321 30.7043 12.4974C27.1728 13.6738 24.047 15.827 21.6893 18.7075C19.3317 21.588 17.8387 25.0777 17.3835 28.7721C14.5556 29.0527 11.9439 30.4094 10.0882 32.5615C8.23256 34.7137 7.27501 37.4967 7.41358 40.335C7.55216 43.1733 8.77626 45.8498 10.8327 47.811C12.8892 49.7721 15.6207 50.868 18.4624 50.8718L25.4368 50.8718" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+            </svg>
+          </div>
+          <span class="text-gray-500 text-2xl">Drop files here</span>
+          <span class="text-gray-400 text-lg">Supported format: .csv</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="uploadResult" class="flex flex-col items-start justify-start w-full space-y-4">
+      <div class="text-left  text-[#171A1F] font-normal mt-4 ml-4 content">
+        Queued File for Upload:
+        <p>
+          <!-- <strong>File Name:</strong>  -->
+          {{ fileName }}</p>
+      </div>
+
+      <div class="ml-4 grid grid-cols-2 gap-4  text-[#171A1F] font-normal" style="gap: 3.5rem !important;">
+        <div class="resultContent">
+          <p>File Validation</p>
+          <br>
+          <p>{{ uploadResult.totalRecordsCount }} Records Found</p>
+          <p>{{ uploadResult.duplicateCount }} Duplicate Records</p>
+          <p>{{ uploadResult.errorRecordCount }} Records with errors</p>
+        </div>
+        <div class="resultContent">
+          <p>Issuance Summary</p>
+          <br>
+          <p>{{ uploadResult.rewardPoints }} Points</p>
+          <p>{{ uploadResult.totalPrice | number:'1.2-2' }} Total List Price Credit</p>
+          <p>{{ uploadResult.units }} Units</p>
+        </div>
+      </div>
+      <div class="flex space-x-4 mt-4 ml-4 resultContent" *ngIf="uploadResult && uploadResult.errorRecordCount" (click)="viewUploadedReport()"><p style="border-bottom: 1px solid #0D78C9 !important; color: #0D78C9 !important; cursor: pointer;">View Report {{uploadResult && uploadResult.errorRecordCount}}</p></div>
+      <div class="flex space-x-4 mt-4 ml-4">
+        <button 
+        class="bg-[#04202E] text-white px-4 py-2 rounded-lg" 
+        (click)="proceedWithUpload()" 
+        [disabled]="(uploadResult && uploadResult.errorRecordCount) || (uploadResult.totalRecordsCount === 0) || (uploadResult.duplicateCount > 0)"
+        [ngStyle]="{'opacity': ((uploadResult && uploadResult.errorRecordCount) || (uploadResult.totalRecordsCount === 0) || (uploadResult.duplicateCount > 0)) ? 0.5 : 1}"
+      >
+        Proceed with Upload
+      </button>      
+        <button style="
+        display: flex;
+        align-items: center;
+        border: 1px solid black;
+        border-radius: 4px;
+        padding: 0 10px;
+        cursor: pointer;
+        height: 41px;
+        width: fit-content;" (click)="cancelUpload()">
+          Cancel / Remove File From Queue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- File History Section -->
+  <div class="w-full mt-10 space-y-6 overflow-x-auto">
+    <div class="w-full space-y-6">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="font-poppins font-normal text-3xl leading-12 mt-4 text-left">
+          File History
+        </div>
+        <div class="flex flex-row gap-6 flex-wrap">
+          <div style="align-items: center; display: flex;">
+              <button style="
+                width: 100%;
+                padding: 5px 10px;
+                align-items: center;
+                justify-content: start;
+                border-radius: 4px;" mat-icon-button [matTooltip]="'Refresh Page'" mat-icon-button data-placement="bottom" (click)="ImportHistoryPaginated()">
+                <mat-icon [class]="'btn-color-600 refresh-icon'" [svgIcon]="'refresh'"></mat-icon>
+              </button>
+          </div>
+          <button style="
+            display: flex;
+            align-items: center;
+            border: 1px solid black;
+            border-radius: 4px;
+            padding: 0 10px;
+            cursor: pointer;
+            height: 41px;
+            width: fit-content;" (click)="exportToExcel()">
+            <mat-icon [svgIcon]="'download'"></mat-icon>
+            Demo Template
+          </button>
+        </div>
+      </div>
+
+      <div class="my-2"></div>
+      <app-data-grid
+        [gridSettings]="gridColumnsTab1"
+        [dataSource]="dataSourceTab1"
+        [loading]="loading"
+        [pages]="pages"
+        [totalRecordCount]="apiRequest.itemCount"
+        [pageIndex]="currentPage"
+        (fetchPageData)="onPageChange($event)"
+        (emitRecordCount)="changePageCount($event)"
+        (buttonClick)="handleButtonClick($event)"
+        (sortChangeClick)="applySort($event)"
+      ></app-data-grid>
+    </div>
+  </div>
+</div>

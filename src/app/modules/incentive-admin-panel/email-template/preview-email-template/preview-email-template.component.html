@@ -1,0 +1,17 @@
+<div class="email-container">
+  <div class="email-header">
+    <h3>{{ emailData.subject }}</h3>
+    <p>
+      <strong>From:</strong> {{ emailData.emailFrom }}<br />
+      <strong>To:</strong> {{ emailData.emailTo }}<br />
+      <strong>CC:</strong> {{ emailData.emailCC?.join(', ') }}
+    </p>
+  </div>
+
+  <!-- Render the email body content here -->
+  <div class="email-body" [innerHTML]="safeHtml"></div>
+
+  <div class="email-footer">
+    <button class="buttonback" (click)="goBack()">Back to Email Templates</button>
+  </div>
+</div>

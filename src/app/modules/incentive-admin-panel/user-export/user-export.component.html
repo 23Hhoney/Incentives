@@ -1,0 +1,51 @@
+<form [formGroup]="userExportForm" style="margin: 20px; display: flex; flex-direction: column; gap: 30px;">
+    <div style="display: flex; gap: 20px;">
+        <div style="display: flex;
+        gap: 30px;
+        flex-direction: column;">
+            <span style="font-size: 20px; font-weight: 600; color: #565D6D;">
+                Exclude Inactive and Deleted Users
+            </span>
+            <span style="font-size: 20px; font-weight: 600; color: #565D6D;">
+                Exclude Test Users
+            </span>
+        </div>
+        <div style="display: flex;
+        flex-direction: column;
+        height: inherit;
+        padding: 2px 0;
+        justify-content: space-between;">
+            <span>
+                <mat-radio-group user-export-mat-radio-group [formControlName]="'excludeInactive'" style="display: flex; gap: 10px;">
+                    <mat-radio-button value="yes">Yes</mat-radio-button>
+                    <mat-radio-button value="no">No</mat-radio-button>
+                </mat-radio-group>
+            </span>
+            
+            <span>
+                <mat-radio-group user-export-mat-radio-group [formControlName]="'excludeTestUser'" style="display: flex; gap: 10px;">
+                    <mat-radio-button value="yes">Yes</mat-radio-button>
+                    <mat-radio-button value="no">No</mat-radio-button>
+                </mat-radio-group>
+            </span>
+        </div>
+    </div>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <span style="font-size: 20px; text-align: center; font-weight: 600; color: #565D6D;">
+            Period
+        </span>
+        <mat-form-field user-export-mat-field style="min-width: 192px; align-items: center;">
+            <mat-select [formControlName]="'period'">
+                <mat-option *ngFor="let item of yearsArray" [value]="item">{{item}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="flex space-x-4 mt-4 ml-4" style="align-items: center; justify-content: start;">
+        <button style="height: 36px; width: 170px;" class="bg-[#04202E] text-white py-2 rounded-lg" (click)="submitUserExportForm()">
+          <mat-icon [svgIcon]="'svg-download-arrow-box'"></mat-icon>
+          <span style="bottom: 7px; position: relative;">
+            Download .CSV File
+          </span>
+        </button>
+    </div>
+</form>

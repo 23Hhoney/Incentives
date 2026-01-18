@@ -1,0 +1,71 @@
+.support {
+    width: 80%;
+    margin: 0 auto;
+    border: solid 1px #000000;
+    padding: 20px 5px;
+    text-align: center;
+    height: fit-content;
+    border-radius: 4px;
+}
+.card{
+    background: white;
+}
+.contact-us-submit {
+    background-color: #4271e2;
+    color: white;
+    width: 75px;
+    height: 36px !important;
+    font-size: 16px;
+    border-radius: 10px !important;
+}
+.contact-us-submit:hover {
+    background-color: #3e66c6;
+}
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    border-color: white !important;
+}
+
+::ng-deep .mat-form-field[contact-us-mat-field].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+    border: 1px solid #707070;
+    border-radius: 5px;
+    outline: 0;
+    background-color: transparent;
+    box-shadow: none;
+    height: 34px;
+    min-height: 34px !important;
+    border-color: #707070 !important;
+}
+
+::ng-deep .mat-form-field[contact-us-desc-mat-field].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+    border: 1px solid #707070;
+    border-radius: 5px;
+    outline: 0;
+    background-color: transparent;
+    box-shadow: none;
+    min-height: 34px !important;
+    border-color: #707070 !important;
+}
+
+#desc-text-area {
+    border: none;
+  }
+#desc-text-area:focus {   
+border: none !important;
+}
+
+.cus-container {
+    padding-left: 6rem !important;
+    padding-right: 6rem !important; 
+    @media only screen and (max-width: 1100px) and (min-width: 701px) {
+        padding-left: 6rem !important;
+        padding-right: 6rem !important; 
+    }
+    @media only screen and (max-width: 700px) and (min-width: 401px) {
+        padding-left: 3rem !important;
+        padding-right: 3rem !important; 
+    }
+    @media only screen and (max-width: 400px) {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important; 
+    }
+}

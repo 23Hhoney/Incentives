@@ -1,0 +1,79 @@
+<div class="containheight">
+    <!-- <mat-sidenav-container fullscreen [hasBackdrop]="false"> -->
+      <div class="flex flex-col flex-auto min-w-0">
+        <div class="max-w-7xl">
+          <form [formGroup]="CirriculumManagerForm">
+            <div class="flex flex-col mt-2 p-6 pb-2 bg-card rounded-2xl shadow overflow-hidden">
+              <div class="flex flex-col gt-md:flex-row">
+                <mat-form-field style="width: 25% !important">
+                  <mat-label>Language</mat-label>
+                  <mat-select [formControlName]="'language'" placeholder="Select Language"
+                    (selectionChange)="onLanguageChange($event)">
+                    <mat-option *ngFor="let language of languages" [value]="language">
+                      {{ language }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div class="course-version-row mb-6" *ngIf="showSpanishVersion || showFrenchVersion">
+                  <div class="course-version-item" *ngIf="showSpanishVersion">
+                    <span class="course-version-label">Manage Spanish Course Version:</span>
+                    <button class="preview-button">Preview</button>
+                    <div class="toggle-container">
+                      <span>No</span>
+                      <mat-slide-toggle formControlName="isSpanishActive"></mat-slide-toggle>
+                      <span>Yes</span>
+                    </div>
+                  </div>
+                  <div class="course-version-item" *ngIf="showFrenchVersion">
+                    <span class="course-version-label">Manage French Course Version:</span>
+                    <button class="preview-button">Preview</button>
+                    <div class="toggle-container">
+                      <span>No</span>
+                      <mat-slide-toggle formControlName="isFrenchActive"></mat-slide-toggle>
+                      <span>Yes</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-4"></div>
+                <mat-form-field class="flex-auto gt-md:pr-3">
+                  <mat-label>Curriculum Name *</mat-label>
+                  <input [formControlName]="'name'" matInput>
+                  <mat-icon class="icon-size-5" matSuffix></mat-icon>
+                </mat-form-field>
+          
+                <mat-form-field class="flex-auto gt-md:pr-3">
+                  <mat-label>Curriculum Description</mat-label>
+                  <textarea id="training-desc-text-area" matInput rows="4" formControlName="description"
+                    maxlength="1000"></textarea>
+                  <mat-hint align="end">{{CirriculumManagerForm.get('description').value?.length || 0}}/1000</mat-hint>
+                </mat-form-field>
+              </div>
+              <div class="flex flex-row gap-4">
+                <div class="mb-2">
+                  <mat-checkbox [checked]="CirriculumManagerForm.get('isActive')?.value === true"
+                    (change)="onCheckboxChange(true)">
+                    <span style="font-weight: 500;">Active</span>
+                  </mat-checkbox>
+                </div>
+                <div class="mb-2">
+                  <mat-checkbox [checked]="CirriculumManagerForm.get('isActive')?.value === false"
+                    (change)="onCheckboxChange(false)">
+                    <span style="font-weight: 500;">Inactive</span>
+                  </mat-checkbox>
+                </div>
+              </div>
+              <div class="flex items-center justify-end mt-8 px-8 py-5">
+                <button (click)="cancel()" class="ml-4" mat-flat-button type="button" style="background: #98A2A9; color: white;">
+                  Cancel
+                </button>
+          
+                <button (click)="SaveOrupdateCirriculum()" class="ml-4" mat-flat-button type="button"
+                  style="background: #314653; color: white;">
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+  </div>

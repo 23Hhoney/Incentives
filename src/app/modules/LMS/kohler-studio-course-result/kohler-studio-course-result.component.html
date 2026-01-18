@@ -1,0 +1,90 @@
+<div *ngIf="scoreLoading" class="container mt-6 mb-3 containheight flex items-center justify-center">
+  <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+</div>
+
+<div *ngIf="!scoreLoading" class="container mt-6 mb-3 containheight" style="justify-content: space-between; display: flex; flex-direction: column;" appCopyPrevent>
+  <div *ngIf="!showNoDataMessage">
+    <div>
+      <div class="row d-flex flex-wrap">
+        <div class="w-full">
+          <div class="mt-4 mb-4 new23">
+            <div class="text-center" style="font-size: 32px; color: #212529 !important;">
+              <div class="mb-4">Your Score : {{ score }}%</div>
+            </div>
+            <div class="text-center" *ngIf="!isPreview">
+              <p class="mediumtext" style="color: #212529 !important;">
+                {{message}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+        
+      <div class="container mt-2 mb-3" *ngFor="let question of questions; let i = index">
+        <div class="flex flex-wrap">
+          <div class="w-full">
+            <div class="question-container">
+              <h5 class="question-content">
+                <span class="text-primary question-number">Q{{ i + 1 }}:</span>
+                <span class="question-text">{{question.question}}</span>
+              </h5>
+            </div>
+              
+            <div *ngIf="isPreview else noPreviewElseBlock;" class="options-container">
+              <div *ngFor="let option of question.options" class="option-item" [ngClass]="option.isCorrect ? 'trueanswer' : 'option'">
+                <div class="option-label">
+                  <p style="font-size: 18px; font-weight: bold; color: #212529 !important;"> {{ translateTrueFalseOption(option.label, question.questionType) }}</p>
+                </div>
+                <div *ngIf="option.isCorrect" style="align-items: center;" class="d-flex flex-row align-items-center">
+                  <i class="fa-regular fa-circle-check fa-xl" style="color: rgb(25 135 84) !important;"></i>
+                </div>
+              </div>
+            </div>
+              
+            <ng-template #noPreviewElseBlock>
+              <div class="options-container">
+                <div *ngFor="let option of question.options" class="option-item" [ngClass]="getOptionClass(question, option)">
+                  <div class="option-label">
+                    <span style="font-size: 18px; font-weight: bold; color: #212529 !important;">
+                      {{ translateTrueFalseOption(option.label, question.questionType) }}
+                    </span>
+                  </div>
+                <div class="answer-feedback-inline">
+                  <!-- Your Answer (Incorrect) -->
+                  <div *ngIf="question.obtainedMks === 0 && option.isUserCorrect" class="answer-item">
+                    <img src="assets/images/error.png" class="feedback-icon error-icon">
+                    <span class="feedback-label">Your Answer</span>
+                  </div>
+                
+                  <!-- Your Answer (Correct) -->
+                  <div *ngIf="question.obtainedMks === 1 && option.isUserCorrect" class="answer-item">
+                    <i class="fa-regular fa-circle-check feedback-icon correct-icon"></i>
+                    <span class="feedback-label correct-text">Your Answer</span>
+                  </div>
+                
+                  <!-- Correct Answer -->
+                  <div *ngIf="status === 'Pass' && question.obtainedMks === 0 && option.isSystemCorrect" class="answer-item">
+                    <i class="fa-regular fa-circle-check feedback-icon correct-icon"></i>
+                    <span class="feedback-label correct-text">Correct Answer</span>
+                  </div>
+                </div>
+
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="background: transparent !important;" class="flex-container whitecontainer mt-4 mb-4 text-center bottom-navigation">
+     
+      <button *ngIf="status !='Pass'" class="btn-primary-outline" style="border-radius: 12px; height: 38px; align-items: center; display: flex; width: 123px; padding: 0; justify-content: center;"  (click)="retakeQuiz()">Retake Quiz</button>
+      <button class="btn-primary-outline" style="border-radius: 12px; height: 38px; align-items: center; display: flex; width: 200px; padding: 0; justify-content: center;" *ngIf="!isPreview" (click)="restartTraining()">Restart Training Module</button>
+      <button class="btn-primary" style="border-radius: 12px; height: 38px; align-items: center; display: flex; width: 66px; padding: 0; justify-content: center; color: white;" (click)="closeResultPage()">Close</button>
+    </div>
+  </div>
+  
+  
+  
+</div>

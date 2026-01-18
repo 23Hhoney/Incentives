@@ -1,0 +1,109 @@
+.learn-more-container {
+    margin-left: -6rem !important;
+    margin-right: -6rem !important; 
+    @media only screen and (max-width: 1100px) and (min-width: 701px) {
+        margin-left: -6rem !important;
+        margin-right: -6rem !important; 
+    }
+    @media only screen and (max-width: 700px) and (min-width: 401px) {
+        margin-left: -3rem !important;
+        margin-right: -3rem !important; 
+    }
+    @media only screen and (max-width: 400px) {
+        margin-left: -1rem !important;
+        margin-right: -1rem !important; 
+    }
+}
+
+.container-fluid {
+    max-width: 1224px !important;
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-right: auto;
+    margin-left: auto;
+}
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1* var(--bs-gutter-y));
+    margin-right: calc(-.5* var(--bs-gutter-x));
+    margin-left: calc(-.5* var(--bs-gutter-x));
+}
+.row>* {
+    margin-bottom: .5rem;
+}
+.card-blocks-container {
+    padding: 0;
+    font-family: HelveticaNeueMedium;
+}
+
+.card-blocks-container .giftcard-block-left-learn {
+    padding: 17px 28px;
+    text-align: left;
+    /* max-width: 585px; */
+    flex: calc(50% - 19px);
+    min-height: 600px;
+}
+.card-blocks-container .giftcard-block-left-learn .title {
+    text-transform: none;
+    font-weight: bold;
+    font-size: 35pt;
+    color: #00264c;
+    line-height: 45pt;
+}
+.mt-3 {
+    margin-top: 1rem !important;
+}
+.mt-4 {
+    margin-top: 1.5rem !important;
+}
+
+.card-blocks-container .giftcard-block-right-learn {
+    background: url(../../../../assets/images/card-bg-3.png) no-repeat center center #579dda;
+    max-width: 585px;
+    flex: calc(50% - 19px);
+    min-height: 600px;
+}
+#card-main {
+    padding: 30px 0 60px 0;
+}
+.f-20 {
+    font-size: 20px !important;
+}
+#card-main-form {
+    // background: #f4f4f4 !important;
+    padding: 30px 0 !important;
+    margin-bottom: -20px !important;
+}
+
+@media (min-width: 576px) {
+    .col-sm-3 {
+        flex: 0 0 auto;
+        width: 25%;
+    }
+}
+
+.row>* {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-top: var(--bs-gutter-y);
+}
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.additional-info {
+    padding-top: .5rem !important;
+}
+.underline-link {
+    text-decoration: underline;
+    }

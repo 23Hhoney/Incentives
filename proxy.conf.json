@@ -1,0 +1,14 @@
+{
+  "/api": {
+    "target": "https://incentive.flatworldinfotech.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/Login": {
+    "target": "https://incentive.flatworldinfotech.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

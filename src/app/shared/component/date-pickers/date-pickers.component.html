@@ -1,0 +1,38 @@
+<div class="w-full">
+    <form [formGroup]="formGroup" class="flex">
+        <!-- {{label}} -->
+        <ng-container *ngIf="label">
+            <mat-form-field class="w-full">
+                <mat-label>{{label}}</mat-label>
+                <ng-container *ngIf="placeholder">
+                        <input matInput [matDatepicker]="picker" (click)="picker.open()" class="form-control w-full"
+                        [formControlName]="formElementName" [placeholder]="placeholder">
+                        <mat-icon matSuffix (click)="picker.open()" class="absolute ml-1-8 pt-1" [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                </ng-container>
+                <ng-container *ngIf="!placeholder">
+                        <input matInput [matDatepicker]="picker" (click)="picker.open()" class="form-control w-full"
+                        [formControlName]="formElementName">
+                        <mat-icon matSuffix (click)="picker.open()" class="" [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                </ng-container>
+            </mat-form-field>
+        </ng-container>
+        <ng-container *ngIf="!label">
+            <ng-container *ngIf="placeholder">
+                <div class=" w-full " (click)="picker.open()">
+                    <input matInput [matDatepicker]="picker" class="form-control w-full pl-2 pr-8 h-8 rounded "
+                    [formControlName]="formElementName" [placeholder]="placeholder">
+                    <mat-icon matSuffix (click)="picker.open()" class="absolute ml-1-8 pt-1" [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="!placeholder">
+                <div class=" w-full " (click)="picker.open()">
+                    <input matInput [matDatepicker]="picker" class="form-control w-full pl-2 pr-8 h-8 rounded"
+                    [formControlName]="formElementName">
+                    <mat-icon matSuffix (click)="picker.open()" class="absolute ml-1-8 pt-1" [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                </div>
+            </ng-container>
+        </ng-container>
+        
+        <mat-datepicker #picker></mat-datepicker>
+    </form>
+</div>

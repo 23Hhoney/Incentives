@@ -1,0 +1,938 @@
+<div style="margin: 20px; display: flex; flex-direction: column; gap:30px;">
+    <div style="display: flex;
+    gap: 20px;
+    flex-wrap: wrap;">
+        <div style="display: flex; border-radius: 4px; box-shadow: 0px 0px 2px 0px #171A1F1F; width: fit-content; flex-wrap: wrap;">
+            <div style="display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            width: 245px;
+            cursor: pointer;"
+            (click)="selectedTab = 'Multiple Records Search'; filterForm.reset(); filterTags = []; apiRequest.filter = []; getOrderRedemptionData(); firstName = ''; lastName = '';">
+                <mat-icon
+                    [svgIcon]="'search'">
+                </mat-icon>
+                <span class="font-bold" [ngClass]="selectedTab === 'Multiple Records Search' ? 'selected-tab' : 'unselected-tab'">
+                    Multiple Records Search
+                </span>
+            </div>
+            <div style="display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            width: 245px;
+            cursor: pointer;"
+            (click)="selectedTab = 'Single User Search / Add New Order'; filterForm.reset(); filterTags = []; apiRequest.filter = []; getOrderRedemptionData(); firstName = ''; lastName = '';">
+                <mat-icon
+                    [svgIcon]="'add'">
+                </mat-icon>
+                <span class="font-bold" [ngClass]="selectedTab === 'Single User Search / Add New Order' ? 'selected-tab' : 'unselected-tab'">
+                    Single User Search / Add New Order
+                </span>
+            </div>
+              <!-- <div *ngIf="bpNumber">
+                <form [formGroup]="searchForm">
+                    <input formControlName="bpNumber" placeholder="Search by BP Number" />
+                </form>
+            </div> -->
+        </div>
+        <div *ngIf="selectedTab === 'Multiple Records Search'">
+            <div class="flex space-x-4" style="align-items: center; justify-content: start;">
+                <button (click)="createBulkDialog(bulkRedemptionDialog, 'create')" style="min-height: 36px; padding: 0 10px; display: flex; align-items: center;" class="bg-[#04202E] text-white py-2 rounded-lg">
+                    <mat-icon style="color: white;" [svgIcon]="'add'"></mat-icon>
+                    <span style="margin-left: 5px;">Bulk Create Redemptions</span>
+                </button>
+                <button (click)="createBulkDialog(bulkUpdateDialog, 'update')" style="min-height: 36px; padding: 0 10px; display: flex; align-items: center;" class="bg-[#04202E] text-white py-2 rounded-lg">
+                    <mat-icon style="color: white;" [svgIcon]="'update'"></mat-icon>
+                    <span style="margin-left: 5px;">Bulk Update Redemptions</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="w-full" >
+            <form [formGroup]="filterForm">
+                <div *ngIf="selectedTab === 'Single User Search / Add New Order'" class="flex flex-row flex-wrap items-end">
+                    <div class="flex flex-row items-center mr-10">
+                        <div class="flex flex-col">
+                          <!-- Label -->
+                          <div class="flex flex-row items-center justify-between">
+                            <mat-label class="text-sm font-bold leading-6">User Lookup</mat-label>
+                          </div>
+                      
+                          <!-- Input with Autocomplete -->
+                          <input 
+                          type="text" 
+                          matInput 
+                          formControlName="UserID"
+                          [matAutocomplete]="auto"
+                          placeholder="Enter user name, email, or User ID" 
+                          style="width: 280px !important;" 
+                          class="w-full border rounded border-color-cus-sku-list border-solid h-8 pl-2" 
+                          [matTooltip]="selectedUserTooltip" 
+                          matTooltipPosition="above"/>
+                      
+                          <!-- Autocomplete Options -->
+                          <mat-autocomplete 
+                          #auto="matAutocomplete" 
+                          [displayWith]="displayFn" 
+                          (optionSelected)="onUserSelected($event)">
+                          <mat-option 
+                            *ngFor="let user of filteredUsers | async" 
+                            [value]="user" 
+                            matTooltip="{{ user.firstName }} {{ user.lastName }} - {{ user.email }} {{ user.bpNumber }}">
+                            <span [innerHTML]="formatUserDisplay(user, filterForm.controls.UserID.value)"></span>
+                          </mat-option>
+                        </mat-autocomplete>
+                        </div>
+                      
+                        <!-- Selected Participant Name -->
+                        <div *ngIf="selectedFullname" class="ml-4" 
+                             style="font-family: 'Open Sans', sans-serif; font-weight: 200; font-size: 20px; margin-top: 20px;">
+                          Participant Name: {{ selectedFullname }}
+                        </div>
+                      </div>
+                      
+                      
+                    <div class="mr-16 pt-3 text-xl leading-8 font-medium" *ngIf="firstName || lastName"> Participant Name: {{firstName}} {{lastName}} </div>
+                    <button (click)="openAddNewOrder(addNewOrder, 'add')" class="bg-[#03202E] text-white px-4 py-2 rounded flex items-center h-9">
+                        <div class="whitespace-nowrap leading-5">
+                            Add New Order
+                        </div>
+                    </button>
+                </div>
+                <div class="flex flex-row mt-4 flex-wrap gap-y-2">
+                    <div *ngIf="selectedTab === 'Multiple Records Search'" class="flex flex-row pr-4 mr-4" style="border-right: 1px solid #BDC1CA;">
+                        <div class="flex flex-col gap-y-2.5">
+                            <div class="mat-label-text-sku-list">User Attributes</div>
+                            <div class="flex flex-col">
+                            
+                                <div class="flex flex-col">
+                                    <!-- Label -->
+                                    <div class="flex flex-row items-center justify-between">
+                                        <mat-label class="text-sm font-bold leading-6">User Lookup</mat-label>
+                                    </div>
+                            
+                                    <!-- Input with Autocomplete -->
+                                    <input type="text" matInput formControlName="UserID" [matAutocomplete]="auto"
+                                        placeholder="Enter user name, email, or User ID" style="width: 280px !important;"
+                                        class="w-full border rounded border-color-cus-sku-list border-solid h-8 pl-2"
+                                        [matTooltip]="selectedUserTooltip" matTooltipPosition="above" (keydown.enter)="applyFilterRecords()" />
+                            
+                                    <!-- Autocomplete Options -->
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onUserSelected($event)">
+                                        <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
+                                            matTooltip="{{ user.firstName }} {{ user.lastName }} - {{ user.email }} {{ user.bpNumber }}">
+                                            <span [innerHTML]="formatUserDisplay(user, filterForm.controls.UserID.value)"></span>
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </div>
+                            
+                                <!-- Selected Participant Name -->
+                                <div *ngIf="selectedFullname" class="ml-4"
+                                    style="font-family: 'Open Sans', sans-serif; font-weight: 200; font-size: 20px; margin-top: 20px;">
+                                    Participant Name: {{ selectedFullname }}
+                                </div>
+                            
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="flex flex-row pr-4 mr-4" style="border-right: 1px solid #BDC1CA;">
+                        <div class="flex flex-col gap-y-2.5" >
+                            <div class="mat-label-text-sku-list">Order Date</div>
+                            <div class="flex flex-row items-center flex-wrap gap-4">
+                                <div class="flex flex-col">
+                                    <mat-label class="text-sm font-bold	leading-6">Start Date</mat-label>
+                                    <div class="flex flex-row">
+                                        <input style="width: 181px !important;" matInput [matDatepicker]="StartDate" formControlName="StartDate" placeholder="Select Start Date"
+                                        class="w-48 border rounded border-color-cus-sku-list border-solid h-8 pl-2" (keydown.enter)="applyFilterRecords()">
+                                        <mat-datepicker-toggle matSuffix [for]="StartDate"></mat-datepicker-toggle>
+                                        <mat-datepicker #StartDate></mat-datepicker>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <mat-label class="text-sm font-bold	leading-6">End Date</mat-label> 
+                                    <div class="flex flex-row">
+                                        <input style="width: 181px !important;" matInput [matDatepicker]="EndDate" formControlName="EndDate" placeholder="Select End Date"
+                                        class="w-48 border rounded border-color-cus-sku-list border-solid h-8 pl-2" (keydown.enter)="applyFilterRecords()">
+                                        <mat-datepicker-toggle matSuffix [for]="EndDate"></mat-datepicker-toggle>
+                                        <mat-datepicker #EndDate></mat-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-row pr-4 mr-4" style="border-right: 1px solid #BDC1CA;">
+                        <div class="flex flex-col gap-y-2.5">
+                            <div class="mat-label-text-sku-list" style="visibility: hidden;">Order Date</div>
+                            <div class="flex flex-row flex-wrap gap-4">
+                                <div class="flex flex-col">
+                                    <mat-label class="text-sm font-bold	leading-6">Min Points</mat-label> 
+                                    <div>
+                                        <input class="w-full" matInput formControlName="MinPoints" placeholder="Enter Min Points"
+                                        class="w-full border rounded border-color-cus-sku-list border-solid h-8 pl-2" style="width: 121px !important;" (keydown.enter)="applyFilterRecords()">
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <mat-label class="text-sm font-bold	leading-6">Max Points</mat-label> 
+                                    <div>
+                                        <input class="w-full" matInput formControlName="MaxPoints" placeholder="Enter Max Points"
+                                        class="w-full border rounded border-color-cus-sku-list border-solid h-8 pl-2" style="width: 121px !important;" (keydown.enter)="applyFilterRecords()">
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                                            
+                    </div>
+                    <div class="flex flex-row pr-4" style="border-right: 1px solid #BDC1CA;">
+                        <div class="flex flex-col gap-y-2.5" style="width: 191px;">
+                            <div class="mat-label-text-sku-list">Entry Type</div>
+                            <div class="flex flex-col">
+                                <mat-label class="text-sm font-bold" style="visibility: hidden; line-height: 1.375rem !important;"> Label</mat-label>
+                                <mat-form-field order-redemption-mat-field style="align-items: center;">
+                                    <mat-select placeholder="Select" formControlName="EntryType">
+                                        <mat-option *ngFor="let item of typeDropdown" [value]="item.id">{{item.value}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-row pr-4 mr-4" style="border-right: 1px solid #BDC1CA;">
+                        <div class="flex flex-col gap-y-2.5">
+                            <div class="flex flex-row flex-wrap gap-6 p-2">
+                                
+
+                                <div class="flex flex-col">
+                                    <mat-label class="text-sm font-bold" style="visibility: hidden; line-height: 1.42rem !important;"> Label</mat-label>
+                                    <mat-label class="text-sm font-bold	leading-6">External Order Id</mat-label> 
+                                    <div>
+                                        <input class="w-full" matInput formControlName="externalOrderId" placeholder="Enter External Order Id"
+                                        class="w-full border rounded border-color-cus-sku-list border-solid h-8 pl-2" style="width: 150px !important;" (keydown.enter)="applyFilterRecords()">
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <mat-label class="text-sm font-bold" style="visibility: hidden; line-height: 1.42rem !important;"> Label</mat-label>
+                                    <mat-label class="text-sm font-bold	leading-6">Po Number</mat-label> 
+                                    <div>
+                                        <input class="w-full" matInput formControlName="poNumber" placeholder="Enter Po Number"
+                                        class="w-full border rounded border-color-cus-sku-list border-solid h-8 pl-2" style="width: 140px !important;" (keydown.enter)="applyFilterRecords()">
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                                            
+                    </div>
+                </div>
+            </form>
+
+            <div class="flex w-full mt-6 justify-between">
+                <button (click)="applyFilterRecords()" class="bg-[#03202E] text-white px-4 py-2 rounded flex items-center">
+                    <div class="whitespace-nowrap leading-5">
+                        {{selectedTab === 'Single User Search / Add New Order' ? 'Apply Filters' : 'Search/Display Records'}}
+                    </div>
+                </button>
+                <button *ngIf="apiRequest.filter.length > 0" (click)="resetFilters()" class="px-4 py-2 rounded-2xl flex items-center" style="border: 1px solid #565D6D; height: 28px; padding: 15px 10px;">
+                    <div class="whitespace-nowrap leading-5">
+                        Reset Display Filters
+                    </div>
+                </button>
+            </div>
+            <div class="my-2"></div>
+            <button 
+            *ngIf="selectedTab === 'Single User Search / Add New Order'"
+            class="bg-[#04202E] text-white px-4 py-2 rounded-md flex items-center mt-4">
+                <span class="icon pr-2">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 6.5C14 6.63261 13.9473 6.75979 13.8536 6.85355C13.7598 6.94732 13.6326 7 13.5 7C13.3674 7 13.2402 6.94732 13.1464 6.85355C13.0527 6.75979 13 6.63261 13 6.5L13 3.7075L8.85437 7.85375C8.76055 7.94757 8.63331 8.00028 8.50062 8.00028C8.36794 8.00028 8.2407 7.94757 8.14688 7.85375C8.05305 7.75993 8.00035 7.63268 8.00035 7.5C8.00035 7.36732 8.05305 7.24007 8.14688 7.14625L12.2925 3L9.5 3C9.36739 3 9.24021 2.94732 9.14645 2.85355C9.05268 2.75979 9 2.63261 9 2.5C9 2.36739 9.05268 2.24021 9.14645 2.14645C9.24021 2.05268 9.36739 2 9.5 2L13.5 2C13.6326 2 13.7598 2.05268 13.8536 2.14645C13.9473 2.24021 14 2.36739 14 2.5L14 6.5ZM11.5 8C11.3674 8 11.2402 8.05268 11.1464 8.14645C11.0527 8.24021 11 8.36739 11 8.5L11 13L3 13L3 5L7.5 5C7.63261 5 7.75979 4.94732 7.85355 4.85355C7.94732 4.75979 8 4.63261 8 4.5C8 4.36739 7.94732 4.24021 7.85355 4.14645C7.75979 4.05268 7.63261 4 7.5 4L3 4C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5L2 13C2 13.2652 2.10536 13.5196 2.29289 13.7071C2.48043 13.8946 2.73478 14 3 14L11 14C11.2652 14 11.5196 13.8946 11.7071 13.7071C11.8946 13.5196 12 13.2652 12 13L12 8.5C12 8.36739 11.9473 8.24021 11.8536 8.14645C11.7598 8.05268 11.6326 8 11.5 8Z" fill="white"/>
+                    </svg>
+                </span>
+                <span class="leading-5" style="color: white !important; padding-top: 2px;" (click)="exportAllResult()">Export All Results</span>
+            </button>
+            <div class="my-2"></div>
+        </div>
+    </div>
+    <div class="flex w-full mt-6 justify-between">
+        <div class="flex flex-row flex-wrap">
+            <div class="font-normal" style="align-items: center; display: flex;">
+                Results:
+            </div>
+            <div class="flex flex-wrap items-center">
+                <ng-container *ngIf="filterTags && filterTags.length">
+                    <div class="flex flex-wrap items-center mx-1">
+                        <ng-container *ngFor="let label of filterTags; trackBy: trackByFn">
+                            <div *ngIf="label?.value" class="flex items-center m-1 py-0.5 px-3 rounded-full text-md font-medium text-gray-500 cus-background-tags h-9 !important">
+                                <mat-icon
+                                    style="color: white;cursor: pointer;"
+                                    class="mr-2 text-white"
+                                    [svgIcon]="'e-remove-white'"
+                                    (click)="removeFilterLabel(label)">
+                                </mat-icon>
+                                <div style="color: #FFFFFF;">
+                                    {{label.title}} {{label.value}}
+                                </div>
+                                
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div style="align-items: center; display: flex;">
+            <button
+            *ngIf="filterTags.length > 0" style="
+                width: 70px;
+                padding: 5px 10px;
+                align-items: center;
+                justify-content: start;
+                border-radius: 4px;" mat-icon-button [matTooltip]="'Records Count'" mat-icon-button data-placement="bottom">
+                {{dataSource.length}}
+            </button>
+            <button style="
+                width: 70px;
+                padding: 5px 10px;
+                align-items: center;
+                justify-content: start;
+                border-radius: 4px;" mat-icon-button [matTooltip]="'Refresh Page'" mat-icon-button data-placement="bottom" (click)="applyFilterRecords()">
+                <mat-icon [class]="'btn-color-600 refresh-icon'" [svgIcon]="'refresh'"></mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="w-full" style="overflow-x: auto;">
+        <app-data-grid
+        [gridSettings]="gridColumns"
+        [enableRowClick]="true"
+        [dataSource]="dataSource"
+        [pages]="pages"
+        [totalRecordCount]="apiRequest.itemCount"
+        (emitRecordCount)="changePageCount($event)"
+        [pageIndex]="pageIndex"
+        [sortBy]="sortBy"
+        [sortDirection]="sortDirection"
+        (fetchPageData)="onPageChange($event)"
+        (sortChangeClick)="handleSortChange($event)"
+        (buttonClick)="handleButtonClick($event)">
+        </app-data-grid>
+    </div>
+</div>
+
+
+<ng-template #addNewOrder>
+    <div mat-dialog-title class="w-full flex modal-header-cus m-0  px-6 justify-between items-center">
+        <div *ngIf="!editInProgress" class="modal-header-cus py-2"> Add New Order</div>
+        <div *ngIf="editInProgress" class="modal-header-cus py-2"> Edit SKU</div>
+        <button mat-icon-button (click)="closeDialog()" class="close-button">
+          <mat-icon style="color: #fff;">close</mat-icon>
+        </button>
+    </div>
+    <mat-dialog-content class="mat-typography p-0 m-0" style="max-height: 75vh !important;">
+        <form [formGroup]="addNewOrderForm" class="flex flex-wrap add-sku-field-container px-4 py-2" >
+            <div class="w-full flex flex-col gap-y-2">
+                <div class="flex flex-row flex-wrap gap-x-11">
+                    <mat-form-field  order-redemption-mat-field *ngIf="isDisabled" style="width: 425px;">
+                        <mat-label>External Order (number)*</mat-label>
+                        <input matInput formControlName="poNumber" readonly>
+                      </mat-form-field>
+                      <mat-form-field order-redemption-mat-field *ngIf="!isDisabled" style="width: 425px;">
+                        <mat-label>External Order (number)*</mat-label>
+                        <input matInput formControlName="poNumber" >
+                      </mat-form-field>
+                    <mat-form-field order-redemption-mat-field style="width: 425px;">
+                        <mat-label>User Lookup *</mat-label>
+                        <input
+                          type="text"
+                          matInput
+                          formControlName="bpNumber"
+                          placeholder="Enter user name, email, or BP Number"
+                          [matAutocomplete]="autoUserSearch"
+                          [matTooltip]="selectedUserTooltipForDialog" 
+                         matTooltipPosition="above"
+                        />
+                        <mat-autocomplete
+                        #autoUserSearch="matAutocomplete"
+                        [displayWith]="displayFns"
+                        (optionSelected)="onBpNumberSelected($event)"
+                      >
+                        <mat-option
+                          *ngFor="let user of filteredUsersForDialog | async"
+                          [value]="user"
+                          matTooltip="{{ user.firstName }} {{ user.lastName }} - {{ user.email }} {{ user.bpNumber }}"
+                        >
+                          <span [innerHTML]="formatUserDisplay(user, addNewOrderForm.get('bpNumber')?.value)"></span>
+                        </mat-option>
+                      </mat-autocomplete>
+                      </mat-form-field>
+                    <mat-form-field order-redemption-mat-field style="width: 188px;">
+                        <mat-label>Order Date*</mat-label>
+                        <input 
+                          matInput 
+                          [matDatepicker]="OrderDate" 
+                          [max]="todayDate" 
+                          formControlName="orderDate">
+                        <mat-datepicker-toggle matSuffix [for]="OrderDate"></mat-datepicker-toggle>
+                        <mat-datepicker #OrderDate></mat-datepicker>
+                      </mat-form-field>
+                </div>
+                <div class="w-full flex flex-col items-start">
+                    <div class="overflow-x-auto w-full" *ngIf="newOrderItemList.length > 0">
+                        <app-data-grid
+                        [gridSettings]="newOrderGridColumns"
+                        [enableRowClick]="true"
+                        [showPagination]="false"
+                        [dataSource]="newOrderItemList"
+                        (buttonClick)="handleButtonClickNewOrder($event)">
+                        </app-data-grid>    
+                    </div>
+                    <button class="flex items-center" (click)="openItemOrderDialog(itemOrderDialog, 'add')" *ngIf="newOrderItemList?.length === 0">
+                        <mat-icon
+                        class="text-white m-2"
+                        [svgIcon]="'plus-circle-dark'">
+                        </mat-icon>
+                        <span>Add Item</span>
+                    </button>
+                </div>
+                <div class="flex add-sku-field-container mt-4">
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Recipient First Name</mat-label>
+                        <input matInput formControlName="firstName">
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Recipient Last Name</mat-label>
+                        <input matInput formControlName="lastName">
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email">
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Address 1</mat-label>
+                        <input matInput formControlName="address1">
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Address 2</mat-label>
+                        <input matInput formControlName="address2">
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Phone Number</mat-label>
+                        <input matInput formControlName="phone">
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>City</mat-label>
+                        <input matInput formControlName="city">
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>State / Province</mat-label>
+                        <mat-select placeholder="State / Province" formControlName="state">
+                            <mat-option *ngFor="let item of stateList" [value]="item.value">{{item.value}}</mat-option> 
+                          </mat-select>
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Zip Code</mat-label>
+                        <input matInput formControlName="zipCode">
+                    </mat-form-field>
+                </div>
+                <div style="width: 100%; border: 0.5px solid #9095A1;"></div>
+                <div class="flex add-sku-field-container mt-4">
+                    <h3 style="width: 100%; font-weight: bold; font-size: 20px;">Invoice Details</h3>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Actual Cost</mat-label>
+                        <input matInput formControlName="actualCost" appDecimalValidator>
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Actual Tax</mat-label>
+                        <input matInput formControlName="actualTax" appDecimalValidator>
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Actual Shipping</mat-label>
+                        <input matInput formControlName="actualShipping" appDecimalValidator>
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Actual Handling</mat-label>
+                        <input matInput formControlName="actualHandling" appDecimalValidator>
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Invoice Number</mat-label>
+                        <input matInput formControlName="invoicNumber">
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Invoice Date</mat-label>
+                        <input matInput [matDatepicker]="invoiceDate"  formControlName="InvoiceDate">
+                        <mat-datepicker-toggle matSuffix [for]="invoiceDate"></mat-datepicker-toggle>
+                        <mat-datepicker #invoiceDate></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Invoice Due Date</mat-label>
+                        <input matInput [matDatepicker]="invoiceDueDate" formControlName="InvoiceDueDate">
+                        <mat-datepicker-toggle matSuffix [for]="invoiceDueDate"></mat-datepicker-toggle>
+                        <mat-datepicker #invoiceDueDate></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Invoice Total</mat-label>
+                        <input matInput formControlName="InvoiceTotal" appDecimalValidator>
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Invoice Total American</mat-label>
+                        <input matInput formControlName="InvoiceTotalAmerican" appDecimalValidator>
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>EGR PO (number)</mat-label>
+                        <input matInput formControlName="egrpoNumber">
+                    </mat-form-field>
+                    <mat-form-field order-redemption-mat-field class="three-section-width">
+                        <mat-label>Check Date</mat-label>
+                        <input matInput [matDatepicker]="CheckDate" formControlName="egrCheckDate">
+                        <mat-datepicker-toggle matSuffix [for]="CheckDate"></mat-datepicker-toggle>
+                        <mat-datepicker #CheckDate></mat-datepicker>
+                    </mat-form-field>
+                    <mat-checkbox style="display: flex; align-items: center;" class="three-section-width" [checked]="false" formControlName="vendorPaid">
+                        <mat-label>Vendor Paid By EGR</mat-label>
+                    </mat-checkbox>
+                    <mat-form-field order-redemption-mat-field class="w-full">
+                        <mat-label>Tax Payment Status</mat-label>
+                        <mat-select formControlName="taxPaymentStatus">
+                            <mat-option *ngFor="let item of orderItemTaxStatus" [value]="item.id">{{item.value}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-row flex-wrap gap-x-6 mt-2">
+                    <div class="font-semibold">
+                        Order Total Cost: $ {{addNewOrderForm.value.totalPrice}}
+                    </div>
+                    <div class="font-semibold">
+                        Order Total Points: {{addNewOrderForm.value.totalPoints}}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button *ngIf="!isDisabled"
+          class="save-btn enabled-save-btn"
+          (click)="checkPointsBalance()">
+          <span>Save</span>
+        </button> &nbsp;
+        <button *ngIf="isDisabled"
+          class="save-btn enabled-save-btn"
+          (click)="saveBulkOrderForm()">
+          <span>Save</span>
+        </button> &nbsp;
+        <button class="close-btn-cus" (click)="closeDialog()">
+          <span>Cancel</span>
+        </button>
+    </mat-dialog-actions>
+  </ng-template>
+
+  <ng-template #itemOrderDialog>
+    <div mat-dialog-title class="flex justify-between items-center">
+        <h3 class="dialog-title">Add/Edit Order Item</h3>
+        <button mat-icon-button (click)="closeitemOrderDialog()" class="close-button">
+          <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div mat-dialog-content>
+        <form [formGroup]="addOrderItemForm" class="flex flex-wrap px-4 py-2">
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+              <mat-label>PO*</mat-label>
+              <input matInput formControlName="externalOrderId">
+            </mat-form-field>&nbsp;
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Quantity *</mat-label>
+                <input matInput formControlName="quantity" appIntegerOnly>
+                </mat-form-field>
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+              <mat-label>Price per Quantity (US Dollar) *</mat-label>
+              <input matInput formControlName="price" appDecimalValidator>
+            </mat-form-field>&nbsp;
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Total (US Dollar)</mat-label>
+                <input matInput formControlName="total" [readonly]="true">
+            </mat-form-field>
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Points per Quantity *</mat-label>
+                <input matInput formControlName="points" (input)="onPointsInput($event)">
+              </mat-form-field>&nbsp;
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Total Points</mat-label>
+                <input matInput formControlName="totalPoints" [readonly]="true">
+            </mat-form-field>
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+              <mat-label>Handling (US Dollar)</mat-label>
+              <input matInput formControlName="handing" appDecimalValidator>
+            </mat-form-field>&nbsp;
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+              <mat-label>Item Name*</mat-label>
+              <input matInput formControlName="itemName">
+            </mat-form-field>
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+              <mat-label>Item Model/Number</mat-label>
+              <input matInput formControlName="itemModel">
+            </mat-form-field>&nbsp;
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+              <mat-label>Item Manufacturer</mat-label>
+              <input matInput formControlName="manufacture">
+            </mat-form-field>
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+              <mat-label>Vendor Name *</mat-label>
+              <input matInput formControlName="itemVendorName">
+            </mat-form-field>&nbsp;
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Processing Status</mat-label>
+                <input matInput formControlName="processingStatus">
+            </mat-form-field>
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Shipping Price (US Dollar)</mat-label>
+                <input matInput formControlName="shippingCost" appDecimalValidator>
+            </mat-form-field>&nbsp;
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Expected Ship Date</mat-label>
+                <input matInput [matDatepicker]="date1" [min]="todayDate" formControlName="expectedShipDate">
+                <mat-datepicker-toggle matSuffix [for]="date1"></mat-datepicker-toggle>
+                <mat-datepicker #date1></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Actual Ship Date</mat-label>
+                <input matInput [matDatepicker]="date2" [min]="todayDate" formControlName="actualShipDate">
+                <mat-datepicker-toggle matSuffix [for]="date2"></mat-datepicker-toggle>
+                <mat-datepicker #date2></mat-datepicker>
+            </mat-form-field>&nbsp;
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Tracking Number</mat-label>
+                <input matInput formControlName="trackingNumber">
+            </mat-form-field>
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Shipping Method (UPS,USPS,Fedex, etc)</mat-label>
+                <input matInput formControlName="shippingMethod">
+            </mat-form-field>&nbsp;
+            <mat-form-field order-redemption-mat-field class="two-section-width">
+                <mat-label>Status *</mat-label>
+                <mat-select formControlName="status">
+                  <mat-option *ngFor="let item of orderItemStatus" [value]="item.id">{{item.value}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </form>
+    </div>
+    <mat-dialog-actions align="end">
+        <button 
+          class="save-btn enabled-save-btn"
+          (click)="saveItemOrderForm()">
+          <span>Save</span>
+        </button> &nbsp;
+        <button class="close-btn-cus" (click)="closeitemOrderDialog()">
+          <span>Cancel</span>
+        </button>
+    </mat-dialog-actions>
+  </ng-template>
+
+  
+  <ng-template #bulkRedemptionDialog>
+    <div mat-dialog-title class="flex justify-between items-center">
+        <h3 class="dialog-title">Bulk Create Redemption</h3>
+        <button mat-icon-button (click)="closeBulkDialog()" class="close-button">
+          <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div mat-dialog-content class="container mx-auto px-4">
+        <!-- <div class="container mx-auto px-4"></div> -->
+        <div class="w-full space-y-6 mt-8">
+            <div class="flex flex-col lg:flex-row items-center justify-start w-full space-x-4 space-y-4 lg:space-y-0" >
+            <div *ngIf="showDropBox" class="flex flex-col items-center" style="width: 21% !important;">
+                <button (click)="fileInput.click()" class="bg-[#03202E] text-white px-4 py-2 rounded-lg flex items-center">
+                <svg class="h-6 w-6 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293l2.414 2.414A1 1 0 0012.414 8H21a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z"></path>
+                </svg>
+                Choose Upload File
+                </button>
+                <input type="file" accept=".csv" (change)="onFileSelect($event)" class="hidden" #fileInput />
+            </div>
+        
+            <div *ngIf="showDropBox" class="text-gray-500 font-semibold" style="width: 3% !important;">OR</div>
+        
+            <div *ngIf="showDropBox" class="flex items-center justify-start w-full space-x-4">
+                <div 
+                (drop)="onFileDrop($event)" 
+                (dragover)="onDragOver($event)" 
+                (dragleave)="onDragLeave($event)" 
+                class="border-2 border-dashed border-gray-300 rounded-lg p-2 flex flex-col items-center cursor-pointer bg-[#FAFAFB] w-full max-w-xs h-36"
+                >
+                <div class="flex items-center justify-center h-16 w-16 rounded-full mb-2">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M32 50.8718L32 32V35.2821" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                    <path d="M22.9746 41.0256L32.0003 32L41.0259 41.0256" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                    <path d="M38.565 50.8045C42.2744 50.495 45.8202 49.1406 48.7913 46.8981C51.7623 44.6557 54.0369 41.6171 55.3515 38.1346C56.666 34.6521 56.9665 30.8683 56.2183 27.222C55.4701 23.5756 53.7037 20.216 51.1239 17.5326C48.5442 14.8492 45.2567 12.9519 41.6426 12.0608C38.0285 11.1696 34.2359 11.321 30.7043 12.4974C27.1728 13.6738 24.047 15.827 21.6893 18.7075C19.3317 21.588 17.8387 25.0777 17.3835 28.7721C14.5556 29.0527 11.9439 30.4094 10.0882 32.5615C8.23256 34.7137 7.27501 37.4967 7.41358 40.335C7.55216 43.1733 8.77626 45.8498 10.8327 47.811C12.8892 49.7721 15.6207 50.868 18.4624 50.8718L25.4368 50.8718" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                    </svg>
+                </div>
+                <span class="text-gray-500 text-2xl">Drop files here</span>
+                <span class="text-gray-400 text-lg">Supported format: .csv</span>
+                </div>
+            </div>
+            </div>
+        
+            <div *ngIf="uploadResult" class="flex flex-col items-start justify-start w-full space-y-4">
+            <div class="text-left  text-[#171A1F] font-normal mt-4 ml-4 content">
+                Queued File for Upload:
+                <p>
+                <!-- <strong>File Name:</strong>  -->
+                {{ fileName }}</p>
+            </div>
+        
+            <div class="ml-4 grid grid-cols-2 gap-4  text-[#171A1F] font-normal" style="gap: 3.5rem !important;">
+                <div class="resultContent">
+                <p>File Validation</p>
+                <br>
+                <p>{{ uploadResult.totalRecordsCount }} Records Found</p>
+                <p>{{ uploadResult.duplicateCount }} Duplicate Records</p>
+                <p>{{ uploadResult.errorRecordCount }} Records with errors</p>
+                </div>
+                <div class="resultContent">
+                <p>Issuance Summary</p>
+                <br>
+                <p>{{ uploadResult.rewardPoints | number:'1.0-0' }} Points</p>
+                <p>{{ uploadResult.totalPrice | number:'1.2-2' }} Paid Price Credit</p>
+                <p>{{ uploadResult.units }} Units</p>
+                </div>
+            </div>
+            <div class="flex space-x-4 mt-4 ml-4 resultContent" *ngIf="uploadResult && showCreateViewReportButton" (click)="viewUploadedReport()"><p style="border-bottom: 1px solid #0D78C9 !important; color: #0D78C9 !important; cursor: pointer;">View Report</p></div>
+            <div class="flex space-x-4 mt-4 ml-4">
+                <button 
+                class="bg-[#04202E] text-white px-4 py-2 rounded-lg" 
+                (click)="proceedWithUpload()" 
+                [disabled]="(uploadResult && showCreateViewReportButton) || (uploadResult.totalRecordsCount === 0)"
+                [ngStyle]="{'opacity': ((uploadResult && showCreateViewReportButton) || (uploadResult.totalRecordsCount === 0)) ? 0.5 : 1}"
+                >
+                Proceed with Upload
+                </button>
+                <button  style="
+                display: flex;
+                align-items: center;
+                border: 1px solid black;
+                border-radius: 4px;
+                padding: 0 10px;
+                cursor: pointer;
+                height: 41px;
+                width: fit-content;" (click)="cancelUpload()">
+                Cancel / Remove File From Queue
+                </button>
+            </div>
+            </div>
+        </div>
+        <div class="w-full mt-10 space-y-6 overflow-x-auto">
+            <div class="w-full space-y-6">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div class="font-poppins font-normal text-3xl leading-12 mt-4 text-left">
+                File History
+                </div>
+                <div class="flex flex-row gap-6 flex-wrap">
+                <div style="align-items: center; display: flex;">
+                    <button style="
+                        width: 100%;
+                        padding: 5px 10px;
+                        align-items: center;
+                        justify-content: start;
+                        border-radius: 4px;" mat-icon-button [matTooltip]="'Refresh Page'" mat-icon-button data-placement="bottom" (click)="ImportHistoryPaginated()">
+                        <mat-icon [class]="'btn-color-600 refresh-icon'" [svgIcon]="'refresh'"></mat-icon>
+                    </button>
+                </div>
+                <button style="
+                    display: flex;
+                    align-items: center;
+                    border: 1px solid black;
+                    border-radius: 4px;
+                    padding: 0 10px;
+                    cursor: pointer;
+                    height: 41px;
+                    width: fit-content;" (click)="createRedemptionTemplate()">
+                    <mat-icon [svgIcon]="'download'"></mat-icon>
+                    Redemption Create Template
+                </button>
+                </div>
+            </div>
+        
+            <div class="my-2"></div>
+            <app-data-grid
+                [gridSettings]="gridColumnsBulkRedemption"
+                [dataSource]="dataSourceBulkRedemption"
+                [loading]="bulkRedemptionLoading"
+                [pages]="BulkRedemptionPages"
+                [pageIndex]="currentPageBulkRedemption"
+                [totalRecordCount]="bulkRedemptionApiRequest.itemCount"
+                (emitRecordCount)="changeBulkRedemptionPageCount($event)"
+                (fetchPageData)="onPageChangeBulkRedemption($event)"
+                (buttonClick)="handleButtonClickBulkRedemption($event)"
+                (sortChangeClick)="applySortBulkRedemption($event)"
+            ></app-data-grid>
+            </div>
+        </div>
+    </div>
+  </ng-template>
+  <ng-template #bulkUpdateDialog>
+    <div mat-dialog-title class="flex justify-between items-center">
+        <h3 class="dialog-title">Bulk Update Redemption</h3>
+        <button mat-icon-button (click)="closeBulkDialog()" class="close-button">
+          <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div mat-dialog-content class="container mx-auto px-4">
+        <div class="w-full space-y-6 mt-8">
+            <div class="flex flex-col lg:flex-row items-center justify-start w-full space-x-4 space-y-4 lg:space-y-0" >
+            <div *ngIf="showDropBox" class="flex flex-col items-center" style="width: 21% !important;">
+                <button (click)="fileInput.click()" class="bg-[#03202E] text-white px-4 py-2 rounded-lg flex items-center">
+                <svg class="h-6 w-6 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293l2.414 2.414A1 1 0 0012.414 8H21a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z"></path>
+                </svg>
+                Choose Upload File
+                </button>
+                <input type="file" accept=".csv" (change)="onFileSelect($event)" class="hidden" #fileInput />
+            </div>
+        
+            <div *ngIf="showDropBox" class="text-gray-500 font-semibold" style="width: 3% !important;">OR</div>
+        
+            <div *ngIf="showDropBox" class="flex items-center justify-start w-full space-x-4">
+                <div 
+                (drop)="onFileDrop($event)" 
+                (dragover)="onDragOver($event)" 
+                (dragleave)="onDragLeave($event)" 
+                class="border-2 border-dashed border-gray-300 rounded-lg p-2 flex flex-col items-center cursor-pointer bg-[#FAFAFB] w-full max-w-xs h-36"
+                >
+                <div class="flex items-center justify-center h-16 w-16 rounded-full mb-2">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M32 50.8718L32 32V35.2821" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                    <path d="M22.9746 41.0256L32.0003 32L41.0259 41.0256" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                    <path d="M38.565 50.8045C42.2744 50.495 45.8202 49.1406 48.7913 46.8981C51.7623 44.6557 54.0369 41.6171 55.3515 38.1346C56.666 34.6521 56.9665 30.8683 56.2183 27.222C55.4701 23.5756 53.7037 20.216 51.1239 17.5326C48.5442 14.8492 45.2567 12.9519 41.6426 12.0608C38.0285 11.1696 34.2359 11.321 30.7043 12.4974C27.1728 13.6738 24.047 15.827 21.6893 18.7075C19.3317 21.588 17.8387 25.0777 17.3835 28.7721C14.5556 29.0527 11.9439 30.4094 10.0882 32.5615C8.23256 34.7137 7.27501 37.4967 7.41358 40.335C7.55216 43.1733 8.77626 45.8498 10.8327 47.811C12.8892 49.7721 15.6207 50.868 18.4624 50.8718L25.4368 50.8718" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                    </svg>
+                </div>
+                <span class="text-gray-500 text-2xl">Drop files here</span>
+                <span class="text-gray-400 text-lg">Supported format: .csv</span>
+                </div>
+            </div>
+            </div>
+        
+            <div *ngIf="uploadResult" class="flex flex-col items-start justify-start w-full space-y-4">
+            <div class="text-left  text-[#171A1F] font-normal mt-4 ml-4 content">
+                Queued File for Upload:
+                <p>
+                <!-- <strong>File Name:</strong>  -->
+                {{ fileName }}</p>
+            </div>
+        
+            <div class="ml-4 grid grid-cols-2 gap-4  text-[#171A1F] font-normal" style="gap: 3.5rem !important;">
+                <div class="resultContent">
+                <p>File Validation</p>
+                <br>
+                <p>{{ uploadResult.totalRecordsCount }} Records Found</p>
+                <p>{{ uploadResult.duplicateCount }} Duplicate Records</p>
+                <p>{{ uploadResult.errorRecordCount }} Records with errors</p>
+                </div>
+                <div class="resultContent">
+                <p>Issuance Summary</p>
+                <br>
+                <p>{{ uploadResult.totalInvExist ?? 0 }} Points </p>
+                <p>{{ uploadResult.totalPrice | number:'1.2-2' }} Paid Price Credit</p>
+                <p>{{ uploadResult.units }} Units</p>
+                </div>
+            </div>
+            <div class="flex space-x-4 mt-4 ml-4 resultContent" *ngIf="uploadResult && showViewReportButton" (click)="viewUploadedReport()"><p style="border-bottom: 1px solid #0D78C9 !important; color: #0D78C9 !important; cursor: pointer;">View Report</p></div>
+            <div class="flex space-x-4 mt-4 ml-4">
+                <button 
+                class="bg-[#04202E] text-white px-4 py-2 rounded-lg" 
+                (click)="proceedWithUpload()" 
+                [disabled]="(uploadResult && showViewReportButton) || (uploadResult.totalRecordsCount === 0)"
+                [ngStyle]="{'opacity': ((uploadResult && showViewReportButton) || (uploadResult.totalRecordsCount === 0)) ? 0.5 : 1}"
+                >
+                Proceed with Upload
+                </button>
+                <button style="
+                display: flex;
+                align-items: center;
+                border: 1px solid black;
+                border-radius: 4px;
+                padding: 0 10px;
+                cursor: pointer;
+                height: 41px;
+                width: fit-content;" (click)="cancelUpload()">
+                Cancel / Remove File From Queue
+                </button>
+            </div>
+            </div>
+        </div>
+        <div class="w-full mt-10 space-y-6 overflow-x-auto">
+            <div class="w-full space-y-6">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div class="font-poppins font-normal text-3xl leading-12 mt-4 text-left">
+                File History
+                </div>
+                <div class="flex flex-row gap-6 flex-wrap">
+                <div style="align-items: center; display: flex;">
+                    <button style="
+                        width: 100%;
+                        padding: 5px 10px;
+                        align-items: center;
+                        justify-content: start;
+                        border-radius: 4px;" mat-icon-button [matTooltip]="'Refresh Page'" mat-icon-button data-placement="bottom" (click)="ImportUpdateHistoryPaginated()">
+                        <mat-icon [class]="'btn-color-600 refresh-icon'" [svgIcon]="'refresh'"></mat-icon>
+                    </button>
+                </div>
+                <button style="
+                    display: flex;
+                    align-items: center;
+                    border: 1px solid black;
+                    border-radius: 4px;
+                    padding: 0 10px;
+                    cursor: pointer;
+                    height: 41px;
+                    width: fit-content;" (click)="updateRedemptionTemplate()">
+                    <mat-icon [svgIcon]="'download'"></mat-icon>
+                    Redemption Update Template
+                </button>
+                </div>
+            </div>
+        
+            <div class="my-2"></div>
+            <app-data-grid
+                [gridSettings]="gridColumnsBulkRedemption"
+                [dataSource]="dataSourceUpdateBulkRedemption"
+                [loading]="bulkUpdateRedemptionLoading"
+                [pages]="BulkUpdateRedemptionPages"
+                [totalRecordCount]="bulkUpdateRedemptionApiRequest.itemCount"
+                (emitRecordCount)="changeBulkUpdateRedemptionPageCount($event)"
+                [pageIndex]="currentPageBulkUpdateRedemption"
+                (fetchPageData)="onPageChangeBulkUpdateRedemption($event)"
+                (buttonClick)="handleButtonClickBulkRedemption($event)"
+                (sortChangeClick)="applySortBulkUpdateRedemption($event)"
+            ></app-data-grid>
+            </div>
+        </div>
+    </div>
+  </ng-template>
+
+  <ng-template #pointsUserDialog>
+    <div mat-dialog-title class="dialog-header">
+      <h3>Points Negative</h3>
+      <button
+        mat-icon-button
+        (click)="NegativePointsDialog.close()"
+        class="close-button"
+        aria-label="Close dialog"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>{{errorMessage}}</p>
+      <p>Are you sure you want to redeem the points?</p>
+    </div>
+    <div class="modal-footer" style="text-align: right;">
+      <button mat-button (click)="NegativePointsDialog.close()" class="cancel-button">
+        No
+      </button>
+      <button
+        mat-button
+        (click)="saveBulkOrderFormInternal(); NegativePointsDialog.close()"
+        class="delete-button"
+      >
+        Yes
+      </button>
+    </div>
+  </ng-template>

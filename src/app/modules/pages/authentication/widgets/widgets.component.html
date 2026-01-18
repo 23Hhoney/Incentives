@@ -1,0 +1,557 @@
+<div class="widget-container" [ngClass]="container.className" [ngSwitch]="container.type">
+    <div *ngSwitchCase="'panel'" class="panel-widget">
+      <div *ngIf="container.getAllCMSItemViews?.length === 0 && !container['showPanel']" class="panel-empty-state">
+        <button (click)="container['showPanel'] = true" class="add-button">
+          <mat-icon>add</mat-icon>
+          <h6>Add</h6>
+        </button>
+      </div>
+  
+      <div *ngIf="container.getAllCMSItemViews?.length > 0" class="panel-content">
+        <div class="carousel-container">
+          <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators" *ngIf="container.getAllCMSItemViews.length > 1">
+              <button *ngFor="let slide of container.getAllCMSItemViews; let i = index"
+                (click)="i !== container['selectedIndex'] ? container['selectedIndex'] = i : ''"
+                [attr.data-bs-target]="'#carouselExampleCaptions'"
+                [attr.data-bs-slide-to]="i"
+                [class.active]="i === container['selectedIndex']"
+                [class.inactive]="i !== container['selectedIndex']"
+                [attr.aria-current]="i === container['selectedIndex'] ? 'true' : 'false'"
+                [attr.aria-label]="'Slide ' + (i + 1)">
+              </button>
+            </div>
+  
+            <div class="carousel-inner">
+              <div class="carousel-item" [class.active]="i === container['selectedIndex']">
+                <ng-container *ngIf="!container.getAllCMSItemViews[container['selectedIndex']]['isVideo']; else videoTemplate">
+                  <img [src]="container.getAllCMSItemViews[container['selectedIndex']].url" class="d-block w-100" alt="Slide Image">
+                </ng-container>
+  
+                <ng-template #videoTemplate>
+                  <ng-container *ngIf="container.getAllCMSItemViews[0].Content; else fileVideoTemplate">
+                    <iframe [src]="sanitizeVideoUrl(container.getAllCMSItemViews[0]['Content'])" 
+                      frameborder="0" allowfullscreen class="d-block w-100"></iframe>
+                  </ng-container>
+  
+                  <ng-template #fileVideoTemplate>
+                    <video class="d-block w-100" controls>
+                      <source [src]="container.getAllCMSItemViews[container['selectedIndex']].url" type="video/mp4">
+                      Your browser does not support the video tag.
+                    </video>
+                  </ng-template>
+                </ng-template>
+  
+                <div *ngIf="!container.getAllCMSItemViews[container['selectedIndex']]['isVideo']" class="carousel-caption d-block">
+                  <div *ngFor="let textItem of container.getAllCMSItemViews[container['selectedIndex']].newHeadings; let textIndex = index"
+                    class="draggable-text custom-drag-item" 
+                    cdkDrag 
+                    [cdkDragBoundary]="'.carousel-item'"
+                    [cdkDragDisabled]="textItem['showText']" 
+                    (cdkDragMoved)="onDragMove($event, textItem)"
+                    [ngStyle]="{'top': textItem.y + '%', 'left': textItem.x + '%'}">
+                    
+                    <div class="text-controls">
+                      <i cdkDragHandle class="fa fa-arrows-alt icon-hover-new edit-icon"></i>
+                      <mat-icon *ngIf="!textItem['showText']" (click)="textItem['showText'] = !textItem['showText']">edit</mat-icon>
+                      <mat-icon (click)="container.getAllCMSItemViews[container['selectedIndex']].newHeadings.splice(textIndex, 1)">delete</mat-icon>
+                    </div>
+                    
+                    <div class="text-container shadow" cdkDragHandle>
+                      <div [innerHTML]="sanitizeHtml(textItem.text)"></div>
+                    </div>
+                    
+                    <div *ngIf="textItem['showText']" class="editor-overlay" (click)="textItem['showText'] = false"></div>
+                    
+                    <div *ngIf="textItem['showText']" class="editor-dialog">
+                      <mat-icon class="close-icon" (click)="textItem['showText'] = false">close</mat-icon>
+                      <ckeditor [config]="ckeConfig" [(ngModel)]="textItem.text"></ckeditor>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngSwitchCase="'Text'" class="text-widget">
+      <div *ngIf="!container['isEdit']; else editText" [innerHTML]="sanitizeHtml(container.text)"></div>
+      
+      <ng-template #editText>
+        <div class="editable-text-container shadow">
+          <div [innerHTML]="sanitizeHtml(container.text)"
+               (click)="container['showTextHeading'] = true"
+               class="editable-text-content">
+          </div>
+          
+          <div *ngIf="container['showTextHeading']" class="editor-overlay" 
+               (click)="container['showTextHeading'] = false"></div>
+          
+          <div *ngIf="container['showTextHeading']" class="editor-dialog">
+            <mat-icon (click)="container['showTextHeading'] = false" class="close-icon">close</mat-icon>
+            <ckeditor [config]="ckeConfig" [(ngModel)]="container.text"></ckeditor>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  
+    <div *ngSwitchCase="'Academy'" class="academy-widget card cardhero">
+      <div class="academy-header">
+        <div class="academy-title">
+          <div *ngIf="!container['isEdit']; else editAcademyTitle" [innerHTML]="sanitizeHtml(container.chartHeading)"></div>
+          
+          <ng-template #editAcademyTitle>
+            <div class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.chartHeading)"
+                   (click)="container['showChartHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showChartHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showChartHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.chartHeading"></ckeditor>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <div class="badgeblack"><a>See More</a></div>
+      </div>
+  
+      <div class="academy-progress">
+        <h6>Required Monthly Training Progress</h6>
+        <div class="progress-bar2">
+          <div *ngIf="!calculateWidth(totalCourse, totalAttempted)" class="pl-1">
+            {{calculateWidth(totalCourse, totalAttempted)}}%
+          </div>
+          <div [ngStyle]="{'width': calculateWidth(totalCourse, totalAttempted) + '%'}"
+               class="progress-fill">
+            {{calculateWidth(totalCourse, totalAttempted)}}%
+          </div>
+        </div>
+      </div>
+  
+      <div class="curriculum-list">
+        <div *ngFor="let course of curriculumData" class="curriculum-item">
+          <div *ngIf="course.totalAvailableCourse > 0">
+            <div class="curriculum-header" 
+                 [ngStyle]="{'background': course['open'] ? 'rgb(218 234 255)' : '#fff'}"
+                 (click)="course['open'] = !course['open']">
+              <div>
+                <h3>{{course.curriculm}}</h3>
+                <div class="flex flex-row">
+                  <span class="text-primary ml-2">
+                    {{course.totalCompleted}}/{{course.totalAvailableCourse}} Completed
+                  </span>
+                </div>
+              </div>
+              <div>
+                <mat-icon [ngStyle]="{'color': course['open'] ? '#0c63e4' : 'black'}"
+                         [svgIcon]="course['open'] ? 'keyboard_arrow_up' : 'keyboard_arrow_down'">
+                </mat-icon>
+              </div>
+            </div>
+  
+            <div *ngIf="course.open" class="course-list-container">
+              <div *ngIf="course.list.length > 0; else noDataFoundBlock">
+                <div *ngFor="let items of course.list" class="course-item">
+                  <div class="course-item-content">
+                    <div class="course-image">
+                      <img *ngIf="items.imageUrl" [src]="items.imageUrl" alt="">
+                    </div>
+                    <div class="course-details">
+                      <div class="course-title-row">
+                        <h6 (click)="goToCourse(items.courseId,items.status)">{{items.course}}</h6>
+                        <span *ngIf="items.points > 0" class="course-points">{{items.points}} Points</span>
+                      </div>
+                      <div class="course-description">{{items.description}}</div>
+                    </div>
+                  </div>
+                  <div class="course-status">
+                    <svg *ngIf="items.progressStatus === 'Completed'" xmlns="http://www.w3.org/2000/svg" width="31" height="30" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                      <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
+                      <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
+                    </svg>
+                    <svg *ngIf="items.progressStatus === 'started'" xmlns="http://www.w3.org/2000/svg" width="31" height="30" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
+                      <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
+                      <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
+                      <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                    <svg *ngIf="items.progressStatus !== 'Completed' && items.progressStatus !== 'started'" xmlns="http://www.w3.org/2000/svg" width="31" height="30" fill="currentColor" class="bi bi-dash-circle-dotted" viewBox="0 0 16 16">
+                      <path d="M8 0q-.264 0-.523.017l.064.998a7 7 0 0 1 .918 0l.064-.998A8 8 0 0 0 8 0M6.44.152q-.52.104-1.012.27l.321.948q.43-.147.884-.237zm4.132.271a8 8 0 0 0-1.011-.27l-.194.98q.453.09.884.237zm1.873.925a8 8 0 0 0-.906-.524l-.443.896q.413.205.793.459zM4.46.824q-.471.233-.905.524l.556.83a7 7 0 0 1 .793-.458zM2.725 1.985q-.394.346-.74.74l.752.66q.303-.345.648-.648zm11.29.74a8 8 0 0 0-.74-.74l-.66.752q.346.303.648.648zm1.161 1.735a8 8 0 0 0-.524-.905l-.83.556q.254.38.458.793zM1.348 3.555q-.292.433-.524.906l.896.443q.205-.413.459-.793zM.423 5.428a8 8 0 0 0-.27 1.011l.98.194q.09-.453.237-.884zM15.848 6.44a8 8 0 0 0-.27-1.012l-.948.321q.147.43.237.884zM.017 7.477a8 8 0 0 0 0 1.046l.998-.064a7 7 0 0 1 0-.918zM16 8a8 8 0 0 0-.017-.523l-.998.064a7 7 0 0 1 0 .918zM.152 9.56q.104.52.27 1.012l.948-.321a7 7 0 0 1-.237-.884zm15.425 1.012q.168-.493.27-1.011l-.98-.194q-.09.453-.237.884zM.824 11.54a8 8 0 0 0 .524.905l.83-.556a7 7 0 0 1-.458-.793zm13.828.905q.292-.434.524-.906l-.896-.443q-.205.413-.459.793zm-12.667.83q.346.394.74.74l.66-.752a7 7 0 0 1-.648-.648zm11.29.74q.394-.346.74-.74l-.752-.66q-.302.346-.648.648zm-1.735 1.161q.471-.233.905-.524l-.556-.83a7 7 0 0 1-.793.458zm-7.985-.524q.434.292.906.524l.443-.896a7 7 0 0 1-.793-.459zm1.873.925q.493.168 1.011.27l.194-.98a7 7 0 0 1-.884-.237zm4.132.271a8 8 0 0 0 1.012-.27l-.321-.948a7 7 0 0 1-.884.237zm-2.083.135a8 8 0 0 0 1.046 0l-.064-.998a7 7 0 0 1-.918 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              
+              <ng-template #noDataFoundBlock>
+                <div class="no-courses-message">
+                  <span>No course is assigned to this curriculum.</span>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngSwitchCase="'Pie Chart'" class="pie-chart-widget card cardhero">
+      <div class="chart-header">
+        <div class="chart-title">
+          <div *ngIf="!container['isEdit']; else editPieTitle">
+            <div [innerHTML]="sanitizeHtml(container.chartHeading)"></div>
+            <div [innerHTML]="sanitizeHtml(container.text)"></div>
+          </div>
+          
+          <ng-template #editPieTitle>
+            <div class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.chartHeading)"
+                   (click)="container['showChartHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showChartHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showChartHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.chartHeading"></ckeditor>
+              </div>
+            </div>
+            
+            <div class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.text)"
+                   (click)="container['showTextHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showTextHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showTextHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.text"></ckeditor>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <div class="badgeblack"><a>See More</a></div>
+      </div>
+  
+      <div class="chart-container">
+        <ngx-charts-pie-chart 
+          [view]="view" 
+          [scheme]="colorScheme"
+          [results]="pieChartData" 
+          [gradient]="false" 
+          [legend]="false" 
+          [doughnut]="isDoughnut">
+          <ng-template #tooltipTemplate let-model="model">
+            <div class="tooltip-content">
+              <span>{{model.name}}</span>
+            </div>
+          </ng-template>
+        </ngx-charts-pie-chart>
+      </div>
+    </div>
+  
+    <div *ngSwitchCase="'Line Chart'" class="line-chart-widget card cardhero">
+      <div class="chart-header">
+        <div class="chart-title">
+          <div *ngIf="!container['isEdit']; else editLineTitle">
+            <div [innerHTML]="sanitizeHtml(container.chartHeading)"></div>
+            <div *ngIf="!isSalesSelected" [innerHTML]="sanitizeHtml(container.text)"></div>
+            <div *ngIf="isSalesSelected" [innerHTML]="sanitizeHtml(container.salesHeading)"></div>
+          </div>
+          
+          <ng-template #editLineTitle>
+            <div class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.chartHeading)"
+                   (click)="container['showChartHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showChartHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showChartHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.chartHeading"></ckeditor>
+              </div>
+            </div>
+            
+            <div *ngIf="!isSalesSelected" class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.text)"
+                   (click)="container['showTextHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showTextHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showTextHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.text"></ckeditor>
+              </div>
+            </div>
+            
+            <div *ngIf="isSalesSelected" class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.salesHeading)"
+                   (click)="container['showSalesHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showSalesHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showSalesHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.salesHeading"></ckeditor>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        
+        <div class="chart-controls">
+          <div class="badgeblack"><a>See More</a></div>
+          <div class="cstRadio customSwitch">
+            <input class="checkbox" [checked]="isSalesSelected" (change)="toggleSalesGraph($event.target.checked)"
+              type="checkbox" role="switch" id="NotifyUploadoc">
+            <div class="knobs"></div>
+            <div class="cstRadioLayer"></div>
+          </div>
+        </div>
+      </div>
+  
+      <canvas id="homelinechart" class="chart-canvas" baseChart 
+        [data]="lineChartData" 
+        [type]="lineChartType"
+        [options]="lineChartOptions">
+      </canvas>
+    </div>
+  
+    <div *ngSwitchCase="'Bar Chart'" class="bar-chart-widget card cardblue">
+      <div class="chart-header">
+        <div class="chart-title">
+          <div *ngIf="!container['isEdit']; else editBarTitle">
+            <div [innerHTML]="sanitizeHtml(container.chartHeading)"></div>
+            <div [innerHTML]="sanitizeHtml(container.text)"></div>
+          </div>
+          
+          <ng-template #editBarTitle>
+            <div class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.chartHeading)"
+                   (click)="container['showChartHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showChartHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showChartHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.chartHeading"></ckeditor>
+              </div>
+            </div>
+            
+            <div class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.text)"
+                   (click)="container['showTextHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showTextHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showTextHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.text"></ckeditor>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <div class="badgeblack white-text"><a class="white-text">See More</a></div>
+      </div>
+  
+      <div class="bar-chart-content">
+        <div class="sales-target">
+          <div class="d-flex justify-between">
+            <div class="d-flex flex-row items-center">
+              <div class="ms-2 c-details">
+                <span>${{formatNumberWithCommas(totalSales)}}</span>
+              </div>
+            </div>
+            <div class="d-flex flex-row items-center">
+              <div class="ms-2 c-details">
+                <span>${{formatNumberWithCommas(targetValue)}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="progress mt-3">
+            <div class="progress-bar" role="progressbar" 
+              [ngStyle]="{ 'width': totalSales > 0 ? totalSales * 100 / 5000000 + '%' : 'unset' }">
+            </div>
+          </div>
+        </div>
+        <div class="sales-total">
+          <h3>${{formatNumberWithCommas(totalSales)}}</h3>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngSwitchCase="'Messages'" class="messages-widget card cardhero">
+      <div class="messages-header">
+        <div class="messages-title">
+          <div *ngIf="!container['isEdit']; else editMessagesTitle" [innerHTML]="sanitizeHtml(container.chartHeading)"></div>
+          
+          <ng-template #editMessagesTitle>
+            <div class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.chartHeading)"
+                   (click)="container['showChartHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showChartHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showChartHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.chartHeading"></ckeditor>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+      
+      <hr class="messages-divider">
+      
+      <div class="messages-content">
+        <table class="messages-table">
+          <tbody>
+            <tr>
+              <td class="unread-messages">
+                <span class="bluetext">Unread Messages ({{ notifications.customRecordCount }})</span>
+              </td>
+              <td></td>
+              <td class="status-header">
+                <div class="textgrey"><span>Status</span></div>
+              </td>
+            </tr>
+            <tr *ngFor="let notification of notifications.results">
+              <td class="message-details">
+                <h6 class="bluetext">{{ notification.title }}</h6>
+                <p class="message-text" [innerHTML]="notification.message"></p>
+                <p class="message-date">Received on: {{ notification.createdDateTime }}</p>
+                <p *ngIf="notification.scheduledDateTime" class="message-date">Scheduled on: {{ notification.scheduledDateTime }}</p>
+              </td>
+              <td></td>
+              <td class="message-status">
+                <mat-icon (click)="handleReadClick(notification)"
+                  [ngClass]="{'Unread': !notification.isRead || notification.ishighlithed, 'read': notification.isRead}"
+                  [svgIcon]="notification.isAlert && !notification.isRead ? 'heroicons_outline:exclamation-circle' : (notification.isRead ? 'heroicons_outline:check' : 'heroicons_outline:mail')">
+                </mat-icon>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="messages-footer">
+          <a class="messages-view-all">View All</a>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngSwitchCase="'TrainingMonth'" class="training-month-widget card cardhero">
+      <div class="training-header">
+        <div class="training-title">
+          <div *ngIf="!container['isEdit']; else editTrainingTitle" [innerHTML]="sanitizeHtml(container.chartHeading)"></div>
+          
+          <ng-template #editTrainingTitle>
+            <div class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.chartHeading)"
+                   (click)="container['showChartHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showChartHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showChartHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.chartHeading"></ckeditor>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <div class="badgeblack"><a>See More</a></div>
+      </div>
+      
+      <div class="training-content">
+        <mat-form-field class="video-link-input">
+          <mat-label>Video Link</mat-label>
+          <input type="text" matInput [(ngModel)]="container.text" placeholder="Enter Video Link">
+        </mat-form-field>
+        <img src="assets/images/monthlyImageTraining.png" class="training-image" alt="Monthly Training"/>
+      </div>
+    </div>
+  
+    <div *ngSwitchCase="'Redemptions'" class="transactions-widget card cardhero">
+      <div class="transactions-header">
+        <div class="transactions-title">
+          <div *ngIf="!container['isEdit']; else editTransactionsTitle" [innerHTML]="sanitizeHtml(container.chartHeading)"></div>
+          
+          <ng-template #editTransactionsTitle>
+            <div class="editable-field shadow">
+              <div [innerHTML]="sanitizeHtml(container.chartHeading)"
+                   (click)="container['showChartHeading'] = true"
+                   class="editable-content">
+              </div>
+              
+              <div *ngIf="container['showChartHeading']" class="editor-dialog">
+                <mat-icon (click)="container['showChartHeading'] = false" class="close-icon">close</mat-icon>
+                <ckeditor [config]="ckeConfig" [(ngModel)]="container.chartHeading"></ckeditor>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <div class="badgeblack"><a>See More</a></div>
+      </div>
+      
+      <div class="transactions-summary">
+        <span>
+          YTD List Price:
+          <span class="bluetext1 me-4">{{ formatNumberWithCommas(ytdSales) }}</span>
+          Current Point Balance:
+          <span class="bluetext1">{{ formatNumberWithCommas(remainingPoints) }}</span>
+        </span>
+      </div>
+      
+      <hr class="transactions-divider">
+      
+      <div class="transactions-content">
+        <div *ngIf="transactionData.length === 0" class="no-transactions">
+          <p>No data found</p>
+        </div>
+        
+        <div *ngIf="transactionData.length > 0" class="transactions-table-container">
+          <table class="transactions-table">
+            <thead>
+              <tr>
+                <th class="text-left" scope="col">Invoice#</th>
+                <th class="text-left" scope="col">Date Processed</th>
+                <th class="text-left" scope="col">Date of Sale</th>
+                <th class="text-left" scope="col">Type</th>
+                <th class="text-left" scope="col">Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let transaction of transactionData">
+                <td>{{transaction.invoiceNumber}}</td>
+                <td>{{transaction.dateProcessed}}</td>
+                <td>{{transaction.dateOfSale}}</td>
+                <td>
+                  <span [ngClass]="{
+                      'transaction-redemption': transaction.transactionType === 'Redemption',
+                      'transaction-other': transaction.transactionType !== 'Redemption'
+                    }">
+                    {{transaction.transactionType}}
+                  </span>
+                </td>
+                <td>{{transaction.totalPoints}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngSwitchCase="'Credit'" class="transactions-widget card cardhero">
+    </div>
+  
+    <div *ngSwitchCase="'All'" class="transactions-widget card cardhero">
+    </div>
+  
+
+  </div>

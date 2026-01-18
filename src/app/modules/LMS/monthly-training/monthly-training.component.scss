@@ -1,0 +1,20 @@
+.mat-accordion .mat-expansion-panel {
+    margin-bottom: 24px;
+    border-radius: 0 !important;
+    transition: none;
+    --tw-shadow: none !important;
+    --tw-shadow-colored: none !important;
+    box-shadow: none !important;
+}
+.mat-expansion-panel-header {
+    height: 56px !important;
+    padding: 0.6rem !important;
+    background: rgba(244, 248, 251, 1) !important;
+    color: #000;
+    font-size: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 0;
+    transition: height 225ms cubic-bezier(0.4, 0, 0.2, 1);
+}

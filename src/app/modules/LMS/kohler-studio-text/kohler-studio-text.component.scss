@@ -1,0 +1,15 @@
+.cursor-pointer {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  ::ng-deep .ck .ck-sticky-panel__content {
+    border: none !important;
+  }
+  ::ng-deep .ck-content ol {
+    list-style-type: decimal;
+    margin-left: 10px;
+  }
+  .font-black {
+    font-weight: 200 !important;
+  }

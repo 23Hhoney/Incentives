@@ -1,0 +1,33 @@
+::ng-deep .ck.ck-editor__editable_inline {
+    border: none !important;
+}
+::ng-deep .ck.ck-editor__editable_inline {
+    height: 100% !important;
+}
+::ng-deep .ck.ck-editor {
+    position: relative;
+    border-radius: 6px;
+    border: none !important;
+}
+::ng-deep .ck.ck-editor__main>.ck-editor__editable {
+    background: transparent !important;
+    border-radius: 0;
+}
+::ng-deep .ck-content ol {
+    list-style-type: decimal;
+    margin-left: 10px;
+}
+:ng-deep strong {
+    font-weight: bolder;
+    color: black;
+    font-family: Arial, sans-serif;
+}
+::ng-deep .ck-content ul {
+    list-style-type: disc;
+    padding-left: 10px;
+}
+::ng-deep .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+    border: solid var(--ck-color-base-border);
+    border-width: 1px 1px 0;
+    border: none !important;
+}

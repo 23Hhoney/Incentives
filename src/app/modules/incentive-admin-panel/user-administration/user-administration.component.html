@@ -1,0 +1,1267 @@
+<div class="w-full mt-10 containheight px-4">
+
+  <div class="flex justify-between items-center mb-4">
+    <form [formGroup]="searchForm">
+      <div class="user-administration-header">
+        <div class="">
+          <!-- Search Bar -->
+          <div style="padding-top: 2px;">
+            <mat-icon matPrefix class="absolute pl-2 pt-1" [svgIcon]="'heroicons_outline:search'"></mat-icon>
+            <input 
+              style="width: inherit;" 
+              matInput 
+              formControlName="search" 
+              (keyup)="ApplySearch($event.target.value)" 
+              placeholder="Search" 
+              class="search-stl-cus pl-8">
+          </div>
+        </div>
+  
+        <!-- Header Actions -->
+        <div class="">
+          <div class="header-items">
+            <div class="pr-3">
+              <button
+                class="flex filter-btn-cus"
+                [popover]="filter"
+                #filterPopOver="bs-popover"
+                (click)="showFilter(filterPopOver, filter)"
+                placement="auto"
+                containerClass="filter-container-popover"
+                placement="bottom"
+              >
+
+                <svg *ngIf="!filterApplied" width="100%" height="100%" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
+                  <path d="M13.4125 1.09564C13.3355 0.917836 13.208 0.766576 13.0458 0.660675C12.8835 0.554774 12.6937 0.498905 12.5 0.500016L1.49998 0.500016C1.30644 0.500398 1.11717 0.556935 0.955124 0.66277C0.793081 0.768606 0.665233 0.91919 0.587088 1.09626C0.508943 1.27332 0.483861 1.46926 0.514883 1.6603C0.545906 1.85134 0.6317 2.02928 0.761858 2.17252L0.766858 2.17814L4.99998 6.69814L4.99998 11.5C4.99994 11.681 5.04902 11.8586 5.14198 12.0139C5.23494 12.1692 5.36831 12.2963 5.52785 12.3818C5.6874 12.4672 5.86714 12.5078 6.04792 12.4991C6.22869 12.4904 6.40373 12.4329 6.55436 12.3325L8.55436 10.9988C8.69146 10.9074 8.80388 10.7837 8.88162 10.6384C8.95936 10.4932 9.00002 10.331 8.99998 10.1663L8.99998 6.69814L13.2337 2.17814L13.2387 2.17252C13.3703 2.02993 13.4569 1.85176 13.4878 1.66025C13.5187 1.46873 13.4925 1.27236 13.4125 1.09564ZM8.27123 6.01752C8.09754 6.20163 8.00054 6.44502 7.99998 6.69814L7.99998 10.1663L5.99998 11.5L5.99998 6.69814C6.00057 6.44411 5.90397 6.19949 5.72998 6.01439L1.49998 1.50002L12.5 1.50002L8.27123 6.01752Z" fill="#565D6D"></path>
+                </svg>
+                <svg *ngIf="filterApplied" fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="25px" viewBox="0 0 971.986 971.986" xml:space="preserve">
+                  <g>
+                    <path d="M370.216,459.3c10.2,11.1,15.8,25.6,15.8,40.6v442c0,26.601,32.1,40.101,51.1,21.4l123.3-141.3
+                      c16.5-19.8,25.6-29.601,25.6-49.2V500c0-15,5.7-29.5,15.8-40.601L955.615,75.5c26.5-28.8,6.101-75.5-33.1-75.5h-873
+                      c-39.2,0-59.7,46.6-33.1,75.5L370.216,459.3z"/>
+                  </g>
+                </svg>
+            
+                <span style="padding-top: 2px;">Filter</span>
+              </button>
+            </div>
+            
+            
+            <div class="">
+              <button [disabled]="selectedUserIds.length === 0"
+                      class="flex bulk-update-btn-new" 
+                      (click)="OpenDialogForBulkNotification(dialogForBulkMessage)"
+                      [ngClass]="{'bulk-update-btn-enabled': selectedUserIds.length > 0}">
+                <mat-icon [svgIcon]="'user-sync'" style="padding: 3px; color: #fff;"></mat-icon>
+                <span style="color: white !important; padding-top: 2px;">Bulk Update</span>
+              </button>
+            </div>
+  
+            <div *ngIf="selectedIndex==0" class="">
+              <button [disabled]="selectedUserIds.length === 0"
+                      (click)="DownloadCsv()"
+                      class="flex add-usr-stls"
+                      [ngClass]="{'add-usr-stls-enabled': selectedUserIds.length > 0}">
+                <mat-icon [svgIcon]="'Moveup-cus'" style="padding: 3px; color: #fff;"></mat-icon>
+                <span style="color: white !important; padding-top: 2px;">Export Selected Users</span>
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Additional Buttons -->
+        <div class="pl-3">
+          <div class="header-items">
+            <div>
+              <button *ngIf="selectedIndex==0" 
+                      (click)="openUserAdd(userAddEdit); closeFilter(filterPopOver)" 
+                      class="flex add-usr-stl">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'" style="padding: 3px; color: #fff;"></mat-icon>
+                <span style="color: white; padding-top: 2px;">Add User</span>
+              </button>
+              <button *ngIf="selectedIndex==1" 
+                      (click)="openAdminAdd(adminAddEdit); closeFilter(filterPopOver)" 
+                      class="flex add-usr-stl">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'" style="padding: 3px; color: #fff;"></mat-icon>
+                <span style="color: white; padding-top: 2px;">Add User</span>
+              </button>
+            </div>
+  
+            <div>
+              <button *ngIf="selectedIndex==0" 
+                      (click)="openUserDynamicField(dynamicAttributes); closeFilter(filterPopOver)" 
+                      class="flex manage-usr-setting">
+                <mat-icon [svgIcon]="'Settings-btn-cus'" style="padding: 3px; color: #fff;"></mat-icon>
+                <span style="color: white; padding-top: 2px;">Manage User Attributes</span>
+              </button>
+  
+              <button *ngIf="selectedIndex==1 && role === 'Super Admin'" 
+                      class="flex manage-usr-setting" 
+                      (click)="openRolePermission(rolePermission)">
+                <mat-icon [svgIcon]="'Settings-btn-cus'" style="padding: 3px; color: #fff;"></mat-icon>
+                <span style="color: white; padding-top: 2px;">Manage Admin Profiles</span>
+              </button>
+             
+            </div>
+  
+            <div>
+               <button *ngIf="selectedIndex==0"  class="flex manage-bulk-upload"
+              (click)="openDialogforBulkUploadTaxinfo(userTaxInformation)">
+              <mat-icon [svgIcon]="'Moveup-cus'" style="padding: 3px; color: #fff;"></mat-icon>
+              <span style="color: white; padding-top: 2px;">Bulk Upload 1099 Forms</span>
+            </button> 
+            <div style="padding: 5px;">
+              <span class="txt-usr-count"><b>{{selectedIndex === 0 ? totalRecords : totalRecords}}</b> users</span>
+            </div>
+            </div>
+           
+          </div>
+        </div>
+      </div>
+    </form>
+   
+    
+  </div>
+  <div *ngIf="appliedFilters?.length > 0 && isFilterSubmitted" class="filter-tags mt-2">
+    <div class="font-normal mb-2" style="align-items: center; display: flex;">
+      Results:
+    </div>
+  
+    <div class="filter-tag-container flex items-center flex-wrap">
+      <div 
+        *ngFor="let filter of appliedFilters" 
+        class="flex items-center m-1 py-0.5 px-3 rounded-full text-md font-medium text-gray-500 cus-background-tags h-9">
+        <mat-icon 
+          style="color: white; cursor: pointer;" 
+          class="mr-2 text-white" 
+          [svgIcon]="'e-remove-white'" 
+          (click)="removeFilter(filter)">
+        </mat-icon>
+        <div style="color: #FFFFFF;">
+          {{ filter.label }}: {{ filter.value }}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="w-full" style="overflow-x: auto;" *ngIf="selectedIndex==0">
+    <app-data-grid
+      [gridSettings]="gridColumnsTab1"
+      [enableRowClick]="true"
+      [dataSource]="dataSourceTab1"
+      [loading]="loading"
+      [pages]="pages"
+      (emitRecordCount)="changePageCount($event)"
+      [totalRecordCount]="apiRequest.itemCount"
+      [pageIndex]="currentPage"
+      (fetchPageData)="onPageChange($event)"
+      (rowClick)="handleRowClick($event)"
+      (sortChangeClick)="applySort($event)"
+      (buttonClick)="handleButtonClick($event, deletepopup, dialogTemplate, userAddEdit,adminAddEdit)"
+      (checkboxClick)="handleCheckBoxClick($event)"
+      >
+    </app-data-grid>
+  </div>
+  <div class="w-full" style="overflow-x: auto;" *ngIf="selectedIndex==1">
+    <app-data-grid
+      [gridSettings]="gridColumnsTab2"
+      [enableRowClick]="true"
+      [dataSource]="dataSourceTab2"
+      [totalRecordCount]="apiRequest.itemCount"
+      [loading]="loading"
+      (emitRecordCount)="changePageCount($event)"
+      [pages]="pages"
+      [pageIndex]="currentPage"
+      (fetchPageData)="onPageChange($event)"
+      (rowClick)="handleRowClick($event)"
+      (buttonClick)="handleButtonClick($event, deletepopup, dialogTemplate, userAddEdit,adminAddEdit)"
+      (sortChangeClick)="applySort($event)"
+      (checkboxClick)="handleCheckBoxClick($event)"
+      >
+    </app-data-grid>
+  </div>
+  
+</div>
+
+<ng-template #userAddEdit>
+  <div mat-dialog-title class="dialog-header modal-header-cus m-0  px-6">
+    <div class="modal-header-cus py-2"> {{isEdit? 'Edit ' : 'Add '}} {{title}} {{isEdit? ' - '+UserForm.get('name').value + '_' + UserForm.get('userId').value : ''}}</div>
+    <button mat-icon-button (click)="modalReference.close()" class="close-button">
+      <mat-icon style="color: #fff;">close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-actions align="left" class="m-0 px-4 py-2">
+    <div class="w-full ">
+      <div class="inline-flex w-full" style="flex-wrap: wrap; gap: 10px;">
+        
+        <div class="" *ngIf="!isEdit">
+          <button [disabled]="!enableButton" [ngClass]="enableButton ? 'save-btn-cus' : 'bulk-update-btn-cus'" (click)="SaveorUpdateusers()">
+            <span class=""> Save</span>
+          </button>
+        </div>
+        <div class="" *ngIf="isEdit">
+          <button [disabled]="!enableButton" [ngClass]="enableButton ? 'save-btn-cus' : 'bulk-update-btn-cus'" (click)="SaveorUpdateusers()">
+            <span class=""> Save Changes</span>
+          </button>
+        </div>
+        <div class="">
+          <button class=" close-btn-cus" (click)="modalReference.close()">
+            <span class="" > Close</span>
+          </button>
+        </div>
+        <div class="" *ngIf="isEdit">
+          <button class=" send-reset-link-btn" (click)="handleResetLinkClick()">
+            <span class=""> Send Reset Password Link</span>
+          </button>
+        </div>
+        <div class="" *ngIf="isEdit">
+          <button class=" send-reset-link-btn" (click)="openTemporaryPasswordDialog(temporaryPasswordDialog)">
+            <span class=""> Set a Temporary Password</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-actions>
+
+  <mat-dialog-content class="mat-typography p-0 m-0">
+    
+      <div class="px-4 py-2">
+        <div class="w-full" style="overflow-x: auto;" *ngIf="isEdit">
+          <div class="usr-tbl-cus">
+            <div class="inline-flex w-full usr-tbl-header">
+              <!-- <ng-container *ngFor="let uf of userInfo"> --> <!-- [ngClass]="{'usr-tbl-header-f':!uf.flag, 'usr-tbl-header-f-r':uf.flag}" -->
+                <div class="usr-tbl-f-w">
+                  <div class="usr-tbl-header-f">Points Balance</div>
+                  <div class="usr-tbl-header-f-val" >{{data?.rewordEarned}}</div>
+                </div>
+
+                <div class="usr-tbl-f-w">
+                  <div class="usr-tbl-header-f">YTD Points Earned</div>
+                  <div class="usr-tbl-header-f-val" >{{userDataDetail?.ytdPointsEarned}}</div>
+                </div>
+
+                <div class="usr-tbl-f-w">
+                  <div class="usr-tbl-header-f">YTD Points Redeemed</div>
+                  <div class="usr-tbl-header-f-val" >{{userDataDetail?.ytdPointsRedeemed}}</div>
+                </div>
+
+                <div class="usr-tbl-f-w">
+                  <div class="usr-tbl-header-f">YTD Sales Total</div>
+                  <div class="usr-tbl-header-f-val">{{userDataDetail?.ytdSalesTotal || '0'}}</div>
+                </div>
+
+                <div class="usr-tbl-f-w">
+                  <div class="usr-tbl-header-f">Logs In >1x/mo on average</div>
+                  <div class="usr-tbl-header-f-val" >{{userDataDetail?.logsInAverage}}</div>
+                </div>
+
+                <!-- <div class="usr-tbl-f-w">
+                  <div class=" usr-tbl-header-f-r">Tier Level [Phase II]</div>
+                  <div class="usr-tbl-header-f-val" >&nbsp;</div>
+                </div> -->
+
+                <div class="usr-tbl-f-w">
+                  <div class="usr-tbl-header-f">Date Account Created</div>
+                  <div class="usr-tbl-header-f-val" >{{userDataDetail?.dateAccountCreated | date: 'MM/dd/yyyy'}}</div>
+                </div>
+
+                <div class="usr-tbl-f-w">
+                  <div class="usr-tbl-header-f">Last Login Date</div>
+                  <div class="usr-tbl-header-f-val">
+                    {{ (userDataDetail?.lastLoginDate | date: 'MM/dd/yyyy') === '01/01/1970' ? '--' : (userDataDetail?.lastLoginDate | date: 'MM/dd/yyyy') }}
+                  </div>
+                </div>
+
+                <!-- <div class="usr-tbl-f-w">
+                  <div class="usr-tbl-header-f-r">In Nightly CRM Feed</div>
+                  <div class="usr-tbl-header-f-val" >{{userDataDetail?.inNightlyCRMFeed}}</div>
+                </div> -->
+
+                <div class="usr-tbl-f-w">
+                  <div class="usr-tbl-header-f">Required Courses Completed</div>
+                  <div class="usr-tbl-header-f-val" >{{userDataDetail?.requiredCoursesCompleted}}</div>
+                </div>
+
+                <div class="usr-tbl-f-w">
+                  <div class="usr-tbl-header-f">Required Courses Available</div>
+                  <div class="usr-tbl-header-f-val" >{{userDataDetail?.requiredCoursesAvailable}}</div>
+                </div>
+                
+              <!-- </ng-container> -->
+              
+            </div>
+          </div>
+        </div>
+        <form [formGroup]="UserForm">
+        <div class="w-full pt-6">
+          <div class="flex add-user-field-container">
+            <div class="equal-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>User ID *</mat-label>
+                  <input matInput placeholder="User ID" (keyup)="onFieldChange()" formControlName="bpNumber" appSpecialCharacterLimit>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="equal-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Email *</mat-label>
+                  <input matInput placeholder="Email" (keyup)="onFieldChange()" formControlName="email">
+                </mat-form-field>
+              </div>
+            </div>
+
+          </div>
+          <div class="flex add-user-field-container ">
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>First Name *</mat-label>
+                  <input matInput placeholder="First Name" (keyup)="onFieldChange()" formControlName="firstName">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Last Name *</mat-label>
+                  <input matInput placeholder="Last Name" (keyup)="onFieldChange()" formControlName="lastName">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Organization *</mat-label>
+                  <input matInput placeholder="Organization" (keyup)="onFieldChange()" formControlName="organization">
+                </mat-form-field>
+              </div>
+            </div>
+
+          </div>
+          <div class="flex add-user-field-container ">
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Role / Job Title *</mat-label>
+                  <mat-select placeholder="Role / Job Title" formControlName="roles">
+                    <mat-option *ngFor="let item of RoleList" (click)="onFieldChange()" [value]="item.value">{{item.value}}</mat-option> 
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Store ID / Number / Location </mat-label>
+                  <input matInput placeholder="Store ID / Number / Location" (keyup)="onFieldChange()" formControlName="location">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Phone Number</mat-label>
+                  <input matInput placeholder="(xxx) xxx-xxxx" (keyup)="onFieldChange()" formControlName="phone" appPhoneNumberFormatter>
+                </mat-form-field>
+              </div>
+            </div>
+
+          </div>
+          <div class="flex add-user-field-container ">
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Address 1</mat-label>
+                  <input matInput placeholder="Address 1" (keyup)="onFieldChange()" formControlName="address1">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Address 2</mat-label>
+                  <input matInput placeholder="Address 2" (keyup)="onFieldChange()" formControlName="address2">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>City</mat-label>
+                  <input matInput placeholder="city" (keyup)="onFieldChange()" formControlName="city">
+                </mat-form-field>
+              </div>
+            </div>
+
+          </div>
+          <div class="flex add-user-field-container ">
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>State / Province</mat-label>
+                  <mat-select placeholder="State / Province" formControlName="stateId">
+                    <mat-option *ngFor="let item of stateList" (click)="onFieldChange()" [value]="item.id">{{item.value}}</mat-option> 
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Zip Code</mat-label>
+                  <input matInput placeholder="Zip Code" (keyup)="onFieldChange()" formControlName="zipCode">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Account Status *</mat-label>
+                  <mat-select placeholder="Status" formControlName="status"  (selectionChange)="onFieldChange()">
+                    <mat-option  value="Active">Active</mat-option>
+                    <mat-option  value="Inactive">Inactive</mat-option>
+                    <mat-option  value="Suspended">Suspended</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex flex-row gap-4">
+            <div class="flex-1">
+              <div style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Target</mat-label>
+                  <input matInput placeholder="Target" (keyup)="onFieldChange()" formControlName="target">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="flex-1" style="align-self: center;">
+              <mat-checkbox class="mb-2" [checked]="false" formControlName="isTestUser" (click)="onFieldChange()">
+                <mat-label style="font-weight: 500;"> Test User </mat-label> 
+              </mat-checkbox>
+            </div>
+            <div class="flex-1">
+              <!-- Placeholder for the third column, you can add any content here -->
+            </div>
+          </div>
+          <div class="w-full" style="
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 26px;
+          text-align: left;
+          ">
+            User Tax Information
+          </div>
+          <div class="my-2"></div>
+          <div class="flex flex-row gap-4">
+            <mat-checkbox class="mb-2" [checked]="false" formControlName="isUserTaxInformation" (click)="onFieldChange()">
+              <mat-label style="font-weight: 500;"> User Tax Information On File </mat-label> 
+            </mat-checkbox>
+            
+          </div>
+       
+          <div class="flex add-user-field-container pt-3">
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>W9 Year</mat-label>
+                  <mat-select placeholder="w9 Year" formControlName="w9Year">
+                    <mat-option (click)="onFieldChange()" value="2022">2022</mat-option>
+                    <mat-option (click)="onFieldChange()" value="2023">2023</mat-option>
+                    <mat-option (click)="onFieldChange()" value="2024">2024</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>W9 Name</mat-label>
+                  <input matInput placeholder="w9 Name" (keyup)="onFieldChange()" formControlName="w9Name">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>W9 Address</mat-label>
+                  <input matInput placeholder="w9 Address" (keyup)="onFieldChange()" formControlName="w9Address">
+                </mat-form-field>
+              </div>
+            </div>
+
+            
+
+          </div>
+          <div class="flex add-user-field-container ">
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>W9 City</mat-label>
+                  <input matInput placeholder="w9 City" (keyup)="onFieldChange()" formControlName="w9City">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>W9 State</mat-label>
+                  <mat-select placeholder="w9 State" formControlName="w9StateId">
+                    <mat-option (click)="onFieldChange()" *ngFor="let item of stateList" [value]="item.id">{{item.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="three-section-width">
+              <div class="" style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>W9 Zip Code</mat-label>
+                  <input matInput placeholder="W9 Zip Code" (keyup)="onFieldChange()" formControlName="w9ZipCode">
+                </mat-form-field>
+              </div>
+            </div>
+
+          </div>
+          <div *ngIf="isEdit">
+            <div class="w-full" style="
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 26px;
+            text-align: left;
+            margin-bottom: 10px;
+            ">
+              Manage User Tax Uploads
+            </div>
+            <form [formGroup]="manageUserTaxInformationForm" class="flex flex-row flex-wrap">
+              <div class="flex add-user-field-container">
+                <div class="three-section-width">
+                  <div style="padding-top: 2px;">
+                    <mat-form-field class="w-full">
+                      <mat-label>Year</mat-label>
+                      <mat-select formControlName="year" placeholder="Select Year" (selectionChange)="onYearChange()">
+                        <mat-option *ngFor="let year of yearsArray" [value]="year">{{ year }}</mat-option> 
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="three-section-width">
+                  <div style="padding-top: 2px;">
+                    <mat-form-field class="w-full">
+                      <mat-label>Document</mat-label>
+                      <mat-select formControlName="file" (selectionChange)="onTaxFileChange()">
+                        <mat-option *ngIf="userTaxFiles.length === 0" disabled>No Document</mat-option>
+                        <mat-option *ngFor="let file of userTaxFiles" [value]="file.id">{{ file.value }}</mat-option> 
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="three-section-width">
+                  <div style="padding-top: 2px;">
+                    <mat-form-field class="w-full">
+                      <mat-label>Verification Status</mat-label>
+                      <mat-select formControlName="status" placeholder="Select Status" (selectionChange)="onTaxFileStatusChange()">
+                        <mat-option *ngFor="let status of userTaxStatuses" [value]="status">{{ status }}</mat-option> 
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="w-full" style="padding-top: 10px;">
+                <button class="verify-button" (click)="openPopUpforVerifyDoc(selectedUserId, TaxDocumentConifrmation)">
+                  Verify Document Without File Upload
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+       
+      </form>
+      
+          <div class="w-full" style="
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 26px;
+          text-align: left;
+          " *ngIf="userCustomFieldData && userCustomFieldData.length>0">
+            Custom Fields :
+          </div>
+          <div class="flex relative w-full flex-0 pt-3" *ngIf="userCustomFieldData && userCustomFieldData.length>0">
+            <div style="width: 100%;" >
+              <div class="flex add-user-field-container">
+                <div class="three-section-width" *ngFor="let fd of userCustomFieldData['controls']; let i=index;">
+                  <form [formGroup]="fd">
+                    <div class="w-full" style="padding-top: 2px;" *ngIf="fd.get('fieldType').value === 'Date'">
+                      <!-- {{fd.get('fieldName').value}} -->
+                      <app-date-pickers
+                        (click)="onFieldChange()"
+                          [formGroup]="fd"
+                          [label]="fd.get('fieldName').value"
+                          formElementName="fieldValue"
+                      ></app-date-pickers>
+                    </div>
+                    <div class="w-full" style="padding-top: 2px;" *ngIf="fd.get('fieldType').value === 'Textbox'">
+                      <mat-form-field class="w-full">
+                        <mat-label>{{fd.get('fieldName').value}}</mat-label>
+                        <input (keyup)="onFieldChange()" matInput formControlName="fieldValue" />
+                      </mat-form-field>
+                    </div>
+                    <div class="w-full" style="padding-top: 2px;" *ngIf="fd.get('fieldType').value === 'Number'">
+                      <mat-form-field class="w-full">
+                        <mat-label>{{fd.get('fieldName').value}}</mat-label>
+                        <input (keyup)="onFieldChange()" matInput formControlName="fieldValue" type="number" step="any"/>
+                      </mat-form-field>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+               
+          </div>
+        <div class="w-full text-right" style="justify-content: end; display: flex;">
+          <div class="text-right" style="gap: 10px; display: flex; width: fit-content; justify-content: end; flex-wrap: wrap;">
+            <span *ngIf="data.id" class="">
+              <button (click)="openDeletePopUpForDetail(data.id,DeletePopUpForDetail)" class="delete-usr-btn-cus">
+                <span class=""> Delete User</span>
+              </button>
+            </span>
+            <span class="" *ngIf="!isEdit">
+              <button [disabled]="!enableButton" [ngClass]="enableButton ? 'save-btn-cus' : 'bulk-update-btn-cus'" (click)="SaveorUpdateusers()">
+                <span class=""> Save</span>
+              </button>
+            </span>
+            <span class="" *ngIf="isEdit">
+              <button [disabled]="!enableButton" [ngClass]="enableButton ? 'save-btn-cus' : 'bulk-update-btn-cus'" (click)="SaveorUpdateusers()">
+                <span class=""> Save Changes</span>
+              </button>
+            </span>
+            <span class="">
+              <button class=" close-btn-cus" (click)="modalReference.close()">
+                <span class="" > Close</span>
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+    
+  </mat-dialog-content>
+  
+  
+</ng-template>
+
+
+<ng-template #dynamicAttributes>
+  <div mat-dialog-title class="dialog-header modal-header-cus m-0 px-6">
+    <div class="modal-header-cus py-2">Manage User Attributes</div>
+    <button mat-icon-button (click)="modalReferenceForDynamic.close()" class="close-button">
+      <mat-icon style="color: #fff;">close</mat-icon>
+    </button>
+  </div>
+  <form [formGroup]="DynamicForm">
+    <div fxLayout="column" class="p-18" style="padding: 1rem !important;">
+      <div formArrayName="allfieldsarray">
+        <div *ngFor="let field of filtersFormArray.controls; let i = index" [formGroupName]="i">
+          <div class="flex dynamic-form-container pb-2" fxLayout="row wrap" fxLayoutGap="16px" style="align-items: center;">
+            <mat-form-field class="half-width">
+              <mat-label>Select Field Type</mat-label>
+              <mat-select formControlName="fieldType" [disabled]="!editMode[i]" (selectionChange)="onFieldChange()">
+                <mat-option *ngFor="let item of dynamicdropdown" [value]="item.id">{{item.value}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            &nbsp;&nbsp;
+            <mat-form-field class="half-width">
+              <mat-label>Label</mat-label>
+              <input formControlName="Fieldlabel" matInput [disabled]="!editMode[i]" (keyup)="onFieldChange()">
+            </mat-form-field>
+            <div style="display: flex; align-items: center;">
+              <button mat-icon-button (click)="toggleEditMode(i)" matTooltip="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button *ngIf="field.value.isNew; else deleteConfirmation" mat-icon-button (click)="RemoveDataFromArray(i)" matTooltip="Remove Field">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <ng-template #deleteConfirmation>
+                <button mat-icon-button (click)="OpenDeletePopUpforDynamicField(i, deletepopupforDynamic)" matTooltip="Delete Field">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </ng-template>
+              <mat-slide-toggle [checked]="field.value.isDeleted" (change)="toggleFieldVisibility(i, $event.checked)">Show/Hide {{field.isDeleted}}</mat-slide-toggle>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pr-3">
+        <button (click)="addNewFieldGroup()" class="flex add-usr-stl" style="width: 110px !important;" matTooltip="Add New Field">
+          <mat-icon [svgIcon]="'heroicons_outline:plus'" style="padding: 3px; color: #fff;"></mat-icon>
+          <span style="color: white; padding-top: 2px;">Add</span>
+        </button>
+      </div>
+    </div>
+  </form>
+  <mat-dialog-actions align="left" class="m-0 px-4 py-2">
+    <div class="w-full">
+      <div class="inline-flex w-full">
+        <div class="pr-3">
+          <button [disabled]="!enableButton" [ngClass]="enableButton ? 'save-btn-cus' : 'bulk-update-btn-cus'" (click)="SaveCustomFields()" matTooltip="Save Changes">
+            <span>Save Changes</span>
+          </button>
+        </div>
+        <div class="pr-3">
+          <button class="close-btn-cus" (click)="modalReferenceForDynamic.close()" matTooltip="Close">
+            <span>Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #dialogTemplate>
+  <form [formGroup]="dialogForm">
+    <div mat-dialog-title class="dialog-header">
+      <h3 mat-dialog-title>Send a Message</h3>
+      <button mat-icon-button (click)="modalReference.close()" class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <mat-dialog-content>
+      <mat-form-field class="full-width">
+        <mat-label>Name *</mat-label>
+        <input matInput formControlName="email" readonly [disabled]="dialogForm.get('email').disabled">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Subject *</mat-label>
+        <input matInput formControlName="subject" placeholder="Enter the subject">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Message *</mat-label>
+        <textarea id="desc-text-area" matInput rows="4" formControlName="message" placeholder="Enter your message"></textarea>
+        <!-- <mat-hint align="end">{{dialogForm.get('message')?.value?.length || 0}}/1000</mat-hint> -->
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="closeDialog()" class="cancel-button">Cancel</button>
+      <button mat-raised-button color="primary" (click)="SendMailandNotification()" *ngIf="!sendMessage" class="delete-button">Submit</button>
+      
+      <button mat-raised-button color="primary"  *ngIf="sendMessage" class="delete-button" disabled>Submit</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<ng-template #dialogForBulkMessage>
+  <form [formGroup]="dialogFormForBulkMessage">
+    <div mat-dialog-title class="dialog-header">
+      <h3 mat-dialog-title>Send a Message</h3>
+      <button mat-icon-button (click)="modalForBulk.close()" class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <mat-dialog-content>
+      <mat-form-field class="full-width">
+        <mat-label>Name *</mat-label>
+        <input matInput formControlName="email" readonly [disabled]="dialogFormForBulkMessage.get('email').disabled">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Subject *</mat-label>
+        <input matInput formControlName="subject" placeholder="Enter the subject">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Message *</mat-label>
+        <textarea id="desc-text-area" matInput rows="4" formControlName="message" placeholder="Enter your message"></textarea>
+        <!-- <mat-hint align="end">{{dialogFormForBulkMessage.get('message')?.value?.length || 0}}/1000</mat-hint> -->
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="closeBulkDialog()" class="cancel-button">Cancel</button>
+      <button mat-raised-button color="primary" (click)="SendBulkUpdate()"  *ngIf="!sendMessage" class="delete-button">Submit</button>
+      
+      <button mat-raised-button color="primary"  *ngIf="sendMessage" class="delete-button" disabled>Submit</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<ng-template #temporaryPasswordDialog>
+  <form [formGroup]="SetTemporaryPasswordForm" class="temporary-password-form">
+    <div mat-dialog-title class="dialog-header flex items-center justify-between">
+      <h3 class="m-0">Set a Temporary Password</h3>
+      <button mat-icon-button (click)="modalForTemporaryPassword.close()" class="close-button" type="button">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <mat-dialog-content class="dialog-content">
+      <mat-form-field class="full-width">
+        <mat-label>New Password *</mat-label>
+        <input matInput formControlName="newPassword" type="password">
+        <mat-error *ngIf="SetTemporaryPasswordForm.get('newPassword').hasError('passwordStrength')">
+          Password must include an uppercase letter, a lowercase letter, a number, and a special character
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Confirm Password *</mat-label>
+        <input matInput formControlName="confirmPassword" type="password">
+        <mat-error *ngIf="SetTemporaryPasswordForm.get('confirmPassword').hasError('required')">
+          Confirm Password is required
+        </mat-error>
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button 
+        class="save-btn" 
+        [ngClass]="{ 'enabled-save-btn': SetTemporaryPasswordForm.valid }" 
+        (click)="handleSetTemporaryPassword()">
+        <span>Save</span>
+      </button> &nbsp;
+      <button class="close-btn-cus" (click)="modalForTemporaryPassword.close()">
+        <span>Cancel</span>
+      </button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+
+<ng-template #deletepopup>
+  <div mat-dialog-title class="dialog-header">
+    <h3>Delete Confirmation</h3>
+    <button mat-icon-button (click)="modalReference.close()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure, you want to delete this record?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button (click)="modalReference.close()" class="cancel-button">Cancel</button>
+    <button mat-button (click)="deleteRecord(); modalReference.close()" class="delete-button">Delete</button>
+  </div>
+</ng-template>
+
+<ng-template #DeletePopUpForDetail>
+  <div mat-dialog-title class="dialog-header">
+    <h3>Delete Confirmation</h3>
+    <button mat-icon-button (click)="modalReferenceForDetail.close()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure, you want to delete this record?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button (click)="modalReferenceForDetail.close()" class="cancel-button">Cancel</button>
+    <button mat-button (click)="deleteRecordfromDetail(); modalReferenceForDetail.close()" class="delete-button">Delete</button>
+  </div>
+</ng-template>
+
+<ng-template #filter let-close="close" let-data>
+  <app-filter 
+    (updateFiltersAction)="applyFilter($event, filterPopOver)" 
+    [filterOptionsArry]="filterOptions"  
+    [selectedFilters]="appliedFilters" 
+    (closeAction)="closeFilter(filterPopOver)" 
+    (clearAction)="clearFilters()">
+  </app-filter>
+</ng-template>
+
+<ng-template #deletepopupforDynamic>
+  <div mat-dialog-title class="dialog-header">
+    <h3>Delete Confirmation</h3>
+    <button mat-icon-button (click)="modalReferences.close()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure, you want to delete this field?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button (click)="modalReferences.close()" class="cancel-button">Cancel</button>
+    <button mat-button (click)="deleteForDynamicfield(); modalReferences.close()" class="delete-button">Delete</button>
+  </div>
+</ng-template>
+
+<ng-template #filter let-close="close" let-data>
+  <app-filter 
+    [closeOnClickOutside]="true"
+    (updateFiltersAction)="applyFilter($event, filterPopOver)" 
+    [filterOptionsArry]="filterOptions"  
+    [selectedFilters]="appliedFilters" 
+    (closeAction)="closeFilter(filterPopOver);">
+  </app-filter>
+</ng-template>
+
+<ng-template #rolePermission>
+  <div mat-dialog-title class="dialog-header modal-header-cus m-0 px-6">
+    <div>Manage Roles Permission</div>
+    <button mat-icon-button (click)="manageAdminProfiles.close()" class="close-button">
+      <mat-icon style="color: #fff;">close</mat-icon>
+    </button>
+  </div>
+  <mat-dialog-content class="mat-typography p-0 m-0">
+    <div class="px-4 py-2">
+      <div style="display: flex; gap: 20px; justify-content: space-between; flex-direction: column;">
+        <div style="padding-top: 2px; width: 100%;">
+          <mat-form-field class="w-full">
+            <mat-label>Role *</mat-label>
+            <mat-select placeholder="Role" [value]="selectedRole" (selectionChange)="onRoleChange($event)">
+              <mat-option *ngFor="let item of RoleList" [value]="item">{{item.value}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div style="padding-top: 2px;">
+          <form [formGroup]="rolePermissionForm" *ngIf="selectedRole">
+            <div class="user-permissions" *ngIf="modules.length > 0">
+              <mat-label>Permissions</mat-label>
+              <div class="module-grid" style="grid-template-columns: repeat(3, 0.3fr) !important;">
+                <div *ngFor="let module of sortedModules" class="module-item">
+                  <mat-checkbox [formControlName]="module.moduleName">{{ module.moduleName }}</mat-checkbox>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="left" class="m-0 px-4 py-2">
+    <div class="w-full">
+      <div class="inline-flex w-full" style="flex-wrap: wrap; gap: 10px; justify-content: end;">
+        <div>
+          <button class="close-btn-cus" (click)="openConfirmationDialog(confirmDialogTemplate)">
+            <span> Save</span>
+          </button>
+        </div>
+        <div>
+          <button class="close-btn-cus" (click)="manageAdminProfiles.close()">
+            <span> Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-actions>
+</ng-template>
+  
+
+<ng-template #adminAddEdit>
+  <div mat-dialog-title class="dialog-header modal-header-cus m-0 px-6">
+    <div class="modal-header-cus py-2">
+      {{ isEditForAdmin ? 'Edit ' : 'Add ' }} {{ title }}
+      {{ isEditForAdmin ? ' - ' + AdminForm.get('name').value + '_' + AdminForm.get('userId').value : '' }}
+    </div>
+    <button mat-icon-button (click)="ModalForAdmin.close()" class="close-button">
+      <mat-icon style="color: #fff;">close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-actions align="left" class="m-0 px-4 py-2">
+    <div class="w-full">
+      <div class="inline-flex w-full" style="flex-wrap: wrap; gap: 10px;">
+        <div *ngIf="!isEditForAdmin">
+          <button [disabled]="!enableButton" [ngClass]="enableButton ? 'save-btn-cus' : 'bulk-update-btn-cus'"
+            (click)="SaveOrUpdateAdmin()">
+            <span> Save</span>
+          </button>
+        </div>
+        <div *ngIf="isEditForAdmin">
+          <button [disabled]="!enableButton" [ngClass]="enableButton ? 'save-btn-cus' : 'bulk-update-btn-cus'"
+            (click)="SaveOrUpdateAdmin()">
+            <span class=""> Save Changes</span>
+          </button>
+        </div>
+        <div>
+          <button class="close-btn-cus" (click)="ModalForAdmin.close()">
+            <span> Close</span>
+          </button>
+        </div>
+        <div *ngIf="isEditForAdmin">
+          <button class="send-reset-link-btn" (click)="handleResetLinkClickForAdmin()">
+            <span> Send Reset Password Link</span>
+          </button>
+        </div>
+        <div *ngIf="isEditForAdmin">
+          <button class="send-reset-link-btn" (click)="openTemporaryPasswordDialog(temporaryPasswordDialog)">
+            <span> Set a Temporary Password</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-actions>
+
+  <mat-dialog-content class="mat-typography p-0 m-0">
+    <div class="px-4 py-2">
+      <form [formGroup]="AdminForm">
+        <div class="w-full pt-6">
+          <div class="flex add-user-field-container">
+            <div class="two-section-width">
+              <div style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>User ID *</mat-label>
+                  <input matInput placeholder="User ID" formControlName="bpNumber" (keyup)="onFieldChange()"
+                    appSpecialCharacterLimit>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="two-section-width">
+              <div style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Email *</mat-label>
+                  <input matInput placeholder="Email" formControlName="email">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="flex add-user-field-container">
+            <div class="two-section-width">
+              <div style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>First Name *</mat-label>
+                  <input matInput placeholder="First Name" formControlName="firstName" (keyup)="onFieldChange()">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="two-section-width">
+              <div style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Last Name *</mat-label>
+                  <input matInput placeholder="Last Name" formControlName="lastName" (keyup)="onFieldChange()">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="flex add-user-field-container">
+            <div class="two-section-width">
+              <div style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Account Status *</mat-label>
+                  <mat-select placeholder="Status" formControlName="status" (selectionChange)="onFieldChange()">
+                    <mat-option value="Active">Active</mat-option>
+                    <mat-option value="Inactive">Inactive</mat-option>
+                    <mat-option value="Suspended">Suspended</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="two-section-width">
+              <div style="padding-top: 2px;">
+                <mat-form-field class="w-full">
+                  <mat-label>Role / Job Title *</mat-label>
+                  <mat-select placeholder="Role / Job Title" formControlName="roles" (click)="onFieldChange()"
+                    (selectionChange)="onRoleChangeForAdminEdit($event);onFieldChange()">
+                    <mat-option *ngFor="let item of RoleList" [value]="item.value">{{item.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-row gap-4">
+            <mat-checkbox class="mb-2" [checked]="false" formControlName="isTestUser" (click)="onFieldChange()">
+              <mat-label style="font-weight: 500;"> Test User </mat-label>
+            </mat-checkbox>
+            <mat-slide-toggle 
+            *ngIf="LMSadminPermission" 
+            class="" 
+            formControlName="isLmsAdmin" 
+            (change)="onFieldChange()" 
+            style="font-weight: normal;">
+            Show LMS
+          </mat-slide-toggle>
+          </div>
+        </div>
+        <div *ngIf="showUserPermissions" class="w-full"
+          style="font-size: 16px; font-weight: 700; line-height: 26px; text-align: left; text-decoration: underline;">
+          User Permissions
+        </div>
+        <div *ngIf="showUserPermissions" class="my-2"></div>
+      </form>
+      <form *ngIf="showUserPermissions" [formGroup]="form">
+        <div class="user-permissions" *ngIf="modules.length > 0">
+            <div class="module-grid">
+                <div *ngFor="let module of modules" class="module-item">
+                    <mat-checkbox 
+                        [formControlName]="module.moduleName"
+                        [disabled]="!module.isEnabled"
+                        (change)="onFieldChange()">
+                        {{ module.moduleName }}
+                    </mat-checkbox>
+                </div>
+            </div>
+        </div>
+    </form>
+      <div class="w-full text-right" style="justify-content: end; display: flex;">
+        <div class="text-right"
+          style="gap: 10px; display: flex; width: fit-content; justify-content: end; flex-wrap: wrap;">
+          <span *ngIf="data?.id">
+            <button (click)="openDeletePopUpForDetail(data.id, DeletePopUpForDetail)" class="delete-usr-btn-cus">
+              <span> Delete User</span>
+            </button>
+          </span>
+          <span *ngIf="!isEditForAdmin">
+            <button [disabled]="!enableButton" [ngClass]="enableButton ? 'save-btn-cus' : 'bulk-update-btn-cus'"
+              (click)="SaveOrUpdateAdmin()">
+              <span> Save</span>
+            </button>
+          </span>
+          <span *ngIf="isEditForAdmin">
+            <button [disabled]="!enableButton" [ngClass]="enableButton ? 'save-btn-cus' : 'bulk-update-btn-cus'"
+              (click)="SaveOrUpdateAdmin()">
+              <span class=""> Save Changes</span>
+            </button>
+          </span>
+          <span>
+            <button class="close-btn-cus" (click)="ModalForAdmin.close()">
+              <span> Close</span>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+</ng-template>
+
+
+<ng-template #TaxDocumentConifrmation>
+  <div mat-dialog-title class="dialog-header">
+    <h3>Documents Verification Confirmation</h3>
+    <button mat-icon-button (click)="modelRefForTaxConfirm.close()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure, you want to verify the document without selecting document?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button (click)="modelRefForTaxConfirm.close()" class="cancel-button">Cancel</button>
+    <button mat-button (click)="VerifyDocumentwithoutFile()" class="delete-button">Submit Request</button>
+  </div>
+</ng-template>
+
+<ng-template #userTaxInformation>
+  <div mat-dialog-title class="dialog-header flex items-center justify-between">
+    <h3 class="m-0">Bulk Upload 1099 Forms</h3>
+    <button mat-icon-button (click)="modelRefForBulkUploadTax.close()" class="close-button" type="button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
+  <mat-dialog-content class="dialog-content-wrapper">
+    <div class="flex flex-col overflow-auto p-2">
+      <!-- Progress Bar Section -->
+      <div class="my-progress-bar flex items-center gap-4 mb-2">
+        <mat-progress-bar mode="determinate" [value]="loadingPercent" (animationEnd)="progressInLoading()" color="#012449">
+        </mat-progress-bar>
+        <span>{{loadingPercent}}%</span>
+        <button
+          mat-icon-button
+          [matTooltip]="'Refresh Page'"
+          data-placement="bottom"
+          (click)="GetProgressTaxDocument1099()"
+        >
+          <mat-icon [class]="'btn-color-600 refresh-icon'" [svgIcon]="'refresh'"></mat-icon>
+        </button>
+      </div>
+
+      <!-- Data Grid Section -->
+      <div class="data-grid-wrapper">
+        <form [formGroup]="taxDocumentForm">
+          <div class="w-full p-4 grid-container">
+            <app-data-grid
+              [gridSettings]="gridColumns"
+              [enableRowClick]="true"
+              [dataSource]="dataSource"
+              [pages]="pages1099"
+              [totalRecordCount]="apiRequest1099.itemCount"
+              [pageIndex]="pageIndex1099"
+              [sortBy]="sortBy"
+              [sortDirection]="sortDirection"
+              [loading]="loading"
+              (buttonClick)="handleButtonClickForView($event, transactionDetails)"
+              (emitRecordCount)="changePageCount1099($event)"
+              (fetchPageData)="onPageChange1099($event)"
+              (sortChangeClick)="handleSortChange1099($event)"
+            >
+            </app-data-grid>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions class="fixed-footer flex justify-end space-x-4">
+    <button class="bg-[#04202E] text-white px-4 py-2" (click)="DownloadWordDoc()">
+      <span>Steps For Bulk Upload 1099 Forms</span>
+    </button>
+    <button class="bg-[#04202E] text-white px-4 py-2" (click)="SaveTaxDocuments()">Bulk Upload</button>
+    <button class="bg-white text-black border border-gray-300 px-4 py-2" (click)="modelRefForBulkUploadTax.close()">
+      Cancel
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+
+
+<ng-template #transactionDetails>
+  <div>
+    <!-- Dialog Header -->
+    <div style="padding: 0.4rem 0.8rem; border-bottom: 1px solid #dee2e6;"
+         class="flex flex-row justify-between">
+      <h5 class="font-normal leading-normal mb-0">Log Details</h5>
+      <button mat-icon-button (click)="transactionModal.close()" class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Scrollable Dialog Body -->
+    <div class="modal-body scrollable-content">
+      <div class="mt-2">
+        <app-data-grid 
+          [gridSettings]="gridColumnsView" 
+          [dataSource]="dataSourceForView" 
+          [pages]="pagesforView"
+          [totalRecordCount]="apiRequestForView.itemCount"
+          [pageIndex]="currentPageforView" 
+          [loading]="dataloading" 
+          [sortBy]="sortBy" 
+          [sortDirection]="sortDirection"
+          [nodataMessage]="'No Records Found'"
+          (emitRecordCount)="changePageCountforView($event)"
+          (fetchPageData)="onPageChangeforView($event)">
+        </app-data-grid>
+      </div>
+    </div>
+
+    <!-- Dialog Footer -->
+    <div class="modal-footer">
+      <button class="bg-white text-black border border-gray-300 px-4 py-2" 
+              (click)="transactionModal.close()">Close</button>
+    </div>
+  </div>
+</ng-template>
+
+
+
+<ng-template #confirmDialogTemplate>
+  <div mat-dialog-title class="dialog-header modal-header-cus">
+    <div>Confirmation</div>
+  </div>
+  <mat-dialog-content class="mat-typography" style="padding: 0 30px !important;">
+    <p>It will affect all the permissions for this role. Are you sure you want to proceed further?</p>
+    <div class="flex items-center gap-2">
+    
+      <span>Download the report for older permissions provided for this role</span>
+      <mat-icon class="cursor-pointer" (click)="downloadOldPermissions()" matTooltip="Download old permissions report"
+        matTooltipPosition="above">
+        file_download
+      </mat-icon>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="px-4 py-2 gap-2">
+    <button class="yes-no-buttons" (click)="confirmationDialog.close()">No</button>
+    <button class="yes-no-buttons" (click)="BulkCreateOrUpdateModulerPermissionAccess()">Yes</button>
+  </mat-dialog-actions>
+</ng-template>

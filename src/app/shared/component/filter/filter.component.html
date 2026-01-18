@@ -1,0 +1,129 @@
+
+<div (click)="$event.stopPropagation()">
+    <div data-toggle="popover" style="border-radius: 0.25rem !important;" class="" id="cb" style="font-family: Roboto, 'Helvetica Neue', sans-serif;">
+    
+        <div class="flex wid-100" >
+            <div class="dis-inline-block wid-50 mb-1">
+                <span>Filters<span *ngIf="selectedFilters && selectedFilters.length>0"> &#40;{{selectedFilters.length}}&#41; </span> </span>
+            </div>       
+            <div class="dis-inline-block wid-50 text-right mb-1">
+                <button type="button" class="btn btn-primary clr-btn" (click)="clearFilters();ClearFilterAction()">Clear</button>  
+            </div>
+        </div>
+        <hr class="wid-100 mt-0 mb-2"/>
+        <form [formGroup]="filterFormGroup">
+            <div class="filterDiv scroll-cus">
+                    <div class="flex wid-100"  *ngFor="let option of filterOptionsArry">
+                        <div class="wid-100 ">
+                           <span class="filterRow" style="color: var(--font-color) !important;"> {{ option.label }}</span>
+                            <div *ngIf="option.type === 'text'">
+                                <div class="form-group c_form_group">      
+                                    <input matInput placeholder="Enter text" [formControlName]="option.oid" *ngIf="!option.isLoading"
+                                    (keyup)="updateFilters(option.type, option.oid)">
+                                    <!-- <input  type="text" class="form-control" [formControlName]="option.oid" *ngIf="!option.isLoading"
+                                        (keyup)="updateFilters(option.type, option.oid)"> -->
+                                </div>
+                            </div>
+                            <div *ngIf="option.type === 'texts'">
+                                <div class="form-group c_form_group">      
+                                    <textarea matInput 
+                                        rows="2" 
+                                        placeholder="Enter text" 
+                                        [formControlName]="option.oid" 
+                                        *ngIf="!option.isLoading"
+                                        (keyup)="updateFilters(option.type, option.oid)">
+                                    </textarea>
+                                </div>
+                            </div>
+                            <div *ngIf="option.type === 'number'">
+                                <div class="form-group c_form_group">     
+                                    <input matInput placeholder="Enter number" [formControlName]="option.oid" *ngIf="!option.isLoading"
+                                    (keyup)="updateFilters(option.type, option.oid)"> 
+                                    <!-- <input  type="number" [min]="0" class="form-control" [formControlName]="option.oid" *ngIf="!option.isLoading"
+                                        (keyup)="updateFilters(option.type, option.oid)"> -->
+                                </div>
+                            </div>
+                                       
+                            <div *ngIf="option.type === 'date'">
+                                <mat-form-field class="form-group c_form_group">
+                                    <input matInput [matDatepicker]="startDatePicker" (dateChange)="updateFilters(option.type, option.oid,$event)" [formControlName]="option.oid">
+                                    <mat-datepicker-toggle matSuffix style="color: white;" [for]="startDatePicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #startDatePicker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="option.type === 'dropdown'" class="filter-dropdown">
+                                <div class="form-group c_form_group"> 
+                                    <mat-form-field class="flex flex-col gt-md:flex-row" order-redemption-mat-fieldsss>
+                                        <mat-select 
+                                            [formControlName]="option.oid" 
+                                            placeholder="Select" 
+                                            (selectionChange)="updateFilters(option.type, option.oid)"
+                                            [disabled]="!option.fieldOptions || option.fieldOptions.length === 0" 
+                                            *ngIf="!option.isLoading"
+                                            (openedChange)="$event ? onDropdownOpen() : onDropdownClose()"
+                                            #matSelect>
+                                            <mat-option *ngFor="let item of option.fieldOptions" [value]="item.id">{{item.value}}</mat-option> 
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <ngx-skeleton-loader animation="progress" *ngIf="option.isLoading"></ngx-skeleton-loader>
+                                </div>
+                            </div>
+                           
+                            <div *ngIf="option.type==='checkbox'" class="flex items-center gap-4 mt-2 mb-2">
+                                <label *ngFor="let fieldOptions of option.fieldOptions; let i = index;" class="flex items-center gap-2">
+                                  <mat-checkbox 
+                                    [color]="'primary'" 
+                                    [formControl]="filterFormGroup.get(option.oid).controls[i]" 
+                                    (change)="updateFilters(option.type, option.oid, fieldOptions)">
+                                  </mat-checkbox>
+                                  <span>{{ fieldOptions.value }}</span>
+                                </label>
+                              </div>
+                              <ngx-skeleton-loader animation="progress" *ngIf="option.isLoading"></ngx-skeleton-loader>
+                              
+                              
+                            <div *ngIf="option.type==='range'" style="margin-top: .5rem;margin-bottom:.5rem;">
+                                <div style="padding: 0 10px;">
+                                    <div>
+                                        <span>min</span>
+                                        <div class="form-group c_form_group">     
+                                            <input matInput placeholder="Enter min" [value]="checkRangeValue(option.oid, 'min')" #minOption *ngIf="!option.isLoading"
+                                            (keyup)="saveRange(option.oid, minOption.value, 'min')">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span>max</span>
+                                        <div class="form-group c_form_group">     
+                                            <input matInput placeholder="Enter max" [value]="checkRangeValue(option.oid, 'max')" #maxOption *ngIf="!option.isLoading"
+                                            (keyup)="saveRange(option.oid, maxOption.value, 'max')"> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="option.type==='toggle'" class="flex items-center mt-2 mb-2">
+                                <mat-slide-toggle
+                                  [color]="'primary'"
+                                  [formControlName]="option.oid"
+                                  (change)="updateFilters(option.type, option.oid)">
+                                  {{ filterFormGroup.get(option.oid).value ? 'Yes' : 'No' }}
+                                </mat-slide-toggle>
+                              </div>
+                              
+        
+                        </div>
+                    </div>
+               
+               
+            </div>
+        </form>
+        <hr class="wid-100 mt-0 mb-2"/>
+        <div class="flex wid-100">
+            <div class="dis-inline-block wid-50">
+                <button type="button" class="btn btn-primary apply-btn" (click)="applyFilters()">Apply</button>  
+            </div>       
+            <div class="dis-inline-block wid-50 text-right">
+                <button type="button" class="btn btn-default close-btn" (click)="close()">Close</button>  
+            </div>
+        </div>
+    </div>
+</div>

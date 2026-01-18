@@ -1,0 +1,19 @@
+.bulk-update-btn-cus {
+    width: 124px;
+    height: 36px;
+    padding: 7px 11px 7px 12px;
+    gap: 0px;
+    border-radius: 6px;
+    opacity: 1.4;
+    background: #04202E;
+    color: #FFFFFF; 
+  }
+
+  ::ng-deep #editor1 .ck.ck-editor__editable_inline {
+    height: 500px !important;
+}
+::ng-deep #editor1 .ck.ck-editor {
+    position: relative;
+    border-radius: 2px;
+    border: 1px solid #04202E;
+}

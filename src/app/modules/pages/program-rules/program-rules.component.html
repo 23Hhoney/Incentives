@@ -1,0 +1,70 @@
+<div class="container mt-3">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li (click)="navigateToAccount()" class="breadcrumb-item active" aria-current="page" style="cursor: pointer;">Home</li>
+    </ol>
+  </nav>
+  <div *ngIf="sectionsArray[0]?.items[0]?.text && publishedPage && showPublishedPage; else defaultHeading" [innerHTML]="sanitizeHtml(sectionsArray[0]?.items[0]?.text)"></div>
+  <ng-template #defaultHeading>
+    <h3 class="text-black mt-3">Program Rules</h3>
+  </ng-template>
+  <div class="card">
+    <div class="card-body">
+      <div class="flex flex-row flex-nowrap h-full w-full gap-4">
+        <div class="sidenav" [ngClass]="collapsed ? 'sidenav-collapsed': 'sidenav'" style="overflow-y: auto; max-height: calc(100vh - 200px);">
+          <div class="col-auto">
+            <a data-bs-target="#sidebar" data-bs-toggle="collapse" class="sideBarMenuIco collapsed"
+              aria-expanded="false"
+              style="padding: 7px 10px; line-height: 50px; border-radius: 16px; border: 1px solid #416fb6;"
+              (click)="toggleCollapse()">
+              <mat-icon class="navbar-toggler menuIco">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" aria-hidden="true" fit="" height="100%" width="100%"
+                  preserveAspectRatio="xMidYMid meet" focusable="false" style="background: white;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+                </svg>
+              </mat-icon>
+            </a>
+          </div>
+          <div class="flex flex-col">
+            <mat-accordion displayMode="flat" multi="true">
+              <mat-expansion-panel class="m-0" style="border-radius: 0px !important;" *ngFor="let items of prItems; let prindex = index" 
+                [ngClass]="prindex === 0 ? 'important-info-panel' : 'general-info-panel'" [expanded]="true">
+                <mat-expansion-panel-header [ngStyle]="{'background-color': prindex === 0 ? '#0073ff' : '#191919'}">
+                  <mat-panel-title style="color: white;"> {{items.title}} </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div style="padding: 0px !important;">
+                  <ul style="display: block;" class="sidebar-ul">
+                    <li *ngFor="let item of items.items; let prItemIndex = index; trackBy: trackByItemUrl"
+                        [ngClass]="{'selected-item': item.blobUrl === selectedItemUrl}">
+                      <a (click)="handleLinkChange(item.blobUrl)" style="cursor: pointer;">
+                        <span style="display: flex; align-items: center; padding-top: 3px; color: #5f6473; font-size: 13px;"
+                              [matTooltip]="item.title || item.fileName"
+                              [matTooltipDisabled]="(item.title || item.fileName).length <= 15">
+                          {{ (item.title || item.fileName).length > 15 ? ((item.title || item.fileName) | slice:0:15) + '...' : (item.title || item.fileName) }}
+                        </span>
+                        <ng-container *ngIf="getFileExtension(item.fileName || item.blobUrl)">
+                          ({{ getFileExtension(item.fileName || item.blobUrl) }})
+                        </ng-container>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+        <div class="w-full h-full flex-1">
+          <div class="responsive-iframe-container">
+            <iframe *ngIf="iframeSrc && showIframe" [src]="iframeSrc" scrolling="auto"></iframe>
+            <div *ngIf="!showIframe && blockedContentHtml" [innerHTML]="blockedContentHtml"
+              class="w-full h-full flex items-center justify-center p-6">
+            </div>
+            <div *ngIf="!iframeSrc && !blockedContentHtml" class="p-6 text-gray-500 flex items-center justify-center h-full">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

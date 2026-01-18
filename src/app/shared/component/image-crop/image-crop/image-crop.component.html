@@ -1,0 +1,54 @@
+
+    <mat-toolbar class="mat-accent m-0 mail-compose-dialog">
+        <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+            <span class="title dialog-title">{{title}} </span>
+            <button mat-icon-button (click)="dialog.close()" aria-label="Close dialog">
+                <mat-icon class="i">close</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+ 
+    <form  class="example-form">
+        <mat-dialog-content class="pl-24 pr-24 pt-24 m-0 form formGroup" >
+            <!-- <input type="file" (change)="fileChangeEvent($event)" /> -->
+            <div class="big" *ngIf="imageChangedEvent ===''">
+                 Select Image First
+            </div>
+            <div *ngIf="imageChangedEvent !==''">
+                <div class="big" style="display: inline-block;" >
+                    <image-cropper 
+                        [imageBase64]="imageChangedEvent"
+                        [imageChangedEvent]="imageChangedEvent"
+                        [maintainAspectRatio]="true"
+                        [resizeToWidth]="resizeToWidth"
+                        [roundCropper]="isCircular"
+                        [aspectRatio]="aspectRatioWidth/aspectRatioHeight"
+                        format="png || jpg"
+                        (imageCropped)="imageCropped($event)"
+                        (imageLoaded)="imageLoaded()"
+                        >
+                    </image-cropper>
+                    <!-- [aspectRatio]="isCircular?1/1:aspectRatioWidth/4" -->
+                    
+                </div>
+                <div class="small" style="display: inline-block;">
+                     <img [ngClass]="{'border-radius': isCircular}" [src]="croppedImage" />
+                </div>
+             </div>
+        </mat-dialog-content>
+
+        <mat-dialog-actions  fxLayoutAlign="end center" class="m-0 p-16 " fxLayout="row">
+               
+                <button mat-raised-button (click)="uploader.click()" [matTooltip] =" 'CHOOSEIMAGE' | translate ">
+                    <mat-icon>image</mat-icon>
+                  {{ 'CHOOSEIMAGE' | translate}}
+                    <input hidden type="file" #uploader (change)="fileChangeEvent($event)" />
+                  </button>
+            <button [matTooltip] =" 'UPLOAD' | translate " color="accent" 
+                aria-label ="Submit" type = "submit" (click)="dialog.close(this.croppedImage)"
+                 mat-raised-button>{{ 'UPLOAD' | translate}}</button>
+        </mat-dialog-actions>
+    </form>
+    
+  
+  

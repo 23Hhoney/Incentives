@@ -1,0 +1,136 @@
+<div class="container h-full" style="display: flex; flex-direction: column; justify-content: space-between;" appCopyPrevent>
+  <div class="flex-container blackcontainer quizbtn">
+    <a (click)="previousQuestion()" class="cursor-pointer" *ngIf="currentQuestionIndex > 0">
+      <img src="assets/images/arrow-left-white.png" style="height: 49px;">
+    </a>
+    <a (click)="nextQuestion()" class="cursor-pointer">
+      <img src="assets/images/arrow-right-white.png" style="height: 49px;"
+        *ngIf="currentQuestionIndex !== questions.length - 1">
+    </a>
+  </div>
+  <div class="flex flex-wrap flex-1" style="padding: 10px">
+    <div *ngIf="loader; else showContent"
+      style="width: 100%; display: flex; justify-content: center; align-items: center;">
+      <mat-spinner></mat-spinner>
+    </div>
+    <ng-template #showContent>
+      <div class="w-full flex flex-col justify-between">
+        <div class="mt-4 mb-4">
+          <div *ngIf="questions.length">
+            <div class="question">
+              <div class="question-header">
+                <div class="quizTitle">
+                  <div class="question-number">Q{{currentQuestionIndex + 1}} :</div>
+                  <div class="question-text">{{ questions[currentQuestionIndex].label }}</div>
+                </div>
+                <div class="question-info"><i class="bi bi-info-circle"></i>
+                  {{questions[currentQuestionIndex].questionType === 'single' || questions[currentQuestionIndex].questionType === 'trueFalse' ? 'Please select only one correct answer.' : questions[currentQuestionIndex].questionType === 'multipleSingle' ? 'Please select at least one or all correct answers.' : 'Please select all the correct answers.'}}
+                </div>
+              </div>
+              
+              <div class="question-body">
+                <div *ngIf="isPreview; else noPreviewBlock">
+                  <form [formGroup]="quiz1" style="margin-top: 20px;">
+                    <!-- For single and trueFalse question types, use radio buttons -->
+                    <ng-container *ngIf="questions[currentQuestionIndex].questionType === 'single' || questions[currentQuestionIndex].questionType === 'trueFalse'; else useCheckboxes">
+                      <mat-radio-group formControlName="singleAnswer" class="w-full">
+                        <div *ngFor="let option of questions[currentQuestionIndex].options" class="w-full form-check mb-6">
+                          <mat-radio-button [value]="option.id" [checked]="option.isCorrect" [disabled]="isPreview" class="w-full quiz-mat-select">
+                            <span class="form-check-label"
+                              style="font-size: 14px !important; font-family: 'HelveticaNeueLight'; color: #00274b; font-weight: 900; overflow-wrap: break-word; display: block; width: 100%;">
+                          {{ translateTrueFalseOption(option.label, questions[currentQuestionIndex].questionType) }}
+                            </span>
+                          </mat-radio-button>
+                        </div>
+                      </mat-radio-group>
+                    </ng-container>
+                    
+                    <!-- For other question types, use checkboxes -->
+                    <ng-template #useCheckboxes>
+                      <ng-container *ngIf="questions[currentQuestionIndex].questionType === 'multipleAll'; else singleChoice">
+                        <div *ngFor="let option of questions[currentQuestionIndex].options" class="w-full form-check mb-6">
+                          <mat-checkbox [disabled]="isPreview" [checked]="option.isCorrect" (change)="onSelectionChange($event, option.id, 'multipleAll')" class="w-full quiz-mat-select">
+                            <span class="form-check-label"
+                              style="font-size: 14px !important; font-family: 'HelveticaNeueLight'; color: #00274b; font-weight: 900; overflow-wrap: break-word; display: block; width: 100%;">
+                              {{ option.label }}
+                            </span>
+                          </mat-checkbox>
+                        </div>
+                      </ng-container>
+                      <ng-template #singleChoice>
+                        <div *ngFor="let option of questions[currentQuestionIndex].options" class="w-full form-check mb-6">
+                          <mat-checkbox [disabled]="isPreview" [checked]="option.isCorrect" (change)="onSelectionChange($event, option.id, 'singleChoice')" class="w-full quiz-mat-select">
+                            <span class="form-check-label"
+                              style="font-size: 14px !important; font-family: 'HelveticaNeueLight'; color: #00274b; font-weight: 900; overflow-wrap: break-word; display: block; width: 100%;">
+                              {{ option.label }}
+                            </span>
+                          </mat-checkbox>
+                        </div>
+                      </ng-template>
+                    </ng-template>
+                  </form>
+                </div>
+                
+                <ng-template #noPreviewBlock>
+                  <form [formGroup]="quiz1" style="margin-top: 20px;">
+                    <!-- For single and trueFalse question types, use radio buttons -->
+                    <ng-container *ngIf="questions[currentQuestionIndex].questionType === 'single' || questions[currentQuestionIndex].questionType === 'trueFalse'; else useCheckboxes">
+                      <mat-radio-group formControlName="singleAnswer" class="w-full" (change)="onRadioSelectionChange($event)">
+                        <div *ngFor="let option of questions[currentQuestionIndex].options" class="w-full form-check mb-6">
+                          <mat-radio-button [value]="option.id" [checked]="option.isCorrect" class="w-full quiz-mat-select">
+                            <span class="form-check-label"
+                              style="font-size: 14px !important; font-family: 'HelveticaNeueLight'; color: #00274b; font-weight: 900; overflow-wrap: break-word; display: block; width: 100%;">
+  {{ translateTrueFalseOption(option.label, questions[currentQuestionIndex].questionType) }}
+                            </span>
+                          </mat-radio-button>
+                        </div>
+                      </mat-radio-group>
+                    </ng-container>
+                    
+                    <!-- For other question types, use checkboxes -->
+                    <ng-template #useCheckboxes>
+                      <ng-container *ngIf="questions[currentQuestionIndex].questionType === 'multipleAll'; else singleChoice">
+                        <div *ngFor="let option of questions[currentQuestionIndex].options" class="w-full form-check mb-6">
+                          <mat-checkbox [checked]="option.isCorrect" (change)="onSelectionChange($event, option.id, 'multipleAll')" class="w-full quiz-mat-select">
+                            <span class="form-check-label"
+                              style="font-size: 14px !important; font-family: 'HelveticaNeueLight'; color: #00274b; font-weight: 900; overflow-wrap: break-word; display: block; width: 100%;">
+                              {{ option.label }}
+                            </span>
+                          </mat-checkbox>
+                        </div>
+                      </ng-container>
+                      <ng-template #singleChoice>
+                        <div *ngFor="let option of questions[currentQuestionIndex].options" class="w-full form-check mb-6">
+                          <mat-checkbox [checked]="option.isCorrect" (change)="onSelectionChange($event, option.id, 'singleChoice')" class="w-full quiz-mat-select">
+                            <span class="form-check-label"
+                              style="font-size: 14px !important; font-family: 'HelveticaNeueLight'; color: #00274b; font-weight: 900; overflow-wrap: break-word; display: block; width: 100%;">
+                       {{ translateTrueFalseOption(option.label, questions[currentQuestionIndex].questionType) }}
+                            </span>
+                          </mat-checkbox>
+                        </div>
+                      </ng-template>
+                    </ng-template>
+                  </form>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+  <div class="new w-full text-center pt-6 pb-6"
+    [ngStyle]="{'opacity': buttonDisabled || (!isPreview && !hasSelectedOption) ? '0.5' : '1'}"
+    *ngIf="currentQuestionIndex < questions.length - 1">
+    <a (click)="(!isPreview && hasSelectedOption) || isPreview ? nextQuestion() : ''"
+      [ngStyle]="{'opacity': buttonDisabled || (!isPreview && !hasSelectedOption) ? '0.5' : '1'}" class="custom-btn"
+      [class.disabled]="buttonDisabled">
+      Submit answer and advance to next question
+    </a>
+  </div>
+  <div class="new w-full text-center pt-6 pb-6" [ngStyle]="{'opacity': buttonDisabled || !isPreview && !hasSelectedOption ? '0.5' : '1'}"
+    *ngIf="currentQuestionIndex === questions.length - 1">
+    <a (click)="(!isPreview && hasSelectedOption) || isPreview ? submitQuiz() : ''" [ngStyle]="{'opacity': buttonDisabled || !isPreview && !hasSelectedOption ? '0.5' : '1'}"
+      class="btn inline-block btn-outline-light btnnew round py-3 px-6 text-2xl">Submit</a>
+  </div>
+</div>

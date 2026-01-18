@@ -1,0 +1,567 @@
+<div class="flex-auto border-t -mt-px pt-4 sm:pt-6 w-full">
+        <div class="w-full bg-white mb-4 pb-4">
+            <!-- Tabs -->
+            <mat-tab-group
+                (selectedTabChange)="onTabChange($event);"
+                class="sm:px-2"
+                [animationDuration]="'0'" style="padding-left: 0px !important; padding-right: 0px !important">
+                <mat-tab label="Import SKU">
+                    <div *ngIf="showDropBox" class="flex flex-col lg:flex-row items-center justify-start space-x-4 space-y-4 lg:space-y-0 margin-top: 0 px-4 mb-4" >
+                        <div class="flex flex-col items-center">
+                            <button (click)="fileInput.click()" class="bg-[#03202E] text-white px-4 py-2 rounded-md flex items-center">
+                            <svg class="h-6 w-6 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293l2.414 2.414A1 1 0 0012.414 8H21a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z"></path>
+                            </svg>
+                            <div class="whitespace-nowrap">
+                                Choose Upload File
+                            </div>
+                            </button>
+                            <input type="file" accept=".csv" (change)="onFileSelect($event)" class="hidden" #fileInput />
+                        </div>
+                
+                        <div class="text-gray-500 font-semibold">OR</div>
+                
+                        <div class="flex items-center justify-start w-full space-x-4" style="width: 324px !important;height: 145px !important;">
+                            <div 
+                            (drop)="onFileDrop($event)" 
+                            (dragover)="onDragOver($event)" 
+                            (dragleave)="onDragLeave($event)" 
+                            class="border-2 border-dashed border-gray-300 rounded-lg p-2 flex flex-col items-center cursor-pointer bg-[#FAFAFB] w-full max-w-xs h-36"
+                            >
+                            <div class="flex items-center justify-center h-16 w-16 rounded-full mb-2">
+                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M32 50.8718L32 32V35.2821" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                                <path d="M22.9746 41.0256L32.0003 32L41.0259 41.0256" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                                <path d="M38.565 50.8045C42.2744 50.495 45.8202 49.1406 48.7913 46.8981C51.7623 44.6557 54.0369 41.6171 55.3515 38.1346C56.666 34.6521 56.9665 30.8683 56.2183 27.222C55.4701 23.5756 53.7037 20.216 51.1239 17.5326C48.5442 14.8492 45.2567 12.9519 41.6426 12.0608C38.0285 11.1696 34.2359 11.321 30.7043 12.4974C27.1728 13.6738 24.047 15.827 21.6893 18.7075C19.3317 21.588 17.8387 25.0777 17.3835 28.7721C14.5556 29.0527 11.9439 30.4094 10.0882 32.5615C8.23256 34.7137 7.27501 37.4967 7.41358 40.335C7.55216 43.1733 8.77626 45.8498 10.8327 47.811C12.8892 49.7721 15.6207 50.868 18.4624 50.8718L25.4368 50.8718" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                                </svg>
+                            </div>
+                            <span class="text-gray-500 text-2xl">Drop files here</span>
+                            <span class="text-gray-400 text-lg">Supported format: .csv</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!showDropBox" class="flex flex-col items-start justify-start w-1/2 space-y-4 pl-4">
+                        <div class="text-left  text-[#171A1F] font-normal mt-4 content">
+                            Queued File for Upload:
+                            <p>
+                            <!-- <strong>File Name:</strong>  -->
+                            {{ fileName }}</p>
+                        </div>
+                
+                        <div class="grid grid-cols-2 gap-4  text-[#171A1F] font-normal" style="gap: 3.5rem !important;">
+                            <div class="resultContent">
+                            <p>File Validation</p>
+                            <br>
+                            <p>{{ uploadResult.totalRecordsCount }} Records Found</p>
+                            <p>{{ uploadResult.duplicateCount }} Duplicate Records</p>
+                            <p>{{ uploadResult.errorRecordCount }} Records with errors</p>
+                            </div>
+                            <div class="resultContent">
+                            <p>Issuance Summary</p>
+                            <br>
+                            <p>{{ uploadResult.units }} Points</p>
+                            <p>{{ uploadResult.totalPrice }} List Price</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-4 mt-4 resultContent" *ngIf="uploadResult && showViewReportButton" (click)="viewUploadedReport()"><p style="border-bottom: 1px solid #0D78C9 !important; color: #0D78C9 !important; cursor: pointer;">View Report</p></div>
+                        <div class="flex space-x-4 mt-4">
+                            <button 
+                            class="bg-[#04202E] text-white px-4 py-2 rounded-md" 
+                            (click)="handleUpload()" 
+                            [disabled]="(uploadResult && showViewReportButton) || (uploadResult.totalRecordsCount === 0)"
+                            [ngStyle]="{'opacity': ((uploadResult && showViewReportButton) || (uploadResult.totalRecordsCount === 0)) ? 0.5 : 1}"
+                            >
+                            Proceed with Upload
+                            </button>
+                            <button style="
+                            display: flex;
+                            align-items: center;
+                            border: 1px solid black;
+                            border-radius: 4px;
+                            padding: 0 10px;
+                            cursor: pointer;
+                            height: 41px;
+                            width: fit-content;" (click)="cancelUpload()">
+                            Cancel / Remove File From Queue
+                            </button>
+                        </div>
+                    </div>
+                      <!-- File History Section -->
+                    <div class="w-full mt-10 space-y-6 overflow-x-auto px-4">
+                        <div class="w-full space-y-6">
+                        <div class="flex-wrap" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="flex flex-row items-center mt-4 gap-10">
+                                <div class="font-poppins font-normal text-3xl leading-12 text-left">
+                                    File History
+                                </div>
+                                <div>
+                                    <form [formGroup]="importHistoryRadioForm" class="custom-radio-btn">
+                                        <mat-radio-group formControlName="selectedImportHistory" style="display: flex; gap: 10px;">
+                                            <mat-radio-button value="import">Import</mat-radio-button>
+                                            <mat-radio-button value="update">Update</mat-radio-button>
+                                        </mat-radio-group>
+                                    </form>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="flex flex-row gap-6 flex-wrap">
+                                <div style="align-items: center; display: flex;">
+                                  <button 
+                                    style="width: 100%; padding: 5px 10px; align-items: center; justify-content: start; border-radius: 4px;" 
+                                    mat-icon-button 
+                                    [matTooltip]="'Refresh Page'" 
+                                    mat-icon-button 
+                                    data-placement="bottom" 
+                                    (click)="ImportHistoryPaginated()">
+                                    <mat-icon [class]="'btn-color-600 refresh-icon'" [svgIcon]="'refresh'"></mat-icon>
+                                  </button>
+                                </div>
+                                
+                        
+                                <button *ngIf="importHistoryRadioForm.get('selectedImportHistory').value === 'import'"
+                                  (click)="downloadTemplate()"
+                                  style="display: flex; align-items: center; border: 1px solid black; border-radius: 4px; padding: 0 10px; cursor: pointer; height: 41px; width: fit-content;">
+                                  <mat-icon [svgIcon]="'download'"></mat-icon>
+                                  Demo Template
+                                </button>
+                              
+                                <button *ngIf="importHistoryRadioForm.get('selectedImportHistory').value === 'update'"
+                                  (click)="downloadTemplateForUpdate()"
+                                  style="display: flex; align-items: center; border: 1px solid black; border-radius: 4px; padding: 0 10px; cursor: pointer; height: 41px; width: fit-content;">
+                                  <mat-icon [svgIcon]="'download'"></mat-icon>
+                                  Demo Template
+                                </button>
+                              </div>
+                            
+                        </div>
+
+                        <div class="my-2"></div>
+                        <app-data-grid
+                            [gridSettings]="importGridColumns"
+                            [dataSource]="importDataSource"
+                            [loading]="importLoading"
+                            [pages]="importPages"
+                            [pageIndex]="importCurrentPage"
+                            [totalRecordCount]="importHistoryApiRequest.itemCount"
+                            (emitRecordCount)="changePageCount($event)"
+                            (fetchPageData)="onImportHistoryPageChange($event)"
+                            (buttonClick)="handleButtonClick($event, null, null)"
+                            (sortChangeClick)="handleImportSortChange($event)"
+                        ></app-data-grid>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Export/Add SKU">
+                    
+                    <div class="flex flex-row justify-between flex-wrap">
+                        <div>
+                            <!-- Choose File For Bulk Update -->
+                            <div *ngIf="showBulkUpdateDropBox" class="flex flex-col lg:flex-row items-center justify-start space-x-4 space-y-4 lg:space-y-0 margin-top: 0 px-4 mb-4" >
+                                <div class="flex flex-col items-center">
+                                    <button (click)="fileInput.click()" class="bg-[#03202E] text-white px-4 py-2 rounded-md flex items-center">
+                                    <svg class="h-6 w-6 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293l2.414 2.414A1 1 0 0012.414 8H21a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z"></path>
+                                    </svg>
+                                    <div class="whitespace-nowrap">
+                                        Choose Upload File
+                                    </div>
+                                    </button>
+                                    <input type="file" accept=".csv" (change)="onBulkUpdateFileSelect($event)" class="hidden" #fileInput />
+                                </div>
+                        
+                                <div class="text-gray-500 font-semibold">OR</div>
+                        
+                                <div class="flex items-center justify-start w-full space-x-4" style="width: 324px !important;height: 145px !important;">
+                                    <div 
+                                    (drop)="onBulkUpdateFileDrop($event)" 
+                                    (dragover)="onDragOver($event)" 
+                                    (dragleave)="onDragLeave($event)" 
+                                    class="border-2 border-dashed border-gray-300 rounded-lg p-2 flex flex-col items-center cursor-pointer bg-[#FAFAFB] w-full max-w-xs h-36"
+                                    >
+                                    <div class="flex items-center justify-center h-16 w-16 rounded-full mb-2">
+                                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M32 50.8718L32 32V35.2821" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                                        <path d="M22.9746 41.0256L32.0003 32L41.0259 41.0256" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                                        <path d="M38.565 50.8045C42.2744 50.495 45.8202 49.1406 48.7913 46.8981C51.7623 44.6557 54.0369 41.6171 55.3515 38.1346C56.666 34.6521 56.9665 30.8683 56.2183 27.222C55.4701 23.5756 53.7037 20.216 51.1239 17.5326C48.5442 14.8492 45.2567 12.9519 41.6426 12.0608C38.0285 11.1696 34.2359 11.321 30.7043 12.4974C27.1728 13.6738 24.047 15.827 21.6893 18.7075C19.3317 21.588 17.8387 25.0777 17.3835 28.7721C14.5556 29.0527 11.9439 30.4094 10.0882 32.5615C8.23256 34.7137 7.27501 37.4967 7.41358 40.335C7.55216 43.1733 8.77626 45.8498 10.8327 47.811C12.8892 49.7721 15.6207 50.868 18.4624 50.8718L25.4368 50.8718" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-gray-500 text-2xl">Drop files here</span>
+                                    <span class="text-gray-400 text-lg">Supported format: .csv</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="!showBulkUpdateDropBox" class="flex flex-col items-start justify-start w-1/2 space-y-4 pl-4">
+                                <div class="text-left  text-[#171A1F] font-normal mt-4 content">
+                                    Queued File for Upload:
+                                    <p>
+                                    <!-- <strong>File Name:</strong>  -->
+                                    {{ fileName }}</p>
+                                </div>
+                        
+                                <div class="grid grid-cols-1 gap-4  text-[#171A1F] font-normal" style="gap: 3.5rem !important;">
+                                    <div class="resultContent">
+                                        <p>File Validation</p>
+                                        <br>
+                                        <p>{{ bulkUpdateUploadResult.totalRecordsCount }} Records Found</p>
+                                        <p>{{ bulkUpdateUploadResult.duplicateCount }} Duplicate Records</p>
+                                        <p>{{ bulkUpdateUploadResult.errorRecordCount }} Records with errors</p>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-4 mt-4 resultContent" *ngIf="bulkUpdateUploadResult && showBulkUpdateViewReportButton" (click)="viewBulkUpdateUploadedReport()"><p style="border-bottom: 1px solid #0D78C9 !important; color: #0D78C9 !important; cursor: pointer;">View Report</p></div>
+                                <div class="flex space-x-4 mt-4">
+                                    <button 
+                                    class="bg-[#04202E] text-white px-4 py-2 rounded-md" 
+                                    style="text-wrap: nowrap;" 
+                                    (click)="handleUpload()" 
+                                    [disabled]="(bulkUpdateUploadResult && showBulkUpdateViewReportButton) || (bulkUpdateUploadResult.totalRecordsCount === 0)"
+                                    [ngStyle]="{'opacity': ((bulkUpdateUploadResult && showBulkUpdateViewReportButton) || (bulkUpdateUploadResult.totalRecordsCount === 0)) ? 0.5 : 1}"
+                                    >
+                                    Proceed with Upload
+                                    </button>
+                                    <button style="
+                                    display: flex;
+                                    align-items: center;
+                                    border: 1px solid black;
+                                    border-radius: 4px;
+                                    padding: 0 10px;
+                                    cursor: pointer;
+                                    height: 41px;
+                                    width: fit-content;" style="text-wrap: nowrap;" (click)="cancelUpload()">
+                                    Cancel / Remove File From Queue
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mr-4">
+                            <!-- Choose Program Period Section -->
+                            <div class="space-y-4 pl-4" style="margin-top: 0 !important; gap: 10px">
+                                <div class="flex flex-row flex-wrap space-x-4 gap-4">
+                                    <div class="incen-admin-header-cus">
+                                        Program Period
+                                    </div>
+                                    <button class="bg-[#04202E] text-white px-4 py-2 rounded-md flex items-center" style="margin-left: 0px !important;" (click)="openDialog(ManageProgramPeriod)">
+                                        <svg class="h-6 w-6 mr-2 text-white"width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7.99944 10.2143C8.94622 10.2143 9.71373 9.44683 9.71373 8.50005C9.71373 7.55328 8.94622 6.78577 7.99944 6.78577C7.05267 6.78577 6.28516 7.55328 6.28516 8.50005C6.28516 9.44683 7.05267 10.2143 7.99944 10.2143Z" stroke="white" stroke-width="1.37143" stroke-miterlimit="10" stroke-linecap="square"/>
+                                            <path d="M12.5707 8.49995C12.57 8.17076 12.534 7.84259 12.4632 7.52109L14.0141 6.34681L12.8712 4.36738L11.0752 5.12509C10.5889 4.6792 10.0116 4.34408 9.38323 4.1428L9.14209 2.21423L6.85638 2.21423L6.61523 4.1428C5.98686 4.34408 5.4096 4.6792 4.92323 5.12509L3.12723 4.36738L1.98437 6.34681L3.53523 7.52109C3.39203 8.16581 3.39203 8.83409 3.53523 9.47881L1.98437 10.6531L3.12723 12.6325L4.92323 11.8748C5.4096 12.3207 5.98686 12.6558 6.61523 12.8571L6.85638 14.7857L9.14209 14.7857L9.38323 12.8571C10.0116 12.6558 10.5889 12.3207 11.0752 11.8748L12.8712 12.6325L14.0141 10.6531L12.4632 9.47881C12.534 9.1573 12.57 8.82914 12.5707 8.49995Z" stroke="white" stroke-width="1.37143" stroke-miterlimit="10" stroke-linecap="square"/>
+                                        </svg> 
+                                        Manage Program Period
+                                    </button>
+                                </div>
+                                <div class="flex flex-col">
+                                    <div *ngIf="programStartDate">
+                                        Program Start Date: {{ programStartDate }}
+                                    </div>
+                                    <div *ngIf="programEndDate">
+                                        Program End Date: {{ programEndDate }}
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <!-- Export SKUs Button -->
+                            <div class="flex mt-10 pl-4">
+                                <button (click)="exportAllCurrentPeriodSKU()" class="bg-[#04202E] text-white px-4 py-2 rounded-md flex items-center" [disabled]="!(programEndDate && programStartDate)" [ngClass]="{'btn-disabled': !(programEndDate && programStartDate)}">
+                                    <svg class="h-4 w-4 mr-2 text-white" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14 6.5C14 6.63261 13.9473 6.75979 13.8536 6.85355C13.7598 6.94732 13.6326 7 13.5 7C13.3674 7 13.2402 6.94732 13.1464 6.85355C13.0527 6.75979 13 6.63261 13 6.5L13 3.7075L8.85437 7.85375C8.76055 7.94757 8.63331 8.00028 8.50062 8.00028C8.36794 8.00028 8.2407 7.94757 8.14688 7.85375C8.05305 7.75993 8.00035 7.63268 8.00035 7.5C8.00035 7.36732 8.05305 7.24007 8.14688 7.14625L12.2925 3L9.5 3C9.36739 3 9.24021 2.94732 9.14645 2.85355C9.05268 2.75979 9 2.63261 9 2.5C9 2.36739 9.05268 2.24021 9.14645 2.14645C9.24021 2.05268 9.36739 2 9.5 2L13.5 2C13.6326 2 13.7598 2.05268 13.8536 2.14645C13.9473 2.24021 14 2.36739 14 2.5L14 6.5ZM11.5 8C11.3674 8 11.2402 8.05268 11.1464 8.14645C11.0527 8.24021 11 8.36739 11 8.5L11 13L3 13L3 5L7.5 5C7.63261 5 7.75979 4.94732 7.85355 4.85355C7.94732 4.75979 8 4.63261 8 4.5C8 4.36739 7.94732 4.24021 7.85355 4.14645C7.75979 4.05268 7.63261 4 7.5 4L3 4C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5L2 13C2 13.2652 2.10536 13.5196 2.29289 13.7071C2.48043 13.8946 2.73478 14 3 14L11 14C11.2652 14 11.5196 13.8946 11.7071 13.7071C11.8946 13.5196 12 13.2652 12 13L12 8.5C12 8.36739 11.9473 8.24021 11.8536 8.14645C11.7598 8.05268 11.6326 8 11.5 8Z" fill="white"/>
+                                    </svg>  
+                                    <span class="whitespace-nowrap leading-5">
+                                        Export All Current Period SKUs
+                                    </span>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                   
+
+                    <!-- Search Section -->
+                    <div class="w-full bg-white mt-10 pl-4">
+                        <form [formGroup]="formFilter">
+                            <div class="inline-flex w-full pt-4 flex-1"
+                                style="display: flex !important; flex-wrap: wrap; gap: 16px;">
+                                <div class="flex flex-col">
+                                    <mat-label class="mat-label-text-sku-list">SKU Search</mat-label> 
+                                    <div class="flex flex-row" style="width: 174px !important;">
+                                        <mat-icon matPrefix class="absolute pl-2  pt-1"
+                                        [svgIcon]="'heroicons_outline:search'"></mat-icon>
+                                        <input matInput formControlName="skuId"
+                                            placeholder="Enter SKU"
+                                            class="w-full pl-8 border rounded border-color-cus-sku-list border-solid h-8 ">
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <mat-label class="mat-label-text-sku-list">Brand Search</mat-label>
+                                    <div class="flex flex-row" style="width: 174px !important;">
+                                        <mat-icon matPrefix class="absolute pl-2  pt-1"
+                                        [svgIcon]="'heroicons_outline:search'"></mat-icon>
+                                        <input matInput formControlName="brand"
+                                            placeholder="Enter Brand"
+                                            class="w-full pl-8 border rounded border-color-cus-sku-list border-solid h-8 ">
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <mat-label class="mat-label-text-sku-list">Product Line Search</mat-label>
+                                    <div class="flex flex-row" style="width: 174px !important;">
+                                        <mat-icon matPrefix class="absolute pl-2  pt-1"
+                                        [svgIcon]="'heroicons_outline:search'"></mat-icon>
+                                        <input matInput formControlName="productLine"
+                                            placeholder="Enter Product Line"
+                                            class="w-full pl-8 border rounded border-color-cus-sku-list border-solid h-8 ">
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <mat-label class="mat-label-text-sku-list">Category Search</mat-label>
+                                    <div class="flex flex-row" style="width: 174px !important;">
+                                        <mat-icon matPrefix class="absolute pl-2  pt-1"
+                                        [svgIcon]="'heroicons_outline:search'"></mat-icon>
+                                        <input matInput formControlName="category"
+                                            placeholder="Enter Category"
+                                            class="w-full pl-8 border rounded border-color-cus-sku-list border-solid h-8 ">
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <mat-label class="mat-label-text-sku-list">Subcategory Search</mat-label>
+                                    <div class="flex flex-row" style="width: 174px !important;">
+                                        <mat-icon matPrefix class="absolute pl-2  pt-1"
+                                        [svgIcon]="'heroicons_outline:search'"></mat-icon>
+                                        <input matInput formControlName="subCategory"
+                                            placeholder="Enter Subcategory"
+                                            class="w-full pl-8 border rounded border-color-cus-sku-list border-solid h-8 ">
+                                    </div>
+                                    
+                                </div>
+                                <div class="flex flex-col">
+                                    <mat-label class="mat-label-text-sku-list">Item Name Search</mat-label>
+                                    <div class="flex flex-row" style="width: 174px !important;">
+                                        <mat-icon matPrefix class="absolute pl-2  pt-1"
+                                        [svgIcon]="'heroicons_outline:search'"></mat-icon>
+                                        <input matInput formControlName="itemName"
+                                        
+                                        placeholder="Enter Item Name"
+                                        class="w-full pl-8 border rounded border-color-cus-sku-list border-solid h-8 ">
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Search Result Section -->
+                    <div class="my-4"></div>
+
+                    <div class="flex pl-4">
+                        <button (click)="handleSearch()" class="bg-[#04202E] text-white px-4 py-2 rounded flex items-center">
+                            <div class="whitespace-nowrap leading-5">
+                                Search / Display SKU Records
+                            </div>
+                        </button>
+                    </div>
+                    <div class="my-4"></div>
+                    <div class="flex w-full bg-white pl-4">
+                        <div class="incen-admin-header-cus">
+                            Results:
+                        </div>
+                        <ng-container *ngIf="filterTags && filterTags.length">
+                            <div class="flex flex-wrap items-center mx-1">
+                                <ng-container *ngFor="let label of filterTags; trackBy: trackByFn">
+                                    <div *ngIf="label?.value?.length" class="flex items-center m-1 py-0.5 px-3 rounded-full text-md font-medium text-gray-500 cus-background-sku-list-tag h-9 !important">
+                                        <mat-icon
+                                            class="mr-2 text-white"
+                                            [svgIcon]="'e-remove'"
+                                            (click)="removeFilterLabel(label)">
+                                        </mat-icon>
+                                        <div style="color: #323743;">
+                                            {{ label.displayName }}: {{label.value}}
+                                        </div>
+                                        
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </ng-container>
+                    </div>
+        
+                    <div class="w-full mt-10 mb-4 pl-4 flex flex-row justify-between flex-wrap items-center">
+                        <div class="button-flex-container">
+                               
+                            <div class="mr-4">
+                                <button 
+                                  class="bg-[#04202E] text-white px-4 py-2 rounded-md flex items-center relative"
+                                  [disabled]="selectedSKUList.length === 0 || isLoading" 
+                                  [ngClass]="{
+                                    'opacity-40': selectedSKUList.length === 0 || isLoading, 
+                                    'opacity-100': selectedSKUList.length > 0 && !isLoading
+                                  }"
+                                  (click)="exportSelectedSKUs()">
+                                  <mat-icon [svgIcon]="'Moveup-cus'" style="padding: 3px; color: #fff;"></mat-icon> 
+                                  <span style="color: white !important; padding-top: 2px;">Export Selected SKUs</span>
+                                  
+                                  <!-- Loader -->
+                                  <div *ngIf="isLoading" class="absolute inset-0 flex justify-center items-center bg-[#04202E]/70">
+                                    <mat-spinner diameter="24"></mat-spinner>
+                                  </div>
+                                </button>
+                              </div>
+                              
+                                <div class="mr-4">
+                                    <button class="bg-[#04202E] text-white px-4 py-2 rounded-md flex items-center opacity-100" (click)="openAddSkuDialog(AddSku)">
+                                    <mat-icon [svgIcon]="'heroicons_outline:plus'" style="padding: 3px; color: #fff;"></mat-icon>
+                                    <span class="" style="color: white !important; padding-top: 2px;">Add SKU</span>    
+                                    </button>
+                                </div>
+                                <div class="" style="visibility: hidden;">
+                                    <button class="bg-[#04202E] text-white px-4 py-2 rounded-md flex items-center opacity-100">
+                                        <mat-icon [svgIcon]="'Settings-btn-cus'" style="padding: 3px; color: #fff;"></mat-icon> 
+                                        <span class="" style="color: white !important; padding-top: 2px;">Manage SKU Business Rules & Cognates</span>
+                                    </button>
+                                </div>
+                        </div>
+                        <div class="mr-2">
+                            <span class="font-bold">Displaying {{totalRecords}}</span>
+                            <span class="font-normal"> records</span>
+                        </div>
+                    </div>
+        
+                    <div class="w-full p-4" style="overflow-x: scroll !important;">
+                        <app-data-grid 
+                            [gridSettings]="gridColumns" 
+                            [enableRowClick]="true" 
+                            [dataSource]="dataSource"
+                            [pages]="pages" 
+                            [pageIndex]="pageIndex" 
+                            [totalRecordCount]="apiRequest.itemCount"
+                            [sortBy]="sortBy" 
+                            [sortDirection]="sortDirection" 
+                            (emitRecordCount)="changeExportPageCount($event)"
+                            (fetchPageData)="onPageChange($event)" 
+                            (sortChangeClick)="handleSortChange($event)" 
+                            (checkboxClick)="handleCheckBoxClick($event)" 
+                            (buttonClick)="handleButtonClick($event, AddSku, deletepopup)">
+                        </app-data-grid>
+                    </div>                    
+        
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+</div>
+
+<ng-template #ManageProgramPeriod>
+    <mat-dialog-content>
+        <form [formGroup]="manageProgramPeriod" class="flex items-center" >
+        <mat-form-field class="manage-period-form-field">
+            <mat-label>Enter a date range</mat-label>
+            <mat-date-range-input [rangePicker]="rangePicker">
+                <input matStartDate formControlName="start" placeholder="Start date" />
+                <input matEndDate formControlName="end" placeholder="End date" />
+            </mat-date-range-input>
+            <mat-hint>MM-DD-YYYY – MM-DD-YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #rangePicker>
+                <mat-date-range-picker-actions>
+                <button mat-button matDateRangePickerCancel (click)="onFilterClear()">Clear</button>
+                <button mat-raised-button matDateRangePickerApply>Apply</button>
+                </mat-date-range-picker-actions>
+            </mat-date-range-picker>
+        </mat-form-field>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button (click)="closeDialog()" class="px-4 py-2 rounded-md">Cancel</button>
+        <button mat-raised-button color="primary" (click)="saveManageProgramPeriod()" class="bg-[#04202E] text-white px-4 py-2 rounded-md">Save</button>
+    </mat-dialog-actions>
+  </ng-template>
+  
+  <ng-template #AddSku>
+    <div mat-dialog-title class="flex modal-header-cus m-0  px-6 justify-between items-center">
+        <div *ngIf="!editInProgress" class="modal-header-cus py-2"> Add SKU</div>
+        <div *ngIf="editInProgress" class="modal-header-cus py-2"> Edit SKU</div>
+        <button mat-icon-button (click)="closeDialog()" class="close-button">
+          <mat-icon style="color: #fff;">close</mat-icon>
+        </button>
+    </div>
+    <mat-dialog-actions align="left" class="flex gap-4 m-0 px-4 py-2">
+        <button (click)="closeDialog()" class="btn-cus">Cancel</button>
+        <button *ngIf="!editInProgress" (click)="addSKU()" class="btn-cus">Add</button>
+        <button *ngIf="editInProgress" (click)="saveSKU()" class="btn-cus">Save</button>
+    </mat-dialog-actions>
+    <mat-dialog-content class="mat-typography p-0 m-0">
+        <form [formGroup]="addSkuForm" class="flex flex-wrap add-sku-field-container px-4 py-2" >
+            <mat-form-field class="three-section-width">
+                <mat-label>SKU</mat-label>
+                <input matInput formControlName="skU_id">
+            </mat-form-field>
+            <mat-form-field class="three-section-width">
+                <mat-label>Point Value</mat-label>
+                <input matInput formControlName="points" appIntegerOnly>
+            </mat-form-field>
+            <mat-form-field class="three-section-width">
+                <mat-label>List Price Values</mat-label>
+                <input matInput formControlName="listPrice" appDecimalValidator>
+                </mat-form-field>
+            <div class="three-section-width">
+                <app-date-pickers                    
+                    [formGroup]="addSkuForm"
+                    label="Start Date"
+                    formElementName="startDate"
+                ></app-date-pickers>
+            </div>
+            <div class="three-section-width">
+                <app-date-pickers                    
+                    [formGroup]="addSkuForm"
+                    label="End Date"
+                    formElementName="endDate"
+                ></app-date-pickers>
+            </div>
+            <mat-form-field class="three-section-width">
+                <mat-label>Item Name</mat-label>
+                <input matInput formControlName="productName" appSpecialCharacterLimit>
+            </mat-form-field>
+            <mat-form-field class="three-section-width">
+                <mat-label>Brand</mat-label>
+                <input matInput formControlName="brand" appSpecialCharacterLimit>
+            </mat-form-field>
+            <mat-form-field class="three-section-width">
+                <mat-label>Product Line</mat-label>
+                <input matInput formControlName="productLine" appSpecialCharacterLimit>
+            </mat-form-field>
+            <mat-form-field class="three-section-width">
+                <mat-label>Category</mat-label>
+                <input matInput formControlName="category" appSpecialCharacterLimit>
+            </mat-form-field>
+            <mat-form-field class="three-section-width">
+                <mat-label>Sub Category</mat-label>
+                <input matInput formControlName="subCategory" appSpecialCharacterLimit>
+            </mat-form-field>
+            <mat-form-field class="three-section-width">
+                <mat-label>UPC</mat-label>
+                <input matInput formControlName="upc" appSpecialCharacterLimit>
+            </mat-form-field>
+            <mat-form-field class="three-section-width">
+                <mat-label>SKU Type *</mat-label>
+                <mat-select formControlName="skuType">
+                  <mat-option *ngFor="let option of skuTypeOptions" [value]="option.id">
+                    {{ option.value }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+        </form>
+    </mat-dialog-content>
+  </ng-template>
+  
+  <ng-template #deletepopup>
+    <div mat-dialog-title class="flex items-center justify-between">
+      <h3>Delete Confirmation</h3>
+      <button mat-icon-button (click)="closeDialog()" class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Are you sure, you want to delete this field?</p>
+    </div>
+    <div class="modal-footer" style="float: right;">
+      <button mat-button (click)="closeDialog()" class="px-4 py-2 rounded-md">Cancel</button>
+      <button mat-button (click)="deleteSKU(); closeDialog()" class="bg-[#04202E] text-white px-4 py-2 rounded-md">Delete</button>
+    </div>
+  </ng-template>
+
+

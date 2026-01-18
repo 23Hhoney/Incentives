@@ -1,0 +1,156 @@
+<div class="containheight">
+  <div class="flex flex-col flex-auto min-w-0">
+    <div class="max-w-7xl">
+      <form [formGroup]="CirriculumManagerForm">
+        <div class="flex flex-col mt-2 p-6 pb-2 bg-card rounded-2xl shadow overflow-hidden">
+          <div class="flex flex-col gt-md:flex-row">
+            <!-- Language Selection Dropdown -->
+            <mat-form-field *ngIf="isEditMode && showLanguage" style="width: 25% !important">
+              <mat-label>Language *</mat-label>
+              <mat-select formControlName="language" placeholder="Select Language" 
+                         (selectionChange)="onLanguageChange($event)">
+                <mat-option *ngFor="let language of languages" [value]="language">
+                  {{ language }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Language Version Indicator -->
+           
+            <!-- Language Version Management -->
+            <div *ngIf="!showLanguage && isEditMode">
+              <div class="course-version-row mb-6 gap-4">
+                <div *ngIf="selectedLanguage !== 'English'">
+                  <span class="course-version-label">Manage English Course Version:</span>
+                  <button class="edit-buttonslang ml-3" (click)="onLanguageVersionEdit('English')">
+                    Edit
+                  </button>
+                </div>
+
+                <div class="course-version-item" *ngIf="showSpanishVersion && selectedLanguage !== 'Spanish'">
+                  <span class="course-version-label">Manage Spanish Course Version:</span>
+                  <button class="edit-buttonslang" (click)="onLanguageVersionEdit('Spanish')">
+                    Edit
+                  </button>
+                  <!-- <div class="toggle-container">
+                    <span>Inactive</span>
+                    <mat-slide-toggle formControlName="isSpanishActive"></mat-slide-toggle>
+                    <span>Active</span>
+                  </div> -->
+                </div>
+
+                <div class="course-version-item" *ngIf="showFrenchVersion && selectedLanguage !== 'French'">
+                  <span class="course-version-label">Manage French Course Version:</span>
+                  <button class="edit-buttonslang" (click)="onLanguageVersionEdit('French')">
+                    Edit
+                  </button>
+                  <!-- <div class="toggle-container">
+                    <span>Inactive</span>
+                    <mat-slide-toggle formControlName="isFrenchActive"></mat-slide-toggle>
+                    <span>Active</span>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!showLanguage && isEditMode" class="selected-version-indicator mb-4">
+              <span class="font-medium text-primary font-bold">
+                You are editing the {{selectedLanguage}} version
+              </span>
+            </div>
+
+            <!-- Language Checkboxes for New Mode -->
+            <div class="flex flex-row gap-4 mb-4" *ngIf="!isEditMode">
+              <span class="font-medium text-primary font-bold">Select language versions</span>
+              <mat-checkbox formControlName="isSpanish">
+                <span style="font-weight: 500;">Spanish</span>
+              </mat-checkbox>
+              <mat-checkbox formControlName="isFrench">
+                <span style="font-weight: 500;">French</span>
+              </mat-checkbox>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="p-4"></div>
+            <mat-form-field class="flex-auto gt-md:pr-3">
+              <mat-label>Curriculum Name *</mat-label>
+              <input [formControlName]="'name'" matInput>
+              <mat-icon class="icon-size-5" matSuffix></mat-icon>
+            </mat-form-field>
+
+            <mat-form-field class="flex-auto gt-md:pr-3">
+              <mat-label>Curriculum Description</mat-label>
+              <textarea id="training-desc-text-area" matInput rows="4" formControlName="description" maxlength="1000"></textarea>
+              <mat-hint align="end">{{CirriculumManagerForm.get('description').value?.length || 0}}/1000</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <!-- Active/Inactive Toggles -->
+         <!-- Active/Inactive Toggles -->
+          <div class="flex flex-row gap-4" *ngIf="selectedLanguage === 'English'">
+            <div class="mb-2">
+              <mat-checkbox [checked]="CirriculumManagerForm.get('isActive')?.value === true"
+                          (change)="onCheckboxChange(true)">
+                <span style="font-weight: 500;">Active</span>
+              </mat-checkbox>
+            </div>
+            <div class="mb-2">
+              <mat-checkbox [checked]="CirriculumManagerForm.get('isActive')?.value === false"
+                          (change)="onCheckboxChange(false,deletebox)">
+                <span style="font-weight: 500;">Inactive</span>
+              </mat-checkbox>
+            </div>
+          </div>
+
+
+          <!-- Action Buttons -->
+          <div class="flex items-center justify-end mt-8 px-8 py-5">
+            <button (click)="cancel()" class="ml-4" mat-flat-button type="button"
+                    style="background: #98A2A9; color: white;">
+              Cancel
+            </button>
+          
+            <!-- Save button for new creation -->
+            <button *ngIf="!isEditMode && !showLanguage" 
+                    (click)="SaveOrupdateCirriculum()" 
+                    class="ml-4" mat-flat-button type="button"
+                    style="background: #314653; color: white;">
+              Save
+            </button>
+          
+            <!-- Update button for edit mode -->
+            <button *ngIf="isEditMode && !showLanguage" 
+                    (click)="UpdateCirriculum()" 
+                    class="ml-4" mat-flat-button type="button"
+                    style="background: #314653; color: white;">
+              Save 
+            </button>
+          
+            <!-- Save button for language version -->
+            <button *ngIf="showLanguage" 
+                    (click)="UpdateCirriculum()" 
+                    class="ml-4" mat-flat-button type="button"
+                    style="background: #314653; color: white;">
+              Save 
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<ng-template #deletebox>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Inactive Confirmation</h3>
+    <button mat-icon-button (click)="InactiveCurriculumnCan();modalReferenceforSlideDelete.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{Message}}</p>
+    <p> Are you sure you want to make it Inactive?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button (click)="InactiveCurriculumnCan();modalReferenceforSlideDelete.close()" class="cancel-button">Cancel</button>
+    <button mat-button (click)="InactiveCurriculumn(); modalReferenceforSlideDelete.close()" class="delete-button">Inactive</button>
+  </div>
+</ng-template>

@@ -1,0 +1,65 @@
+.containheight {
+    min-height: 75vh;
+}
+
+#training-desc-text-area {
+    border: none;
+  }
+  
+  #training-desc-text-area:focus {   
+    border: none !important;
+  }
+
+    
+  ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: #4f46e5 !important;
+  }
+  ::ng-deep .mat-checkbox .mat-checkbox-layout {
+    white-space: normal;
+    font-weight: 400 !important;
+    color: #242c39;
+    gap: 5px;
+  }
+
+  .flex-buttons-add {
+    display: flex;
+    flex-direction: column; 
+    gap: 16px; 
+  }
+  
+  .course-version-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; 
+    }
+    
+    .course-version-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    }
+    
+    .toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    }
+  
+  .toggle-container span {
+    font-size: 14px;
+    color: #555;
+  }
+  .course-version-label {
+    font-weight: bolder; 
+    color: black; 
+  }
+  .preview-button {
+    background: #859DB9;
+    padding: 4px 12px; 
+    border-radius: 2px;
+    color: white;
+    margin: 0 8px; 
+    font-size: 14px; 
+    font-weight: bold;
+    text-align: center; 
+    }

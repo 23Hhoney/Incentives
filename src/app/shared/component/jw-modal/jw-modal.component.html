@@ -1,0 +1,34 @@
+
+<div class="app-jw-modal class">
+        
+    <div class="app-jw-modal-body" style="width: 25%;">           
+        <ng-content></ng-content>
+        <mat-toolbar class="mat-accent m-0 mail-compose-dialog mt-top">
+                <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+                  <span class="title dialog-title mt-20">Attachments</span>
+                   <button style="margin-left: 145px;" class="mt-20 cl" mat-icon-button (click)="close()" aria-label="Close dialog">
+                    <mat-icon>close</mat-icon>
+                  </button>
+               
+                </mat-toolbar-row>
+        </mat-toolbar> 
+        <div fxLayout="row" *ngFor = "let item of fileData ; let i = index" style="width: 100%; margin-top: 10px;" >
+          <div fxFlex="90"   >
+              <label >{{item.name}}</label>
+          </div>
+          <div fxFlex="10" style="text-align: right;
+          margin-top: -29px;">
+              <button   mat-icon-button color="warn" (click)="removeFile(i);">
+                  <mat-icon style="text-align: right;" color="warn">delete</mat-icon>
+          </button>
+          </div>
+        </div>      
+       
+        <input id="fileN" type="file" class="input-hide" mat-input  (change)="updateRange($event)">
+        <label for="fileN">
+          <mat-icon class="mr-8" color="accent">attach_file</mat-icon><a>Add More Attachments</a>
+        </label>
+        
+     </div>
+</div>
+<div class="app-jw-modal-background"></div>

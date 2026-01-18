@@ -1,0 +1,246 @@
+.container-fluid {
+    max-width: 100% !important;
+}
+.card {
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 6px 6px 20px #00000029;
+}
+
+.col-4 {
+    flex: 0 0 auto;
+    width: 33.33333333%;
+}
+.col-6 {
+    flex: 0 0 auto;
+    width: 50%;
+}
+
+// .custom-icons .bi {
+//     background: #4b72b5;
+//     font-size: 60px;
+//     color: #fff;
+//     padding: 10px;
+//     border-radius: 20px;
+// }
+.custom-icons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.custom-icons .bi {
+  
+    background: #4b72b5;
+    font-size: 60px;
+    color: #fff;
+    padding: 10px;
+    border-radius: 20px;
+}
+#card-main {
+    padding: 30px 0 60px 0;
+}
+section {
+    display: block;
+    unicode-bidi: isolate;
+}
+.row {
+    --bs-gutter-y: 0;
+    display: flex;
+    // flex-wrap: wrap;
+    margin-top: calc(-1* var(--bs-gutter-y));
+    margin-right: calc(-.5* var(--bs-gutter-x));
+    margin-left: calc(-.5* var(--bs-gutter-x));
+}
+.card-video {
+    max-height: 335px !important;
+    width: 100% !important;
+    cursor: pointer;
+    border-radius: 16px;
+}
+.giftcard-instructions {
+    border: 1px solid #bbb;
+    max-width: 850px;
+    border-radius: 15px;
+    margin: auto;
+}
+.giftcards-text {
+    padding-bottom: 5px;
+    font-weight: bold;
+    color: #707070;
+    font-size: 12px;
+    font-family: HelveticaNeueMedium;
+}
+.points-redeem-tb {
+    max-width: 500px;
+    width: 100%;
+    min-width: 200px;
+    height: 65px;
+    text-align: center;
+    border-radius: 5px;
+    border: solid 1px #bcbcbc;
+    font: 20px "HelveticaNeueBold", sans-serif !important;
+}
+#spnDollarToRedeem {
+    color: #00264c !important;
+    padding: 25px 0 30px 0 !important;
+    font-size: 30pt !important;
+}
+.custom-alert {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s, visibility 0.5s;
+    position: fixed;
+    color: white;
+    display: flex;
+    border-radius: 4px;
+    right: -22px;
+    background: #BD362F;
+    width: 0;
+    flex-direction: column;
+    margin: 10px;
+}
+
+.custom-alert.show {
+    width: 302px;
+    right: 0;
+    opacity: 1;
+    visibility: visible;
+}
+.button-redeem {
+    max-width: 450px !important;
+    min-width: 200px;
+    width: 100%;
+    height: 70px !important;
+    background: #00264c !important;
+    text-transform: uppercase !important;
+    font-weight: bold !important;
+    color: #fff !important;
+}
+.card-fine-print {
+    font-size: 10pt;
+    color: #a0a0a0;
+    padding: 20px 40px 20px;
+    text-align: left;
+}
+// =====================
+// =====================
+// =====================
+// =====================
+
+.card-banner {
+    background: url(https://www.kohlerpromotions.com/images/card-banner.png) no-repeat center center !important;
+    flex: calc(50% - 19px);
+    min-height: 515px;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important; 
+}
+
+.clearfix::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+
+.card-blocks-container {
+    padding: 0;
+    font-family: HelveticaNeueMedium;
+}
+
+.card-blocks-container .card-header-container {
+    padding: 50px 20px 0 70px;
+    text-align: left;
+    color: #fff;
+    line-height: 25px;
+    max-width: 660px;
+}
+
+.card-blocks-container .card-header-title {
+    text-transform: none;
+    font-weight: bold;
+    font-size: 35pt;
+    line-height: 45pt;
+    padding-bottom: 20px;
+    font-family: HelveticaNeueMedium;
+}
+
+.card-blocks-container .card-header-description {
+    padding-bottom: 20px;
+    font-size: 18px;
+}
+
+.card-blocks-container .card-header-numbers {
+    font: 20pt "HelveticaNeueMedium", sans-serif;
+    color: #00264c;
+}
+
+.card-blocks-container .card-header-points {
+    padding-bottom: 20px;
+    text-align: left;
+    font-size: 12pt;
+    line-height: 14pt;
+}
+
+.card-blocks-container .card-header-points {
+    padding-bottom: 20px;
+    text-align: left;
+    font-size: 12pt;
+    line-height: 14pt;
+}
+
+.card-blocks-container .card-header-fine-print {
+    padding-left: 70px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    font-size: 10pt;
+    font-style: italic;
+    max-width: 660px;
+    text-align: left;
+    color: #fff;
+    line-height: 11pt;
+}
+
+h1.title {
+    font: 35pt "HelveticaNeueBold", sans-serif !important;
+    color: #00264c !important;
+    text-transform: none !important;
+    margin: 40px 0 40px 0 !important;
+}
+::ng-deep .mat-datepicker-content .mat-calendar {
+    width: 296px;
+    height: fit-content !important;
+}
+
+.example-month-picker .mat-calendar-period-button {
+    pointer-events: none;
+}
+
+.cancel-manage-card {
+    width: 79px;
+    height: 40px;
+    border: 0.5px solid #707070;
+    justify-content: center;
+    border-radius: 8px;
+    align-items: center;
+    color: #04202E;
+    background: white;
+    display: flex;
+}
+.save-manage-card {
+    width: 79px;
+    height: 40px;
+    border: 0.5px solid #707070;
+    justify-content: center;
+    border-radius: 8px;
+    align-items: center;
+    color: white;
+    background: #04202E;
+    display: flex;
+}
+
+.button-redeem.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    }
+    

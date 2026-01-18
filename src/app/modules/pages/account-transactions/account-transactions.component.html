@@ -1,0 +1,299 @@
+<ng-template #transactionDetails>
+    <div>
+        <div style="padding: 0.4rem 0.8rem !important; border-bottom: 1px solid #dee2e6;"
+            class="flex flex-row justify-between">
+            <h5 class="font-normal leading-normal mb-0">Transaction Details</h5>
+            <button mat-icon-button (click)="transactionModal.close()" class="close-button">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div *ngIf="transcationType === 'Credit'" class="row mt-3 px-3">
+            <div class="col">
+                <span class="text-bold">Invoice Date: {{ invoiceDate }}</span>
+            </div>
+            <div class="col">
+                <span class="text-bold">Invoice Number: {{ invoiceNumber }}</span>
+            </div>
+            <div class="col">
+                <span class="text-bold">Total List Price: {{ totalListPrice }}</span>
+            </div>
+            <div class="col">
+                <span class="text-bold">Total Points: {{ totalPoints }}</span>
+            </div>
+            
+        </div>
+        <div *ngIf="transcationType === 'Redemption'" class="row mt-3 px-3">
+            <div class="col">
+                <span class="text-bold">Total Quantity: {{ totalRedemptionQuantity }}</span>
+            </div>
+            <div class="col">
+                <span class="text-bold">Total Points: {{ totalRedemptionPoints }}</span>
+            </div>
+            
+        </div>
+
+        <div class="modal-body">
+            <div class="mt-2">
+                <app-data-grid [gridSettings]="gridColumnsView" [dataSource]="dataSourceForView" [pages]="pagesforView"
+                    [pageIndex]="currentPageforView" [loading]="loading" [sortBy]="sortBy" [sortDirection]="sortDirection"
+                    (fetchPageData)="onPageChangeforView($event)">
+                </app-data-grid>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-primary-outline" data-bs-dismiss="modal"
+                (click)="transactionModal.close()" style="width: 54px; margin-bottom: 0; height: 31px;">Close</button>
+        </div>
+    </div>
+</ng-template>
+
+<div class="w-full mt-6">
+    <div *ngIf="sectionsArray[0]?.items[0]?.text && publishedPage && showPublishedPage; else defaultHeading" [innerHTML]="sanitizeHtml(sectionsArray[0]?.items[0]?.text)"></div>
+    <ng-template #defaultHeading>
+        <h3 class="text-black mt-4 mb-2">Account Transactions</h3>
+    </ng-template>
+    <div class="bg-white" style="border-radius: 5px; box-shadow: 6px 6px 20px #00000029;">
+        <div class="w-full">
+            <div class="d-flex flex-row-reverse p-4 gap-2" style="flex-wrap: wrap;">
+                <ng-container *ngFor="let exportOption of exportOptions">
+                  <button 
+                    class="btn px-3 py-1.5 text-md btn-primary square-btn"
+                    [disabled]="exportOption.isExporting" 
+                    [style.opacity]="exportOption.isExporting ? 0.6 : 1"
+                    (click)="exportTransactionSummaryToExcel(exportOption.type, ManageTaxInformation)">
+                    <i class="fas fa-file-excel me-2"></i> 
+                    {{ exportOption.label }}
+                  </button>
+                </ng-container>
+              </div>
+              
+              <div *ngIf="isExporting" class="mt-3 text-center text-primary">
+                Exporting data, please wait...
+              </div>
+            
+            <div class="display-button-info mt-4 mb-4"
+                style="flex-wrap: wrap; flex-direction: row; display: flex; align-items: center; gap: 8px; padding: 0 12px;">
+                <div style="display: flex;gap: 6px;">
+                    <div class="text-black" style="font-size: 23px; font-weight: bolder!important;">DISPLAY:</div>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button class="btn px-2 py-0.5 btn-sm btn-primary" [style]="{opacity : selectedTypeName === 'all' ? '1' : '0.5'}"
+                            (click)="TransactionsPaginationType('all')">
+                            
+                            All Transactions
+                        </button>
+                        <button class="btn px-2 py-0.5 btn-primary-outline btn-sm"
+                            [style]="{ opacity: selectedTypeName === 'Redemption' ? 1 : 0.5 }"
+                            (click)="TransactionsPaginationType('Redemption')">Redemption</button>
+                        <button class="btn px-2 py-0.5 btn-sm btn-primary"
+                            [style]="{ opacity: selectedTypeName === 'credit' ? 1 : 0.5 }"
+                            (click)="TransactionsPaginationType('credit')">Credit</button>
+                    </div>
+                </div>
+                <div class="ml-auto">
+                    <button *ngIf="filtersApplied" class="btn px-2 py-1 btn-black-outline btn-sm"
+                        (click)="resetFilters()">Reset Display Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- <button class="btn btn-primary-outline p-2 ml-2" >
+            {{ showFilter ? 'Hide' : 'Show' }} Filters
+        </button> -->
+        <div class="ml-4">
+            <div style="align-items: center; display: flex; gap: 10px">
+                <h3 style="font-size: 18px; font-weight: 900;">Date Filter</h3>
+                <mat-icon class="text-base leading-3 h-0.5" (click)="toggleFilter()" style="cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                    </svg>
+                </mat-icon>
+            </div>
+        </div>
+
+
+        <div class="transaction-block grid-cols-12 gap-4 w-full filter-section" >
+            <div class="col-span-5 p-3 filter-block" [formGroup]="formFilter" *ngIf="showFilter">
+
+                <div>
+                    <div style="display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 5px 10px;
+                    border: 1px solid #dee2e6;
+                    border-radius: 1rem 1rem 0 0;" [ngStyle]="dateProcessedFlag ? {'color': '#0c63e4', 'background': '#cee2ff', 'transition': 'color 0.3s, background 0.3s'} : {'transition': 'color 0.3s, background 0.3s'}">
+                        <h4 style="font-size: 18px; font-weight: 900;">Date Processed</h4>
+                        <span style="cursor: pointer;">
+                            <mat-icon [ngClass]="{
+                                'rotate': true,
+                                'rotate-up': dateProcessedFlag,
+                                'rotate-down': !dateProcessedFlag
+                              }" (click)="dateProcessedFlag = !dateProcessedFlag" [class]="'btn-color-500'" [svgIcon]="'heroicons_solid:caret-up'"></mat-icon>
+                        </span>
+                    </div>
+                    <div [ngClass]="{
+                        'date-block': true,
+                        'show-date-block': dateProcessedFlag,
+                        'hide-date-block': !dateProcessedFlag
+                      }">
+                        <div style="border-bottom: 1px solid #acafb2; position: relative; margin-bottom: 15px; padding: 10px 0;">
+                            <div class="mb-3 row custom-date mt-4">
+                                <div class="grid grid-cols-12 gap-4 w-full">
+                                    <label for="" style="font-weight: 500; display: flex; align-items: center" class="sm:col-span-4 col-span-4 col-form-label">Start</label>
+                                    <div class="sm:col-span-8 col-span-8">
+                                        <app-date-pickers
+                                            [formGroup]="formFilter"
+                                            [placeholder]="'mm-dd-yyyy'"
+                                            formElementName="ProccesedDateStart"
+                                        ></app-date-pickers>
+                                    <!-- <input type="date" class="form-control" formControlName="ProccesedDateStart" id="" value="01/12/2023"> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 row custom-date mb-4">
+                                <div class="grid grid-cols-12 gap-4 w-full">
+                                    <label for="" style="font-weight: 500; display: flex; align-items: center" class="sm:col-span-4 col-span-4 col-form-label">End</label>
+                                    <div class="sm:col-span-8 col-span-8">
+                                        <app-date-pickers
+                                            [formGroup]="formFilter"
+                                            [placeholder]="'mm-dd-yyyy'"
+                                            formElementName="ProccesedDateEnd"
+                                        ></app-date-pickers>
+                                    <!-- <input type="date" class="form-control" formControlName="ProccesedDateEnd" id="" value="03/12/2023"> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div style="display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 5px 10px;
+                    border: 1px solid #dee2e6;
+                    border-radius: 1rem 1rem 0 0;" [ngStyle]="dateOfSaleFlag ? {'color': '#0c63e4', 'background': '#cee2ff', 'transition': 'color 0.3s, background 0.3s'} : {'transition': 'color 0.3s, background 0.3s'}">
+                        <h4 style="font-size: 18px; font-weight: bold;">Date of Sale</h4>
+                        <span style="cursor: pointer;">
+                            <mat-icon [ngClass]="{
+                                'rotate': true,
+                                'rotate-up': dateOfSaleFlag,
+                                'rotate-down': !dateOfSaleFlag
+                              }" (click)="dateOfSaleFlag = !dateOfSaleFlag" [class]="'btn-color-500'" [svgIcon]="'heroicons_solid:caret-up'"></mat-icon>
+                        </span>
+                    </div>
+                    <div [ngClass]="{
+                        'date-block': true,
+                        'show-date-block': dateOfSaleFlag,
+                        'hide-date-block': !dateOfSaleFlag
+                      }">
+                        <div style="border-bottom: 1px solid #acafb2; position: relative; margin-bottom: 15px; padding: 10px 0;">
+                            <div class="mb-3 row custom-date mt-4">
+                                <div class="grid grid-cols-12 gap-4 w-full">
+                                    <label for="" style="font-weight: 500; display: flex; align-items: center;" class="sm:col-span-4 col-span-4 col-form-label">Start</label>
+                                    <div class="sm:col-span-8 col-span-8">
+                                        <app-date-pickers
+                                            [formGroup]="formFilter"
+                                            [placeholder]="'mm-dd-yyyy'"
+                                            formElementName="SaleDateStart"
+                                        ></app-date-pickers>
+                                    <!-- <input style="background-color: #dddddd; color: #4c4c4c;" type="date" class="form-control" formControlName="SaleDateStart" customDatePipe id="" value="01/12/2023"> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 row custom-date mb-4">
+                                <div class="grid grid-cols-12 gap-4 w-full">
+                                    <label for="" style="font-weight: 500; display: flex; align-items: center" class="sm:col-span-4 col-span-4 col-form-label">End</label>
+                                    <div class="sm:col-span-8 col-span-8">
+                                        <app-date-pickers
+                                            [formGroup]="formFilter"
+                                            [placeholder]="'mm-dd-yyyy'"
+                                            formElementName="SaleDateEnd"
+                                        ></app-date-pickers>
+                                    <!-- <input type="date" class="form-control" formControlName="SaleDateEnd" id="" value="01/12/2023"> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="mt-3 text-center flex">
+                        <button class="btn px-3 py-1.5 btn-primary-outline text-lg" (click)="resetFitler()">Reset</button>&nbsp;
+                        <button class="btn px-3 py-1.5 btn-primary text-lg" (click)="OnApplyFilter('all')">Apply</button>
+                    </div>
+                </div>
+            </div>
+            <div class=" w-full p-3" style="overflow-x: auto;" [ngClass]="{'col-span-7': showFilter, 'col-span-12':!showFilter}">
+                <div class="flex flex-row flex-wrap">
+                    <div *ngIf="filterTags && filterTags.length" class="font-normal" style="align-items: center; display: flex;">
+                        Results:
+                    </div>
+                    <div class="flex flex-wrap items-center">
+                        <ng-container *ngIf="filterTags && filterTags.length">
+                          <div class="flex flex-wrap items-center mx-1">
+                            <ng-container *ngFor="let label of filterTags; trackBy: trackByFn">
+                              <div *ngIf="label?.value"
+                                   class="flex items-center m-1 py-0.5 px-3 rounded-full text-md font-medium text-gray-500 cus-background-tags h-8 !important">
+                                <mat-icon 
+                                    [svgIcon]="'e-remove'" 
+                                    class="mr-2 text-black" 
+                                    style="cursor: pointer; fill: black;" 
+                                    (click)="removeFilterLabel(label)">
+                                </mat-icon>
+                                <div style="color: black;">
+                                  {{label.title}} {{label.value}}
+                                </div>
+                              </div>
+                            </ng-container>
+                          </div>
+                        </ng-container>
+                      </div>
+                      
+                </div>
+                <app-data-grid
+                    [gridSettings]="gridColumns"
+                    [enableRowClick]="true"
+                    [dataSource]="dataSource"
+                    [pages]="pages"
+                    [pageIndex]="currentPage"
+                    [loading]="loading"
+                    [sortBy]="sortBy"
+                    [sortDirection]="sortDirection"
+                    (fetchPageData)="onPageChange($event)"
+                    (sortChangeClick)="handleSortChange($event)"
+                    (linkClick)="handleRowClick($event)"
+                    (buttonClick)="handleButtonClick($event)">
+                </app-data-grid>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #ManageTaxInformation>
+    <div class="flex flex-row justify-between items-center" style="padding: 0.4rem 0.8rem !important; border-bottom: 1px solid #dee2e6;">
+      <div class="font-normal" style="font-size: 1rem; line-height: 1.5; font-family: HelveticaNeueBold; padding-top: 3px">Export Data Yearly</div>
+      <mat-icon style="font-size: 17px; cursor: pointer;" (click)="modal.close()">close</mat-icon>
+    </div>
+    <mat-dialog-content user-tax-info-upload-mat-dialog-content class="flex flex-col w-full">
+      <form [formGroup]="manageTaxInformationForm">
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Year</mat-label>
+          <mat-select formControlName="year">
+            <mat-option *ngFor="let year of yearsArray" [value]="year">{{ year }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions class="flex gap-4 m-0 px-4 py-0" align="end" style="border-top: 1px solid #dee2e6">
+      <button type="button" style="padding: 0.375rem 0.75rem;background-color: #4271e2 !important;"
+      class="btn btn-secondary" data-bs-dismiss="modal" (click)="handleCancelManageTaxModal()">Close</button>
+      <button type="button" style="padding: 0.375rem 0.75rem;" class="btn btn-primary mat-custom-loader"
+             (click)="saveUserTaxDocument()"  [disabled]="isUploadingTaxInformation || isDownloading">
+            <mat-progress-spinner *ngIf="isUploadingTaxInformation || isDownloading" [diameter]="21"
+                [mode]="'indeterminate'"></mat-progress-spinner>
+            <span *ngIf="!isDownloading">Download</span>
+            <span *ngIf="isDownloading">Downloading Data...</span>
+        </button>
+    </mat-dialog-actions>
+  </ng-template>
+

@@ -1,0 +1,44 @@
+<div [ngClass]="containerClasses">
+    <mat-label class="font-weight-700">{{label}}:</mat-label>
+    <div fxLayout="row" class="fullSide">
+        <div class="leftSide" style="width: 30%">
+          <ul>
+            <li *ngFor="let ele of data"><a (click)="labelSelect(ele)" [ngClass]="{'active': ele?.selected}">
+                <mat-icon *ngIf="ele.selected" class="mat-icon-custom">check</mat-icon>
+                <mat-icon *ngIf="!ele.selected" class="mat-icon-custom"></mat-icon> {{ele.label}}</a></li>
+            
+          </ul>
+        </div>
+        <div class="rightSide" style="width: 70%">
+          <div class="search" style="width: 100%">
+            <div class="checkBox"  style="width: 10%">
+              <mat-checkbox [(ngModel)]="selectAll" (click)="doSelectAll()"></mat-checkbox>
+            </div>
+            <div style="width: 90%; margin-right: 3%">
+              <div class="search-area">
+                <mat-icon>search</mat-icon>
+                <input [placeholder]="'Search for ' + activeOption.label" [(ngModel)]="searchText" class="search-input">
+                <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                  <mat-option *ngFor="let ele of activeOption.options" [value]="ele.id">
+                    {{ele.value}} 
+                  </mat-option>
+                </mat-autocomplete> -->
+              </div>
+            </div>
+          </div>
+          <div class="searchResult" style="width: 100%">
+            <div  style="width: 100%">
+              <div *ngFor="let ele of activeOption.options | applicableFilter : searchText" class="searchText">
+                <span>
+                  <mat-checkbox [(ngModel)]="ele.checked" (click)="checkboxClicked()"></mat-checkbox>
+                </span>
+                <span class="ml-8">
+                  {{ele.value}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+

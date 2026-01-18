@@ -1,0 +1,207 @@
+.dialog-header {
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.close-button {
+    margin-left: auto;
+    justify-content: flex-start;
+}
+
+.dialog-header h3 {
+    margin: 0;
+}
+
+.cdk-global-overlay-wrapper {
+    display: flex;
+    position: absolute;
+    z-index: 1000;
+    align-items: center !important;
+}
+
+::ng-deep .mat-datepicker-content .mat-calendar {
+    width: 296px;
+    height: 100% !important;
+}
+::ng-deep .mat-datepicker-content .mat-calendar {
+    width: 296px;
+    height: fit-content !important;
+}
+::ng-deep .mat-datepicker-popup {
+    top: 0 !important;
+    overflow-y: auto;
+    @media only screen and (max-width: 620px) {
+        left: 0 !important;
+        overflow: auto;
+    }
+}
+::ng-deep body.light .mat-datepicker-content, body .light .mat-datepicker-content {
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    background-color: white;
+    color: #1e293b;
+    height: 100% !important;
+    overflow: auto;
+    display: flex;
+    gap: 10px;
+}
+::ng-deep .mat-datepicker-content .time-container {
+    display: flex;
+    position: relative;
+    padding-top: 15px !important;
+    justify-content: center;
+}
+::ng-deep .mat-datepicker-content .actions {
+    display: flex;
+    padding: 25px 5px 10px 0 !important;
+    justify-content: flex-end;
+}
+::ng-deep #editor1 .ck.ck-editor__editable_inline {
+    height: 200px !important;
+}
+::ng-deep #editor1 .ck.ck-editor {
+    position: relative;
+    border-radius: 6px;
+    border: 2px solid #04202E;
+}
+::ng-deep .ck.ck-balloon-panel.ck-balloon-panel_visible {
+    display: none;
+}
+::ng-deep .ngx-mat-timepicker-spacer {
+    padding-bottom: 5px;
+}
+::ng-deep .mat-form-field.mat-form-field-appearance-fill.fuse-mat-dense.fuse-mat-rounded .mat-form-field-wrapper .mat-form-field-flex {
+    border-radius: 4px;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0px;
+    z-index: 1000;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: flex-end;
+    display: flex;
+    opacity: 1;
+    opacity: 0.52;
+    background-color: #435971 !important;
+}
+.refresh-icon {
+    cursor: pointer;
+    height: 30px;
+    width: 50px;
+}
+.model-content {
+    box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12), 0 11px 15px -7px rgba(0, 0, 0, 0.2) !important;
+    border-radius: 4px 0 0 4px !important;
+    border: solid 1px white;
+    background: white;
+    // height: calc(100vh - 108px);
+    bottom: 10px;
+    position: fixed;
+    top: 75px;
+    // right: 0;
+    margin-right: 10px;
+    margin-left: 10px;
+    z-index: 1000;
+    width: 100%;
+    min-width: 230px;
+    max-width: 500px;
+    min-height: 300px;
+    max-height: 80vh;
+    height: fit-content;
+    display: flex;
+    opacity: 1;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.close-model {
+    color: #a2a4a7;
+    cursor: pointer;
+    font-size: 18px;
+}
+.close-model:hover {
+    color: black;
+}
+.dialog-transition {
+    transition: opacity 0.5s ease-in-out;
+}
+.closed-dialog {
+    height: 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    position: fixed;
+    right: 0;
+    min-height: 0 !important;
+    opacity: 0;
+}
+.close-button {
+    background-color: #8bbaf2;
+    border: 0px solid #FFF;
+    transition: background-color .2s ease-out;
+    text-align: center;
+    text-decoration: none;
+    letter-spacing: .5px;
+    color: #fff !important;
+    margin-right: 5px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 20px rgb(1 41 112 / 10%);
+    height: 36px;
+    width: 65px;
+    font-size: 16px;
+}
+.close-button:hover {
+    background-color: #79aff0;
+}
+.upload-container-body {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    @media only screen and (max-width:620px) {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+}
+.cancel-button {
+    background: #37649F !important;;
+    color: white !important;;
+    margin-right: 20px; /* Adds gap between Cancel and Delete buttons */
+  }
+  
+  .delete-button {
+    background: #000000 !important;;
+    color: white !important;;
+  }
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .dialog-title {
+    margin: 0;
+    flex: 1; 
+  }
+  
+  .close-buttond {
+    margin-left: auto; 
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+::ng-deep [mat-sort-header].cdk-program-focused .mat-sort-header-container {
+    border-bottom: none !important;
+  }
+
+  #desc-text-area {
+    border: none;
+  }
+  
+  #desc-text-area:focus {   
+    border: none !important;
+  }

@@ -1,0 +1,622 @@
+:host {
+    display: block;
+    height: 100%;
+  }
+  
+  // Button hover effects
+  button:hover {
+    opacity: 0.9;
+  }
+  
+  // Dropdown menu hover effects
+  [ngStyle] button:hover {
+    background-color: #f5f5f5;
+  }
+  
+  // Prevent text selection during drag operations
+  .editor-container {
+    user-select: none;
+  }
+  
+  // Ensure canvas takes full height
+  .canvas {
+    min-height: calc(100vh - 60px);
+  }
+
+  /* Toggle Switch Container */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+/* Hide the default checkbox */
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Toggle Slider */
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+/* Toggle Slider Circle */
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+/* When the toggle is checked */
+.toggle-switch input:checked + .toggle-slider {
+  background-color: #007bff; /* Change to your preferred color */
+}
+
+/* Move the slider circle when checked */
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+/* Disabled state */
+.toggle-switch input:disabled + .toggle-slider {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+.toggle-switch input:disabled + .toggle-slider::before {
+  background-color: #f8f9fa;
+}
+.dialog-headers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  color: #000000;
+}
+
+.modal-footer {
+  float: right;
+}
+.delete-button {
+  background: #000000 !important;;
+  color: white !important;;
+}
+.cancel-button {
+  background: #37649F !important;;
+  color: white !important;;
+  margin-right: 20px; /* Adds gap between Cancel and Delete buttons */
+}
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: white; /* Ensure readability */
+}
+
+.cropper-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.cropper-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 500px;
+  max-height:  calc(100vh - 40px);
+  overflow: auto;
+  pointer-events: auto;
+}
+.cropper-overlay ~ * {
+  pointer-events: none;
+}
+.cropper-active {
+  pointer-events: none;
+}
+
+/* Ensure the cropper container is interactive */
+.cropper-container * {
+  pointer-events: auto;
+}
+
+.image-cropper-wrapper {
+  width: 100%;
+  height: auto; /* Changed from fixed height to auto */
+  // min-height: 400px; /* Minimum height */
+  // max-height: 70vh; /* Maximum height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Add this to ensure the cropper maintains proper dimensions */
+::ng-deep .cropper {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 70vh !important;
+}
+
+::ng-deep .source-image {
+  max-width: 100% !important;
+  max-height: 70vh !important;
+  object-fit: contain !important;
+}
+
+.active {
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+@media (max-width: 768px) {
+  .cropper-container {
+    width: 95%;
+    padding: 15px;
+    max-height: 90vh;
+  }
+  
+  .image-cropper-wrapper {
+    height: 50vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .cropper-container {
+    width: 98%;
+    padding: 10px;
+  }
+  
+  .image-cropper-wrapper {
+    height: 40vh;
+  }
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.video-wrapper iframe,
+.video-wrapper video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Add a subtle hover effect to make selection easier */
+.element-container {
+  transition: background-color 0.2s ease;
+}
+
+.element-container:hover {
+  background-color: rgba(50, 115, 220, 0.05);
+}
+
+.active {
+  background-color: #e0e0e0 !important;
+  border-color: #aaa !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  background-color: #f5f5f5;
+}
+
+div[style*="display: flex"] {
+  flex-wrap: wrap;
+}
+
+// Make sure the active state is clearly visible
+button.active strong,
+button.active em,
+button.active u {
+  color: #000;
+}
+::ng-deep .ck.ck-editor__editable_inline>:last-child {
+  margin-bottom: 0px !important;
+}
+::ng-deep .ck.ck-editor__editable_inline>:first-child {
+  margin-top: 0px !important;
+  margin-top: var(--ck-spacing-large);
+}
+::ng-deep .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+  border: solid var(--ck-color-base-border);
+  border-width: 1px 1px 0;
+  border: none !important;
+}
+
+::ng-deep .cke_editable ol {
+  list-style: decimal !important;
+}
+:host ::ng-deep ul {
+  list-style-type: disc !important;
+  padding-left: 20px !important;
+}
+
+:host ::ng-deep ol {
+  list-style-type: decimal !important;
+  padding-left: 20px !important;
+}
+
+::ng-deep.cke_editable ol {
+  list-style-type: decimal !important;
+  padding-left: 20px !important;
+  list-style: decimal !important;
+}
+
+::ng-deep.cke_editable ul {
+  list-style-type: disc !important;
+  padding-left: 20px !important;
+  list-style: disc !important;
+}
+::ng-deep .mat-calendar-content {
+  padding: 0 8px 8px 8px;
+  outline: none;
+  background: white !important;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.loading-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(
+    
+    
+    
+    360deg); }
+  }
+
+::ng-deep .cke_combopanel__fontsize .cke_panel_block .cke_panel_listItem a {
+  font-size: 13px !important;
+  font-family: Arial, sans-serif !important;
+  color: #333 !important;
+  line-height: 1.5 !important;
+  text-align: center !important;   /* center the numbers */
+  font-weight: 500 !important;
+  letter-spacing: 0.5px;
+}
+
+::ng-deep .ck-editor__editable_inline {
+  min-height: 400px !important;
+  width: 100% !important;
+}
+
+.ck .ck-list__item__text {
+  font-size: 14px !important; /* Keep all labels same visual size */
+  line-height: 1.6 !important; /* Equal height between options */
+}
+/* Keep dropdown within modal boundaries */
+.ck.ck-dropdown__panel {
+  position: absolute !important;
+  z-index: 9999 !important;
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+}
+
+// ============ Angular Editor Text Editor Styles ============
+
+/* Hide the built-in angular-editor color picker */
+::ng-deep .ae-picker[title="Text Color"],
+::ng-deep .ae-picker[title="Background Color"],
+::ng-deep .angular-editor-toolbar .ae-picker:has(.ae-picker-label[title*="color" i]) {
+  display: none !important;
+}
+
+.home-text-editor .angular-editor-textarea[contenteditable="false"] {
+  background-color: #e3e3e3 !important;
+}
+
+/* Custom Color Picker Styles */
+.color-picker-dropdown {
+  position: relative;
+}
+
+.color-btn {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 2px 8px !important;
+  min-width: 30px !important;
+  height: 28px !important;
+}
+
+.color-icon {
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.color-icon.bg-icon {
+  font-size: smaller;
+  background: #1b1b1b;
+  color: #fff;
+  padding: 3px;
+}
+
+.color-bar {
+  width: 16px;
+  height: 3px;
+  margin-top: 1px;
+}
+
+.custom-color-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10000;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  min-width: 180px;
+}
+
+.custom-color-picker.figma-picker {
+  width: 250px !important;
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  background: white;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+@media only screen and (max-width: 576px) {
+  .custom-color-picker.figma-picker {
+  width: 150px !important;  
+}
+}
+.color-canvas-wrapper {
+  width: 100%;
+  margin-bottom: 12px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.color-canvas {
+  width: 100%;
+  height: 140px;
+  border-radius: 6px;
+  position: relative;
+  cursor: crosshair;
+}
+
+.saturation-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, #fff, transparent);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.brightness-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent, #000);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.color-cursor {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hue-slider-wrapper {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 0 3px;
+}
+
+.hue-slider {
+  width: 100%;
+  height: 14px;
+  border-radius: 7px;
+  background: linear-gradient(to right, 
+    #ff0000 0%, 
+    #ffff00 17%, 
+    #00ff00 33%, 
+    #00ffff 50%, 
+    #0000ff 67%, 
+    #ff00ff 83%, 
+    #ff0000 100%
+  );
+  position: relative;
+  cursor: pointer;
+  overflow: visible;
+}
+
+.hue-cursor {
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 18px;
+  background: white;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.2);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.apply-color-btn {
+  width: 100%;
+  padding: 10px 12px;
+  background: #3273dc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.apply-color-btn:hover {
+  background: #2366d1;
+}
+
+::ng-deep .angular-editor-toolbar {
+  input[type=color]:not(.color-picker):not(.color-input-large) {
+    display: initial !important;
+    position: absolute;
+    visibility: hidden;
+    border: none;
+    margin: 0;
+    padding: 0;  
+    height: 0;
+    width: 0;
+  }
+}
+
+::ng-deep .angular-editor-textarea {
+  resize: none !important;
+  max-height: 400px !important;
+  cursor: auto !important;
+  background-color: #fff !important;
+}
+
+::ng-deep .angular-editor-toolbar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+::ng-deep .angular-editor-toolbar-set {
+  display: inline-flex !important;
+  align-items: center !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+}
+
+.ae-select-dropdown {
+  position: relative;
+  display: inline-block;
+  margin: 0 1px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  z-index: 100;
+  background-color: #fff;
+  vertical-align: middle;
+  border: 1px solid #ddd;
+  min-width: 2rem;
+}
+
+.size-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  min-width: 100px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  
+  button {
+    display: block;
+    width: 100%;
+    padding: 6px 10px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    
+    &:hover {
+      color: #06c !important;
+      background-color: #fffaad !important;
+    }
+    
+    &.active {
+      color: #06c !important;
+      background-color: #fffaad !important;
+    }
+  }
+}
+
+.angular-editor-button {
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}

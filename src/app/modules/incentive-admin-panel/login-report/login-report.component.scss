@@ -1,0 +1,155 @@
+.date-selection-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.date-row {
+  display: flex;
+  align-items: flex-start; 
+  justify-content: space-between;
+  flex-wrap: wrap; 
+}
+
+.date-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.date-fields {
+  display: flex;
+  gap: 1rem;
+}
+
+.field-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.and-text {
+  font-weight: bold;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.radio-label {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.mat-form-field {
+  width: 100%; 
+}
+
+.half-width {
+  width: 100%;
+}
+
+.user-fields-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.reduced-width {
+  width: 350px; /* Adjust this value as needed */
+}
+
+@media (max-width: 1024px) {
+  .date-row {
+    flex-direction: column; 
+  }
+
+  .date-fields, .user-fields-row {
+    flex-direction: column; 
+    width: 100%;
+  }
+
+  .field-container {
+    width: 100%;
+  }
+}
+
+::ng-deep .mat-datepicker-content .mat-calendar {
+  width: 296px !important;
+  height: 428px !important;
+}
+
+.user-id-search {
+  text-decoration: underline;
+  position: absolute;
+  top: -25px;
+  right: 0;
+  cursor: pointer;
+  color: #0D78C9;
+}
+::ng-deep .mat-form-field[login-report-mat-fields].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix .mat-form-field-label-wrapper {
+  top: -25px;
+  height: auto;
+  padding-top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.download-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.download-csv-btn {
+  background-color: #04202E;
+  color: white;
+  width: 170px;
+  height: 36px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.download-csv-btn .icon {
+  margin-right: 8px;
+}
+
+.download-csv-btn svg {
+  fill: black;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.full-width {
+  width: 49%;
+}
+::ng-deep .mat-form-field[login-report-mat-fields].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+  min-height: 35px;
+  height: 35px;
+}
+::ng-deep .mat-form-field[login-report-mat-fields].mat-form-field-appearance-fill .mat-form-field-wrapper {
+  margin-bottom: 0 !important;
+  padding-bottom: 0;
+}
+::ng-deep .mat-form-field[login-report-mat-fields].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix .mat-input-element {
+  padding: 0 0 !important;
+  height: 35px;
+  margin-top: 0;
+  width: 100%;
+}
+
+::ng-deep .mat-form-field[login-report-user-id-search].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+  min-height: 35px;
+  height: 35px;
+  padding-left: 5px;
+}
+
+.full-width {
+  width: 48%;
+}

@@ -1,0 +1,53 @@
+.containheight {
+    min-height: 75vh;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .close-button {
+    color: #000000;
+  }
+  
+  .modal-footer {
+    float: right;
+  }
+  
+  .cancel-button {
+    background: #37649F !important;;
+    color: white !important;;
+    margin-right: 20px; /* Adds gap between Cancel and Delete buttons */
+  }
+  
+  .delete-button {
+    background: #000000 !important;;
+    color: white !important;;
+  }
+
+  ::ng-deep .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+    border: #fff;
+    border-width: 1px 1px 0;
+  }
+
+::ng-deep .mat-tab-group[custom-mat-tab] {
+  .mat-tab-body-content {
+    padding: 24px 0px 24px 0px !important;
+  }
+  .mat-tab-label-container {
+    padding: 0px !important;
+  }
+} 
+
+.bulk-update-btn-cus {
+  width: 124px;
+  height: 36px;
+  padding: 7px 11px 7px 12px;
+  gap: 0px;
+  border-radius: 6px;
+  opacity: 1.4;
+  background: #04202E;
+  color: #FFFFFF; 
+}

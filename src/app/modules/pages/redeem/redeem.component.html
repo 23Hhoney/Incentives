@@ -1,0 +1,217 @@
+<div class="shadow-2xl custom-alert" [ngClass]="{'show': showCustomAlert}">
+    <div style="width: inherit; display: flex; align-items: center; flex-direction: row; gap: 5px; padding: 20px 10px;">
+        <button mat-icon-button class="close-button" (click)="showCustomAlert = false">
+            <mat-icon style="color: white;">cancel</mat-icon>
+        </button>
+        <div style="width: calc(100% - 56px);">
+            Something went wrong. Please try again, or contact support at <a style="word-wrap: break-word; color: #afcfff !important;" href="mailto: tritonsupport@kohlerpreferredpartners.com">tritonsupport@kohlerpreferredpartners.com</a>.
+        </div>
+    </div>
+</div>
+<div class="container mx-auto mt-6" *ngIf="!loadSettings">
+    <section id="card-header" class="card-banner clearfix">
+        <div class="card-blocks-container clearfix">
+            <div class="card-header-container flex-desktop flex-wrap clearfix">
+                <div class="card-header-title">KOHLER Rewards<br>Prepaid Mastercard<sup>®</sup></div>
+                <div class="clearfix"></div>
+                <div class="card-header-description">
+                    Congratulations! You have <span class="card-header-numbers">${{formatNumberWithCommas(remainingBalance)}}</span> worth of Kohler Preferred Partner Rewards points that you can load onto your KOHLER Rewards Prepaid Mastercard!
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 card-header-points">
+                        <div id="dvSpendablePointsPPC" class="card-header-numbers">{{formatNumberWithCommas(remainingPoints)}}</div>
+                        Your Total Kohler Preferred Partner Points
+                    </div>
+
+                    <div class="col-sm-4 card-header-points">
+                        <div class="card-header-numbers">{{formatNumberWithCommas(remainingPoints)}}</div>
+                        Your Total Points Available for Card Load*
+                    </div>
+
+                    <div class="col-sm-4 card-header-points">
+                        <div class="card-header-numbers">${{formatNumberWithCommas(remainingBalance)}}</div>
+                        Value of Available Points
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="card-header-fine-print flex-desktop flex-wrap clearfix">
+                *Kohler Preferred Partner Rewards Points become eligible for redemption on your KOHLER Rewards Prepaid Mastercard® as soon as they’re deposited in your account, you’ve submitted a W9 form, and you’re up-to-date on all required training courses. There is a minimum of 131 points and a maximum of 12,827 points per redemption transaction.
+            </div>
+        </div>
+    </section>    
+    <!-- <h3 class="text" style="font-size: 1.5rem;">How it Works :</h3> -->
+    <h1 class="title text-center" style="margin: 40px 0 40px 0 !important;">How it Works:</h1>
+    <section id="card-main" style="justify-content: center; display: flex;">
+        <div class="row" style="flex-wrap: wrap; gap: 20px; width: 100%; align-items: center; justify-content: center;">
+            <div class="col-sm-6 text-center" style="max-width: 600px; margin-bottom: .5rem;">
+                <div class="giftcard-instructions rounded-2xl">
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 mb-4">
+                        <div class="h-full p-4">
+                            <div class="custom-icons mb-4">
+                                <img style="height: 61px; width: 86px;" src="assets/images/card-reload-img.png" alt="">
+                            </div>
+                            <p class="giftcards-text">Your KOHLER Rewards Prepaid Mastercard can be reloaded with Kohler Preferred Partner Rewards points easily, at any time via the interface below</p>
+                        </div>
+                        <div class="h-full p-4">
+                            <div class="custom-icons mb-6">
+                                <img style="height: 52px; width: 79px;" src="assets/images/card-card-img.png" alt="">
+                            </div>
+                            <p class="giftcards-text">Loaded funds are available on your card almost immediately</p>
+                        </div>
+                        <div class="h-full p-4" style="padding: 0 1.5rem;">
+                            <div class="custom-icons mb-4">
+                                <img style="height: 64px; width: 64px;" src="assets/images/card-cart2-img.png" alt="">
+                            </div>
+                            <p class="giftcards-text">You can purchase anything, anywhere that Mastercard is accepted in the country!</p>
+                        </div>
+                    </div>
+                    <div class="" style="border-top: 1px solid #bbb; padding: 10px 1.5rem;">        
+                        <div class="flex space-x-8" style="flex-direction: column; text-align: left !important;">
+                            <a [routerLink]="['/reedem-neocurrency-learn-more']" style="margin-bottom: .5rem; cursor: pointer; width: fit-content; color: #416fb6 !important; font-family: HelveticaNeueMedium !important; font-size: 14px !important; margin-left: 0 !important;" class="text-blue-500">
+                                LEARN MORE  
+                                <i class="fa fa-angle-double-right" style="color: #416fb6;" aria-hidden="true"></i>
+                            </a>
+                            <a [routerLink]="['/redeem-neocurrency-faq']" style="margin-bottom: .5rem; width: fit-content; color: #416fb6 !important; font-family: HelveticaNeueMedium !important; font-size: 14px !important; margin-left: 0 !important;" class="text-blue-500">
+                                FAQ
+                                <i class="fa fa-angle-double-right" style="color: #416fb6;" aria-hidden="true"></i>
+                            </a>
+                            <a (click)="openDialog(RedeemCard)" style="margin-bottom: .5rem; cursor: pointer; width: fit-content; color: #416fb6 !important; font-family: HelveticaNeueMedium !important; font-size: 14px !important; margin-left: 0 !important;" class="text-blue-500">
+                                VIEW BALANCE & MANAGE MY CARD
+                                <i class="fa fa-angle-double-right" style="color: #416fb6;" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="flex-1 p-4" style="padding-top: 0 !important;">
+                    <div class="video-box" (click)="openCardVideo()">
+                        <img src="assets/images/video.png" class="card-video rounded-2xl" alt="banner"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <h1 class="title text-center" *ngIf="!paymentSuccessfull" style="margin: 25px 0 40px 0 !important;">Obtain / Load My Card Now</h1>
+
+    <div class="p-6 mb-4" style="padding-top: 0 !important;" *ngIf="!paymentSuccessfull; else NoPaymentBlock">
+        <div class="flex flex-col md:flex-row">
+            <div class="flex-1 p-4">
+                <!-- <h3 class="text-center text-2xl font-bold mb-4">Obtain/Load My Card Now</h3> -->
+                <form>
+                    <div class="mb-3 text-center">
+                        <input [min]="131" [max]="12827" onkeydown="if(event.key==='.'){event.preventDefault();}" onpaste="let pasteData = event.clipboardData.getData('text'); if(pasteData){pasteData.replace(/[^0-9]*/g,'');} " type="number" class="points-redeem-tb" [min]="0" id="" [formControl]="redeemedPoints" #redeemPoints aria-describedby="emailHelp" placeholder="Enter points">
+                        <div class="mt-2 mb-4 text-center text-gray-600">
+                            minimum 131 points and maximum of 12,827 points per transaction  
+                        </div>
+                        <h3 id="spnDollarToRedeem" class="text-center text-success">
+                            ${{redeemedBalance ? formatNumberWithCommas(redeemedBalance) : 0.00}}
+                        </h3>
+                        <div class="text-center space-x-4">
+                            <button type="button" class="button-redeem" (click)="redeemPointsBalance()" 
+                            [disabled]="isSubmitting" 
+                            [ngClass]="{'disabled': isSubmitting}">
+                            Redeem Now
+                            </button>
+                            </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <ng-template #NoPaymentBlock>
+        <section id="card-main-form" style="display: flex; flex-direction: column; gap: 10px;">
+            <h2 style="text-align: center; color: #2a66c2 !important;">{{redeemedPoints.value}} points successfully redeemed for ${{formatNumberWithCommas(redeemedBalance)}}
+            </h2>
+            <span style="text-align: center; font-size: 20px !important;">
+                <span style="text-align: center; font-size: 20px !important; display: flex; justify-content: center; gap: 5px;">
+                    <h1 style="font-size: 20px !important;">
+                        Congratulations! 
+                    </h1>
+                    <p style="font-size: 20px !important;">
+                        Order #{{responseData?.paymentId || 'N/A'}} is confirmed.
+                    </p>
+                </span>
+                <p style="text-align: center; font-size: 20px !important;">
+                    If you do not yet have a physical card, please click the link below and follow the instructions to obtain your card. If you have a card already, your funds will be available shortly and you can confirm your balance via the link below.
+                </p>
+            </span>
+            <div class="text-center" style="margin-top: 10px;" (click)="manageCardRedeem()">
+                <button type="button" style="background: #0096f0 !important;" class="button-redeem">CHOOSE & LOAD MY CARD(S)</button>
+            </div>
+        </section>
+    </ng-template>
+
+    <div class="p-6" style="padding-top: 0 !important;">
+        <p class="text-center card-fine-print">
+            Use your card everywhere Mastercard is accepted in the U.S. Issued by The Bancorp Bank, Member FDIC, pursuant to license by Mastercard International Incorporated. Mastercard is a registered trademark, and the circles design is a trademark of Mastercard International Incorporated. Your use of the prepaid card is governed by the Cardholder Agreement, and some fees may apply. This is not a gift card. Please note that prepaid cards are subject to expiration, so pay close attention to the expiration date of the card.
+        </p>
+    </div>
+</div>
+<div class="container mx-auto mt-6" *ngIf="loadSettings">
+    <section id="card-header" class="card-banner clearfix">
+        <div class="card-blocks-container clearfix">
+            <div class="card-header-container flex-desktop flex-wrap clearfix">
+                <div class="card-header-title">KOHLER Rewards<br>Prepaid Mastercard<sup>®</sup></div>
+                <div class="clearfix"></div>
+                <div  style="font-style: italic;display: block ruby;">
+                    Loading permission settings for KOHLER Rewards<br>Prepaid Mastercard<sup>®</sup> transaction ...
+                </div>
+            </div>
+        </div>
+    </section>
+   
+</div>
+<ng-template #RedeemCard>
+    <div mat-dialog-title class="dialog-header modal-header-cus m-0  px-6" style="min-width: 400px; display: flex; align-items: center;">
+      <div class="modal-header-cus py-2"> 
+        Manage Card
+      </div>
+      <button mat-icon-button (click)="manageCardDialog.close()" class="close-button">
+        <mat-icon style="color: #fff;">close</mat-icon>
+      </button>
+    </div>
+  
+    <mat-dialog-content class="mat-typography p-0 m-0">
+      <div class="px-4 py-2">
+        <form [formGroup]="cardDetailForm">
+            <div class="w-full pt-6">
+                <mat-form-field class="w-full">
+                    <mat-label>Card Number *</mat-label>
+                    <input matInput placeholder="Card Number" formControlName="cardNumber">
+                </mat-form-field>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Expiry *</mat-label>
+                    <input [value]="cardDetailForm.value.expiryDate" readonly matInput>
+                    <input formControlName="expiryDate" style="visibility: hidden;" readonly matInput [matDatepicker]="dp">
+                    <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+                    <mat-datepicker #dp
+                        startView="multi-year"
+                        (yearSelected)="chosenYearHandler($event)"
+                        (monthSelected)="chosenMonthHandler($event, dp)"
+                        panelClass="example-month-picker">
+                    </mat-datepicker>
+                </mat-form-field>
+            </div>
+        </form>
+        
+        <div class="w-full text-right" style="justify-content: end; display: flex;">
+          <div class="text-right" style="gap: 10px; display: flex; width: fit-content; justify-content: end; flex-wrap: wrap;">
+            <span>
+              <button class="save-manage-card" (click)="SaveOrUpdateUserCardDetails()">
+                <span> Save</span>
+              </button>
+            </span>
+            <span>
+              <button class="cancel-manage-card" (click)="manageCardDialog.close()">
+                <span> Close</span>
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </mat-dialog-content>
+  </ng-template>

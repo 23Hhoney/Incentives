@@ -1,0 +1,94 @@
+<div fxLayout="row" fxLayoutAlign="start">
+
+  <ul>
+
+    <li *ngFor="let step of timelineData">
+      <div fxLayout="column" fxLayoutAlign="space-around">
+
+        <div fxLayout="row" fxLayoutAlign="start">
+
+          <div fxFlex="5" style="margin-right: 25px" fxLayoutAlign="center center">
+            <div fxLayout="column" fxLayoutAlign="center">
+              <div *ngIf="!step.reject" [class.approved]="step.status" class="statusDot" fxLayoutAlign="center center">
+                <mat-icon *ngIf="step.status">done</mat-icon>
+              </div>
+              <div *ngIf="!step.status && step.reject" [class.reject]="step.reject" class="statusDot" fxLayoutAlign="center center">
+                <mat-icon *ngIf="!step.status && step.reject">cancel</mat-icon>
+              </div>
+              <div [class.extra]="step.currentUser && !step.status && !step.reject" [class.greenConnector]="step.status"
+                class="connector"></div>
+            </div>
+          </div>
+
+          <div fxFlex="95" fxLayoutAlign="start">
+            <mat-card>
+
+              <div fxLayout="row">
+
+                <div fxFlex="30" fxLayoutAlign="center center" style="width: 100px;">
+                  <img src="../../../../assets/images/avatars/timeline.png" class="stepImg" alt="">
+                </div>
+
+                <div fxFlex="70" class="pl-12" style="width: fit-content">
+                  <div fxLayout="row" fxLayoutAlign="start">
+                    <h3 style="margin: 0px !important">{{step.name}}</h3>
+                  </div>
+
+                  <div fxLayout="row" fxLayoutAlign="start">
+                    <span class="roleTxt">{{step.primaryText}}</span>
+                  </div>
+
+                  <div fxLayout="row" fxLayoutAlign="start">
+                    <span *ngIf="step.status" class="statusTxt">Status : APPROVED</span>
+                    <span *ngIf="!step.status && !step.reject" class="statusTxt">Status : PENDING</span>
+                    <span *ngIf="!step.status && step.reject">Status : REJECTED</span>
+                  </div>
+
+                  <div fxLayout="row" fxLayoutAlign="end"
+                   *ngIf="!step.currentUser">
+                    <span class="roleTxt">{{step.secondaryText}}</span>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div fxLayout="column" class="mt-12" fxLayoutAlign="start" *ngIf="step.currentUser && !step.status && !step.reject">
+                  
+                <div fxLayout="row" fxLayoutAlign="start" *ngIf="step.type === 'No Dues'">
+                  <mat-form-field fxFlex="100" appearance="outline" style="width: 300px;">
+                    <mat-label>Amount Due</mat-label>
+                    <input type="number" matInput [(ngModel)]="amountDue" name="amountDue">
+                  </mat-form-field>
+                </div>  
+
+                <div fxLayout="row" fxLayoutAlign="start">
+                  <mat-form-field fxFlex="100" style="width: 300px" appearance="outline">
+                    <mat-label>Comments</mat-label>
+                    <textarea name="comments" matInput [(ngModel)]="remarks" ></textarea>
+                    <mat-error>Remark is required</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="end">
+                  <mat-progress-spinner class="mr-12" *ngIf="loading" diameter="40" strokeWidth="4" mode="indeterminate">
+                  </mat-progress-spinner>
+                  <button mat-raised-button color="warn" (click)="callParent('reject', step.employeeId)"
+                    class="mr-8">{{ 'REJECT' | translate }}</button>
+                  <button mat-raised-button color="accent"
+                    (click)="callParent('approve', step.employeeId)">{{ 'APPROVE' | translate }}</button>
+                </div>
+
+              </div>
+            
+
+            </mat-card>
+          </div>
+
+        </div>
+
+      </div>
+    </li>
+
+  </ul>
+</div>

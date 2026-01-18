@@ -1,0 +1,189 @@
+.bck-col {
+    background-color: #0dcaf0;
+}
+
+.text-under {
+    text-decoration: underline;
+}
+
+.type-stl {
+    font-size: 0.875rem;
+    padding: 6px 8px;
+}
+
+.th-bdr{
+    font-weight: 600 !important;
+    border-bottom-width: 1px;
+    border-style: solid;
+}
+.rotate {
+  transition: transform 0.5s ease-in-out;
+}
+.rotate-up {
+  transform: rotate(0deg);
+  color: #307df0;
+}
+.rotate-down {
+  transform: rotate(-180deg);
+  color: black;
+}
+.date-block {
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+.hide-date-block {
+  max-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  border-radius: 0 0 1rem 1rem;
+  padding: 0 10px;
+}
+.form-text {
+  margin-top: .25rem;
+  font-size: .875em;
+  color: #6c757d;
+  width: fit-content;
+}
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 10px 0 0 0 !important;
+  justify-content: flex-end;
+}
+.transaction-details-container .mat-dialog-container {
+  border-radius: 0px !important;
+  padding: 0px !important;
+  background: white;
+  color: #1e293b;
+  max-width: 700px;
+  max-height: 300px;
+  height: auto;
+  box-shadow: 0px 0px 1px 0px rgba(23, 26, 31, 0.0705882353);
+  box-shadow: 0px 0px 2px 0px rgba(23, 26, 31, 0.1215686275);
+}
+.form-group {
+  width: 33%;
+}
+
+.show-date-block {
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  padding: 5px 10px !important;
+  border-radius: 0 0 1rem 1rem;
+}
+
+.filter-section {
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+  }
+  
+  /* Additional styling if needed */
+  .brd-btm {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+  }
+  
+  .custom-date label {
+    font-weight: bold;
+  }
+  
+  .custom-date input {
+    width: 100%;
+  }
+  
+  .btn-font12 {
+    font-size: 12px;
+  }
+  
+  .bck-col {
+    background-color: #17a2b8;
+    color: white;
+  }
+  
+  .btn-info {
+    background-color: #17a2b8;
+    border: none;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+  }
+  
+  .w-full {
+    width: 100%;
+  }
+  
+  .mt-24 {
+    margin-top: 24px;
+  }
+  
+  .mt-3 {
+    margin-top: 3px;
+  }
+  
+  .mb-4 {
+    margin-bottom: 4px;
+  }
+  
+  .p-3 {
+    padding: 3px;
+  }
+  
+  .m-3 {
+    margin: 3px;
+  }
+  
+  .ml-3 {
+    margin-left: 3px;
+  }
+  .transaction-block {
+    display: flex;
+    flex-wrap: nowrap;
+    @media only screen and (max-width: 1080px) {
+      flex-wrap: wrap;
+    }
+  }
+  .filter-block {
+    width: 416px !important;
+    @media only screen and (max-width: 1080px) {
+      width: 100% !important;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+    }
+    @media only screen and (max-width: 849px) {
+      display: block;
+    }
+  }
+
+::ng-deep .mat-input-element {
+  box-sizing: border-box !important;
+}
+.btn[disabled] {
+  opacity: 0.6; /* Adjust this value as needed */
+  cursor: not-allowed; /* Optional: indicates the button is disabled */
+}
+.cus-background-tags {
+  background: #F2F6FB;
+}
+.mat-icon.text-black {
+  color: black !important;
+  cursor: pointer;
+}

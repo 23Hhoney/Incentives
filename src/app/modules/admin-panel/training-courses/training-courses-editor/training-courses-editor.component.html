@@ -1,0 +1,593 @@
+<div class="training-course-manager h-full flex flex-col">
+  <div class="flex bg-white border-b shadow-sm">
+    <!-- Left Column Toolbar -->
+    <div class="w-72 p-4 border-r">
+      <div class="flex flex-col space-y-2">
+        <span class="text-gray-600 text-base font-medium">Course Name: {{courseName}}</span>
+        <span class="text-gray-600 text-base">Language: {{courseLanguage}}</span>
+      </div>
+    </div>
+    <!-- Right Column Toolbar -->
+    <div class="flex-1 p-4">
+      <div class="flex flex-col md:flex-row justify-between items-center w-full gap-4">
+        <!-- Slide Information Section -->
+        <div class="flex flex-col md:flex-row items-start md:items-center w-full md:space-x-4 space-y-2 md:space-y-0">
+          <div *ngIf="selectedSlide"
+            class="flex flex-col md:flex-row items-start md:items-center w-full md:space-x-2 py-2">
+            <div class="flex items-center min-w-fit mb-2 md:mb-0">
+              <span class="text-gray-600 text-base whitespace-nowrap">Slide {{selectedSlide?.order + 1}}:</span>
+            </div>
+
+            <div class="flex items-center flex-1 w-full px-3 bg-gray-50 rounded">
+              <input type="text" id="slideNameInput" [(ngModel)]="newSlideName" maxlength="30"
+                class="w-full outline-none border-none text-base text-gray-600 bg-transparent py-1 truncate-input"
+                [disabled]="!isEditingSlideName" [class.cursor-not-allowed]="!isEditingSlideName"
+                matTooltip="{{newSlideName}}" placeholder="Enter slide name">
+
+              <button mat-icon-button class="ml-auto" matTooltip="Edit Slide Name" (click)="toggleEditSlideName()">
+                <mat-icon class="text-gray-500">{{ isEditingSlideName ? 'check' : 'edit' }}</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap md:flex-nowrap items-center justify-center md:justify-end w-full gap-2">
+            <!-- Preview Slide -->
+            <button class="allButtons flex-1 md:flex-none" (click)="previewSlide()">
+              Preview Slide
+            </button>
+
+            <button class="allButtons flex-1 md:flex-none" (click)="RouteToLmsEditor()"
+              [disabled]="isEditing || !hasSlides || !selectedSlide"
+              [ngClass]="{'disabled-btn': isEditing || !hasSlides || !selectedSlide}">
+              {{ hasSlideContent ? 'Edit Slide' : 'Add Content' }}
+            </button>
+
+            <!-- Close Editor -->
+            <button class="allButtons flex-1 md:flex-none" (click)="backToCourse()">
+              <mat-icon>close</mat-icon>
+              Close Editor
+            </button>
+          </div>
+        </div>
+
+        <!-- View Toggle Section -->
+        <div class="flex space-x-2 bg-gray-100 p-1 rounded w-full md:w-auto justify-center md:justify-end">
+          <button mat-icon-button (click)="RouteToLmsEditor()" class="fullscreen-btn">
+            <mat-icon>{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+          </button>
+          <button mat-icon-button [color]="isDesktopView ? 'primary' : ''" (click)="toggleView(true)"
+            matTooltip="Desktop View">
+            <mat-icon>computer</mat-icon>
+          </button>
+          <button mat-icon-button [color]="!isDesktopView ? 'primary' : ''" (click)="toggleView(false)"
+            matTooltip="Mobile View">
+            <mat-icon>smartphone</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Left sidebar with fixed height and internal scrolling -->
+    <div class="w-72 border-r bg-white shadow-sm flex flex-col">
+      <!-- Scrollable slide list -->
+      <div class="flex-1 overflow-y-auto" #slideListContainer>
+        <mat-list cdkDropList (cdkDropListDropped)="reArrangeSlides($event)" class="py-0">
+          <mat-list-item *ngFor="let slide of slides" cdkDrag [class.bg-blue-50]="selectedSlide?.id === slide.id"
+            class="hover:bg-gray-50 cursor-pointer h-16 border-b" (click)="onSlideSelect(slide)"
+            style="border: 1px solid rgb(0, 0, 0);">
+            <div class="flex items-center justify-between w-full">
+              <div class="flex items-center">
+                <mat-icon class="text-gray-400 mr-3">drag_indicator</mat-icon>
+                <!-- Display truncated slide name with tooltip -->
+                <span matTooltip="{{slide.name}}" class="truncate">{{slide.name}}</span>
+              </div>
+              <button mat-icon-button color="warn" (click)="openDeleteDialog(slide, $event, deletebox)"
+                class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+
+      <!-- Fixed buttons at bottom -->
+      <div class="border-t p-4">
+        <button mat-stroked-button class="w-full" (click)="toggleQuizManager()">
+          <mat-icon class="mr-1">quiz</mat-icon>
+          {{ showQuizManager ? 'Back to Slides' : 'Manage Quiz' }}
+        </button>
+      </div>
+      <div class="p-4 border-t bg-white">
+        <button mat-raised-button color="#0B0B0B" class="w-full h-10" (click)="addNewSlide(newSlideModal)">
+          <mat-icon class="mr-1">add</mat-icon> Add New Slide
+        </button>
+      </div>
+      <ng-template #newSlideModal let-dialogRef="dialogRef">
+        <div class="p-6">
+          <h2 mat-dialog-title class="text-xl font-bold mb-6 text-center">Choose Slide Type</h2>
+          <div class="grid grid-cols-1 gap-4">
+            <button mat-raised-button *ngFor="let slideType of slideTypes"
+              (click)="onSlideTypeSelect(slideType.type, dialogRef)" class="h-24 flex items-center justify-center">
+              <mat-icon class="text-3xl mr-3">{{slideType.icon}}</mat-icon>
+              <span class="text-lg">{{slideType.label}}</span>
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Main content area -->
+    <div class="content-area flex-1 overflow-auto" [class.max-w-md]="!isDesktopView"
+      [style.width]="!isDesktopView ? mobileWidth + 'px' : 'auto'">
+      <ng-container>
+        <mat-card style="height: 100%; display: flex; flex-direction: column;" *ngIf="selectedSlide"
+          class="shadow-lg p-2">
+          <div class="content-area-wrapper" style="height: 100%; flex-grow: 1; width: 100%;">
+            <mat-card-content style="height: 100%;">
+              <div style="display: flex; flex-direction: column; height: 100%;">
+                <!-- Canvas -->
+                <div [ngSwitch]="selectedSlide.type"
+                  style="padding: 2px; background-color: #f0f0f0; display: flex; flex-direction: column;" [ngStyle]="{
+    width: isDesktopView ? '100vw' : '100%',
+    height: isDesktopView ? '100vh' : '100%',
+    flex: isDesktopView ? '' : '1'
+  }">
+
+                  <div id="canvas" [ngStyle]="{
+    position: 'relative',
+    backgroundColor: '#ffffff',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+    overflow: 'auto',
+    width: isDesktopView ? '100vw' : mobileWidth + 'px',
+    height: isDesktopView ? '100vh' : '100%',
+    maxWidth: isDesktopView ? '100%' : mobileWidth + 'px',
+    maxHeight: '100%',
+    margin: isDesktopView ? '0' : '0 auto',
+    flex: isDesktopView ? '' : '1',
+    zIndex: 10 + i
+  }">
+
+                    <!-- Fallback message -->
+                    <div *ngIf="!elements || elements.length === 0"
+                      style="padding: 20px; text-align: center; color: #666;">
+                      No content available for this slide.
+                    </div>
+
+                    <!-- Elements with conditional positioning based on view mode -->
+                    <div *ngFor="let element of elements; let i = index" [ngStyle]="{
+                          'position': isDesktopView ? 'absolute' : 'relative',
+                          'width': isDesktopView ? element.widthPercent + '%' : '80%',
+                          'height': isDesktopView ? element.heightPercent + '%' : (element.type === 'image' ? 'auto' : 'auto'),
+                          'left': isDesktopView ? element.xPercent + '%' : null,
+                          'top': isDesktopView ? element.yPercent + '%' : null,
+                          'margin': !isDesktopView ? '16px auto' : null,
+                          'z-index': element.zIndex !== undefined ? element.zIndex : (element.type === 'text' ? (10 + i) : (1 + i)),
+                          'overflow': element.type === 'image' ? 'hidden' : 'visible',
+                          'box-sizing': 'border-box'
+                        }">
+                      <ng-container [ngSwitch]="element.type">
+                        <!-- Text element -->
+                        <div *ngSwitchCase="'text'" [id]="'element-' + i" class="ck-content"
+                          style="padding: 8px; white-space: normal; overflow-wrap: break-word; line-height: 1.5; width: 100%; box-sizing: border-box;"
+                          [style.fontSize.px]="getFontSize(element)"
+                          [style.textAlign]="element.style?.textAlign || 'left'"
+                          [style.fontWeight]="element.style?.bold ? 'bold' : 'normal'"
+                          [style.fontStyle]="element.style?.italic ? 'italic' : 'normal'"
+                          [style.textDecoration]="element.style?.underline ? 'underline' : 'none'"
+                          [innerHTML]="getSafeHtml(element.content)">
+                        </div>
+
+                        <!-- Image element -->
+                        <div *ngSwitchCase="'image'" [ngStyle]="{
+                              'height': isDesktopView ? '100%' : 'auto',
+                              'width': '100%',
+                              'display': 'flex',
+                              'justify-content': 'center',
+                              'align-items': 'center',
+                              'overflow': 'hidden'
+                            }">
+                          <img *ngIf="element.content" [src]="element.content" alt="Image" [ngStyle]="{
+                                'object-fit': 'contain',
+                                'width': '100%',
+                                'height': '100%',
+                                'max-width': '100%',
+                                'max-height': '100%'
+                              }">
+                        </div>
+
+
+                        <!-- Button element -->
+                        <div *ngSwitchCase="'button'"
+                          style="display: flex; justify-content: center; align-items: center; border-radius: 4px; font-weight: bold; width: 100%; height: 100%;"
+                          [style.backgroundColor]="element.style?.backgroundColor || '#007bff'"
+                          [style.color]="element.style?.color || '#ffffff'" [style.padding]="'4px 8px'"
+                          [style.cursor]="'pointer'">
+                          {{element.content || 'Click me'}}
+                        </div>
+
+
+
+                        <!-- Audio element -->
+
+                        <!-- Audio element -->
+                        <div *ngSwitchCase="'audio'" [ngStyle]="getAudioElementStyle(element)">
+                          <div style="width: 100%; padding: 5px 0;">
+                            <audio *ngIf="element.content" [src]="element.content" controls
+                              style="width: 100%; height: 40px; display: block;">
+                            </audio>
+                            <div *ngIf="!element.content" class="text-center text-gray-500 p-2">
+                              No audio source available
+                            </div>
+                          </div>
+                        </div>
+
+
+
+                        <!-- Video element -->
+                        <div *ngSwitchCase="'video'"
+                          style="width: 100%; height: 100%; position: relative; overflow: hidden;">
+                          <div *ngIf="element.isYoutubeOrVimeo && element.sanitizedVideoUrl"
+                            style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+                            <!-- Loading indicator -->
+                            <div *ngIf="element.isLoading" class="video-loading"
+                              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: rgba(0,0,0,0.1); z-index: 2;">
+                              <div
+                                style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 2s linear infinite;">
+                              </div>
+                              <p style="margin-top: 10px;">Loading video...</p>
+                            </div>
+
+                            <!-- Error message -->
+                            <div *ngIf="element.hasError" class="video-error"
+                              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: rgba(0,0,0,0.1); z-index: 2;">
+                              <div style="color: red; font-size: 24px; margin-bottom: 10px;">⚠️</div>
+                              <p>There was a problem loading this video. Please check the URL and try again.</p>
+                            </div>
+
+                            <iframe #vimeoPlayer [src]="element.sanitizedVideoUrl" width="100%" height="100%"
+                              frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen
+                              webkitallowfullscreen mozallowfullscreen (load)="onVideoLoaded(element)"
+                              (error)="onVideoError(element)">
+                            </iframe>
+                          </div>
+
+                          <!-- Local video -->
+                          <video *ngIf="!element.isYoutubeOrVimeo && element.localVideoUrl"
+                            [src]="element.localVideoUrl" style="width: 100%; height: 100%;" controls
+                            (loadeddata)="onVideoLoaded(element)" (error)="onVideoError(element)">
+                            Your browser does not support the video tag.
+                          </video>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+              </div>
+            </mat-card-content>
+          </div>
+        </mat-card>
+
+        <div *ngIf="!selectedSlide" class="text-center text-gray-500 mt-1 p-8 bg-white rounded-lg shadow">
+          <mat-icon class="text-6xl mb-4">touch_app</mat-icon>
+          <p class="text-lg">Select a slide or create a new one to begin editing</p>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #QuestionsSavingDialog>
+  <!-- Header -->
+  <div mat-dialog-title class="dialog-header modal-header-cus m-0 px-6">
+    <div class="flex justify-between items-center w-full">
+      <span>{{ editMode ? 'Edit Question' : 'Add Question' }}</span>
+      <div class="flex items-center">
+        <!-- Info Icon -->
+        <button mat-icon-button (click)="toggleAccordion()">
+          <mat-icon style="color: #fff;">info</mat-icon>
+        </button>
+        <button mat-icon-button (click)="dialogboxforquestion.close()">
+          <mat-icon style="color: #fff;">close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showHelpOverlay" class="help-overlay">
+    <div class="help-box">
+      <div class="QuestionHelp" #helpContent>
+        <ol>
+          <li><span class="mat-body-strong">Single Answer:</span> User has to select only one correct answer for the
+            question.</li>
+          <li><span class="mat-body-strong">Multiple Answers: Single Selection :</span> User has to select only one
+            correct answer from multiple options marked correct by admin.</li>
+          <li><span class="mat-body-strong">Multiple Answers: Choose All :</span> User has to select all the answers
+            which are marked correct by Admin.</li>
+          <li><span class="mat-body-strong">True / False:</span> User has to select either True or False as an answer to
+            the question.</li>
+          <li><span class="mat-body-strong">Paste from Clipboard:</span> Copy the answers (Options to be copied should
+            be one below the other) from clipboard before clicking on this button to paste the answers as options.</li>
+          <li><span class="mat-body-strong">Permission Required:</span> Make sure your browser has clipboard permissions
+            enabled to allow pasting from your device.</li>
+          <li><span class="mat-body-strong">Paragraph Pasting:</span> If copied the paragraph from clipboard, it should
+            not be displayed as different options.</li>
+          <li><span class="mat-body-strong">Tab Key:</span> It will help navigate the user to switch/tab out the fields
+            in an order.</li>
+          <li><span class="mat-body-strong">Spacebar Key:</span> It will select the checkbox.</li>
+          <li><span class="mat-body-strong">Enter key:</span> It will add an option with the cursor positioned.</li>
+        </ol>
+      </div>
+      <div class="text-right mt-6">
+        <button class="overlay-close-button" (click)="toggleAccordion()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dialog Content -->
+  <mat-dialog-content class="mat-typography p-6 content-scroll">
+    <form [formGroup]="questionForm" class="space-y-4">
+      <!-- Question Field -->
+      <mat-form-field class="w-full">
+        <mat-label>Question</mat-label>
+        <textarea id="training-desc-text-area" matInput formControlName="question" rows="2" maxlength="1000">
+        </textarea>
+        <mat-hint align="end">{{ questionForm.get('question').value?.length || 0 }}/1000</mat-hint>
+      </mat-form-field>
+
+      <!-- Question Type -->
+      <div class="my-4">
+        <label class="block mb-2 font-medium">Question Type</label>
+        <mat-radio-group formControlName="type" class="flex flex-wrap gap-4" (change)="onQuestionTypeChange()"
+          [disabled]="editMode && quizSettings.isPass">
+          <mat-radio-button value="single">Single Answer</mat-radio-button>
+          <mat-radio-button value="multipleSingle">Multiple Answers: Single Selection</mat-radio-button>
+          <mat-radio-button value="multipleAll">Multiple Answers: Choose All</mat-radio-button>
+          <mat-radio-button value="trueFalse">True/False</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Options -->
+      <div formArrayName="options" class="space-y-3">
+        <div *ngFor="let option of optionsArray.controls; let i = index" [formGroupName]="i"
+          class="flex items-center gap-2 bg-gray-50 p-2 rounded">
+          <mat-form-field class="flex-1">
+            <input #optionInput matInput formControlName="text" [placeholder]="'Option ' + (i + 1)"
+              [readonly]="questionForm.get('type').value === 'trueFalse'"
+              [ngClass]="{'readonly-input': questionForm.get('type').value === 'trueFalse'}"
+              (keydown.enter)="addOptions($event)">
+          </mat-form-field>
+
+          <mat-checkbox formControlName="isCorrect" (change)="onOptionCorrectChange(i)"
+            [disabled]="editMode && quizSettings.isPass">
+            Correct
+          </mat-checkbox>
+
+          <button mat-icon-button color="warn" (click)="removeOption(i)" *ngIf="!editMode && questionForm.get('type').value !== 'trueFalse' &&
+                optionsArray.at(i).get('fromBackend')?.value !== true">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+
+        <!-- Add/Paste Buttons -->
+        <div class="flex gap-2" *ngIf="!editMode && questionForm.get('type').value !== 'trueFalse'">
+          <button mat-stroked-button (click)="addOptions()">
+            <mat-icon>add</mat-icon> Add Option
+          </button>
+          <button mat-stroked-button (click)="pasteOptions()"
+            matTooltip="Copy the answers (Options to be copied should be one below the other) from clipboard before clicking on this button to paste the answers as options."
+            matTooltipPosition="below">
+            <mat-icon>content_paste</mat-icon> Paste from clipboard
+          </button>
+        </div>
+      </div>
+
+
+    </form>
+  </mat-dialog-content>
+
+  <!-- Footer Buttons -->
+  <mat-dialog-actions align="end" class="p-4">
+    <button class="bulk-update-btn-cus" (click)="dialogboxforquestion.close()">Cancel</button>
+    <button class="bulk-update-btn-cus ml-4" (click)="saveQuestion()">
+      {{ editMode ? 'Update' : 'Save' }} Question
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #QuizManagerDialog>
+  <div class="quiz-manager-dialog flex flex-col fixed-dialog" style="max-height: calc(100vh - 80px);">
+    <div mat-dialog-title class="dialog-header modal-header-cus m-0 px-6">
+      <div>Quiz Manager</div>
+      <button mat-icon-button [mat-dialog-close]>
+        <mat-icon style="color: #fff;">close</mat-icon>
+      </button>
+    </div>
+
+    <mat-dialog-content class="mat-typography p-6 flex-1 overflow-auto">
+      <!-- Quiz Settings Panel -->
+      <mat-expansion-panel class="custom-expansion-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Quiz Settings</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <form [formGroup]="quizSettingsForm" class="space-y-4">
+          <mat-form-field class="w-full">
+            <mat-label>Passing Percentage</mat-label>
+            <input matInput type="number" formControlName="passingPercentage">
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Success Message</mat-label>
+            <input matInput formControlName="successMessage">
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Failure Message</mat-label>
+            <input matInput formControlName="failMessage">
+          </mat-form-field>
+        </form>
+      </mat-expansion-panel>
+
+      <!-- Questions Section -->
+      <div class="mt-4">
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="text-lg font-medium">Questions</h3>
+
+        </div>
+
+        <div cdkDropList (cdkDropListDropped)="onQuestionDrop($event)">
+          <mat-expansion-panel *ngFor="let question of questions; let i = index" class="mb-2" cdkDrag [expanded]="true">
+            <mat-expansion-panel-header style="height: 40px;">
+              <mat-panel-title>
+                <span class="question-number mr-2">{{i + 1}}.</span>
+                {{question.question}}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <mat-card-content style="display: block;margin-bottom: -10px;">
+              <div *ngIf="question.questionDetails" [innerHTML]="question.questionDetails" class="question-details">
+              </div>
+              <div class="options-grid mt-3">
+                <div *ngFor="let option of question.options" [class.correct-option]="option.isCorrect"
+                  class="option-item" style="margin-bottom: 2px;">
+                  <span>{{option.text}}</span>
+                  <mat-icon *ngIf="option.isCorrect">check_circle</mat-icon>
+                </div>
+              </div>
+            </mat-card-content>
+
+            <mat-action-row>
+              <button class="bulk-update-btn-cus" (click)="openQuestionDialog(question)">
+                <mat-icon style="color: #FFFFFF;">edit</mat-icon>
+              </button>
+              <button class="bulk-update-btn-cus ml-4" (click)="deleteQuestion(question)">
+                <mat-icon style="color: #FFFFFF;">delete</mat-icon>
+              </button>
+            </mat-action-row>
+          </mat-expansion-panel>
+        </div>
+      </div>
+    </mat-dialog-content>
+
+    <div class="footer-actions bg-white border-t p-4" style="position: sticky; bottom: 0; width: 100%; z-index: 1000;">
+      <div class="flex justify-end space-x-4">
+        <button class="add-question flex items-center justify-center" (click)="openQuestionDialog()">
+          <mat-icon class="text-base">add</mat-icon>
+          <span>Add Question</span>
+        </button>
+        <button class="bulk-update-btn-cus" [mat-dialog-close]>Cancel</button>
+        <button class="bulk-update-btn-cus" (click)="saveChanges()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #confirmSingleOptionDialog>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Confirm Single Option</h3>
+    <button mat-icon-button (click)="singleOptionDialogRef.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <mat-dialog-content>
+      <p>You have selected only one answer option for this question type, which typically expects more than one answer
+        option. Are you sure you want to proceed?</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="cancelSingleOption()" class="cancel-button">No</button>
+      <button mat-button color="primary" (click)="confirmSingleOption()" class="delete-button">Yes</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>
+
+<ng-template #deletebox>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Delete Confirmation</h3>
+    <button mat-icon-button (click)="modalReferenceforSlideDelete.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure, you want to delete this slide?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button (click)="modalReferenceforSlideDelete.close()" class="cancel-button">Cancel</button>
+    <button mat-button (click)="DeleteSlide(); modalReferenceforSlideDelete.close()"
+      class="delete-button">Delete</button>
+  </div>
+</ng-template>
+
+
+<ng-template #confirmDialog let-modal>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Delete Confirmation</h3>
+    <button mat-icon-button (click)="modalReference.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this record?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button (click)="modalReference.close()" class="cancel-button">Cancel</button>
+    <button mat-button (click)="confirmDelete(); modalReference.close()" class="delete-button">Delete</button>
+  </div>
+</ng-template>
+
+<ng-template #confirmDeleteDialog>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Delete Confirmation</h3>
+    <button mat-icon-button (click)="dialogRef.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this record?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button class="cancel-button" (click)="dialogRef.close()">Cancel</button>
+    <button mat-button (click)="confirmDeleteQuestion()" class="delete-button">Delete</button>
+  </div>
+</ng-template>
+
+
+<ng-template #confirmDeleteOptionDialog>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Delete Confirmation</h3>
+    <button mat-icon-button (click)="optionDialogRef.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this option?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button class="cancel-button" (click)="optionDialogRef.close()">Cancel</button>
+    <button mat-button (click)="confirmDeleteOption()" class="delete-button">Delete</button>
+  </div>
+</ng-template>
+
+
+<ng-template #confirmBox>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Push to Language Versions</h3>
+    <!-- <button mat-icon-button (click)="modalReferenceforSlideConfirm.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button> -->
+  </div>
+  <div class="modal-body">
+    <p>Do you want to push this slide to alternate language versions of the course?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button (click)="confirmYes()" class="no-button">No</button>
+    <button mat-button (click)="confirmNo()" class="cancel-button">Yes</button>
+  </div>
+</ng-template>

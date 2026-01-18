@@ -1,0 +1,1152 @@
+<div class="containheight">
+  <div class="flex flex-col flex-auto min-w-0 ">
+    <!-- <h4 class="text-black mt-3 mb-4">Add/Edit Training Courses</h4> -->
+    <div class="max-w-7xl">
+      <form [formGroup]="CourseForm">
+        <div class="flex flex-col mt-2 p-6 pb-2 bg-card rounded-2xl shadow overflow-hidden">
+          <div class="flex-row">
+            <div *ngIf="isEditMode" style="margin-bottom: 20px;" class="button-group">
+              <button class="edit-button" (click)="addNewNote(content, 'edit')"
+              style="background: #37649F; color: white;">Edit</button> &nbsp;
+            <button class="preview-button" (click)="addNewNote(content, 'preview')"
+              style="background: #869cb9; color: white;">Preview</button> &nbsp;
+             <!-- <mat-form-field style="width: 25% !important">
+              <mat-label>Language</mat-label>
+              <mat-select [formControlName]="'language'" placeholder="Select Language"
+                (selectionChange)="onLanguageChange($event)">
+                <mat-option *ngFor="let language of languages" [value]="language">
+                  {{ language }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            </div>
+         
+            <mat-form-field class="w-full">
+              <mat-label>Course Name *</mat-label>
+              <input 
+                matInput 
+                id="course-name-input" 
+                [formControlName]="'courseName'" 
+                maxlength="300" 
+                (input)="checkCourseNameLength()">
+              <mat-hint align="end">
+                {{CourseForm.get('courseName').value?.length || 0}}/300
+              </mat-hint>
+              <mat-error *ngIf="courseNameExceedsLength">
+                Course name exceeded its maximum length of 300 characters.
+              </mat-error>
+            </mat-form-field>
+
+            <div class="flex flex-row gap-4">
+              <mat-form-field class="w-1/2">
+                <mat-label>Course ID *</mat-label>
+                <input matInput [formControlName]="'courseId'" >
+              </mat-form-field>
+              <mat-form-field class="w-1/2" (mouseover)="over('curriculm')" (mouseout)="out('curriculm')">
+                <div *ngIf="showCurriculms  && selectedCurriculums.length > 0" style="min-width: 282px;
+                position: absolute;
+                top: 60px;
+                background: white;
+                padding: 10px 5px;
+                z-index: 1;
+                border-radius: 4px;
+                border: 0.5px solid #b9b9b9;">
+                  <div *ngFor="let item of selectedCurriculums">
+                    {{getSubGroupDataName(item)}}
+                  </div>
+                </div>
+                <mat-label>Curriculum *</mat-label>
+                <mat-select formControlName="curriculums" [(ngModel)]="selectedCurriculums" multiple>
+                  <div style="padding: 0 15px;">
+                    <input style="padding: 10px;
+                    width: calc(100% - 20px);
+                    margin: 10px 0;
+                    border: 0.4px solid #707070;
+                    border-radius: 6px;" matInput placeholder="Search Curriculums" #searchCurriculumBox (keyup)="filterCurriculumList(searchCurriculumBox.value)" />
+                  </div>
+                  <div style="padding: 15px;">
+                    <mat-checkbox [disabled]="searchTextCurriculum !== '' && searchTextCurriculum !== null && searchTextCurriculum !== undefined ? true : false" [checked]="allCurriculumSelected ? true : false" (change)="selectAllCurriculum($event)">
+                      <span [ngClass]="{'label-color': allCurriculumSelected}">{{ allCurriculumSelected ? 'Deselect All' : 'Select All'}}</span>
+                    </mat-checkbox>
+                  </div>
+                  <mat-option *ngFor="let item of filteredCurriculumList"  (click)="onCurriculumSelectionChange(item)" [value]="item.id">{{item.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            
+            </div>
+            
+          </div>
+          <div class="flex flex-row gap-4">
+            
+            <mat-form-field class="w-1/2" (mouseover)="over('users')" (mouseout)="out('users')">
+              <div *ngIf="showUsers && selectedUsers.length > 0" style="min-width: 282px;
+              position: absolute;
+              top: 60px;
+              background: white;
+              padding: 10px 5px;
+              z-index: 1;
+              border-radius: 4px;
+              border: 0.5px solid #b9b9b9;">
+                <div *ngFor="let item of selectedUsers">
+                  {{getSelectedUsersName(item)}}
+                </div>
+              </div>
+              <mat-label>User *</mat-label>
+              <mat-select formControlName="userId" [(ngModel)]="selectedUsers" multiple>
+                <div style="padding: 0 15px;">
+                  <input style="padding: 10px;
+                  width: calc(100% - 20px);
+                  margin: 10px 0;
+                  border: 0.4px solid #707070;
+                  border-radius: 6px;" matInput placeholder="Search users" #searchUserBox (keyup)="filterUserList(searchUserBox.value)" />
+                </div>
+                <div style="padding: 15px;">
+                  <mat-checkbox [disabled]="searchText !== '' && searchText !== null && searchText !== undefined ? true : false" [checked]="allSelected" (change)="selectAll($event)">
+                    <span [ngClass]="{'label-color': allSelected}">{{ allSelected ? 'Deselect All' : 'Select All'}}</span>
+                  </mat-checkbox>
+                </div>
+                <mat-option *ngFor="let item of filteredUserList" (click)="detectCheckboxClick(item)" [value]="item.id">{{ item.value }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="w-1/2">
+              <mat-label>Points *</mat-label>
+                <input matInput [formControlName]="'points'" type="number" min="0">
+            </mat-form-field>
+          </div>
+      
+          <div class="flex flex-row gap-4">
+            <mat-form-field class="w-1/2">
+              <mat-label>Start Date *</mat-label>
+              <input matInput [matDatepicker]="date1" [min]="todayDate" formControlName="startDate">
+              <mat-datepicker-toggle matSuffix [for]="date1"></mat-datepicker-toggle>
+              <mat-datepicker #date1></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field class="w-1/2">
+              <mat-label>End Date *</mat-label>
+              <input matInput [matDatepicker]="date2" [min]="todayDate" formControlName="endDate">
+              <mat-datepicker-toggle matSuffix [for]="date2"></mat-datepicker-toggle>
+              <mat-datepicker #date2></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-row gap-4">
+            <mat-form-field class="w-1/2">
+              <mat-label>Upload Course Image</mat-label>
+              <input type="file" (change)="onFileSelected($event)" #fileInput style="display: none" accept="image/*">
+              <input matInput [value]="selectedImage && selectedImage.name ? selectedImage.name : selectedImage && !selectedImage.name ? selectedImage : ''" placeholder="No file chosen" readonly (click)="fileInput.click()">
+              <mat-icon matSuffix (click)="fileInput.click()">attach_file</mat-icon>
+              
+              <!-- Remove button -->
+              <button *ngIf="selectedImage" mat-icon-button matSuffix (click)="removeFile()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+
+          
+          </div>
+
+          <mat-form-field class="w-full">
+            <mat-label>Description</mat-label>
+            <textarea id="training-desc-text-area" matInput rows="4" formControlName="description" maxlength="1000"></textarea>
+            <mat-hint align="end">{{CourseForm.get('description').value?.length || 0}}/1000</mat-hint>
+          </mat-form-field>
+          <div class="flex flex-row gap-4 flex-wrap">
+            <mat-checkbox class="mb-2" 
+              [checked]="false" 
+              formControlName="required" 
+              (change)="onRequireCheckboxChange()">
+              <mat-label style="font-weight: 500;">Required</mat-label>
+            </mat-checkbox>
+          
+            <mat-checkbox class="mb-2" 
+              [disabled]="checkActiveState()"
+              [checked]="checkSelectedCheckbox() === 'active'"
+              (change)="onCheckboxChange('Active')">
+              <mat-label style="font-weight: 500;">Active</mat-label>
+            </mat-checkbox>
+          
+            <mat-checkbox class="mb-2"
+              [checked]="checkSelectedCheckbox() === 'inactive'"
+              (change)="onCheckboxChange('Inactive')">
+              <mat-label style="font-weight: 500;">Inactive</mat-label>
+            </mat-checkbox>
+          
+            <mat-checkbox class="mb-2"
+              [checked]="checkSelectedCheckbox() === 'archive'"
+              (change)="onCheckboxChange('Archive')">
+              <mat-label style="font-weight: 500;">Archive</mat-label>
+            </mat-checkbox>
+          </div>
+      
+          <div class="flex items-center justify-end py-2">
+            <button (click)="cancel()" class="ml-4" class="bulk-update-btn-cus" type="button">
+              Cancel
+            </button> &nbsp;
+            <button (click)="SaveOrupdateCourse()" class="ml-4" class="bulk-update-btn-cus" type="button"
+               [disabled]="isSavingCourse">
+              <div *ngIf="isSavingCourse" class="flex items-center justify-center w-full">
+              <mat-progress-spinner
+                *ngIf="isSavingCourse"
+                [diameter]="24"
+                [mode]="'indeterminate'">
+              </mat-progress-spinner>
+              </div>
+              <span *ngIf="!isSavingCourse">Save</span>
+              
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<ng-template #content>
+  <mat-dialog-content class="dialog-layout" custom-mat-dialog-content>
+    <div class="slides-container">
+      <div class="side-navigation">
+        <h3 mat-dialog-title>Navigation Title</h3>
+        <mat-form-field appearance="fill">
+          <mat-label>Select Slide Type</mat-label>
+          <mat-select (selectionChange)="selectNewSlideName($event)" [disabled]="newSlideCreation" [value]="getTextBeforeUnderscore(selectedSlideType)" class="highlighted-select">
+            <mat-option *ngFor="let type of slideTypes" [value]="type">{{ type }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div *ngIf="courseLoading" style="width: 100%; display: flex; justify-content: center; align-items: center;">
+          <mat-spinner *ngIf="courseLoading"></mat-spinner>
+        </div>
+  
+        <mat-nav-list *ngIf="!courseLoading">
+          <a mat-list-item *ngFor="let slide of imageSlides; index as i" (click)="selectSlide(slide)"
+            [class.highlighted]="slide === selectedSlide">
+            {{ getSlideName(slide.slideName) }}
+            <div class="flex space-x-2" *ngIf="!previewCourse && !newSlideCreation">
+              <button mat-icon-button (click)="deleteSlide($event, slide, i, deleteSlideDialog)">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button mat-icon-button *ngIf="!newSlideCreation" (click)="moveUpSlide($event, i, 'image')"
+                [disabled]="i === 0 && !newSlideCreation">
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              <button mat-icon-button *ngIf="!newSlideCreation" (click)="moveDownSlide($event, i, 'image')"
+                [disabled]="i === imageSlides.length - 1 && !newSlideCreation">
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+            </div>
+          </a>
+          <a mat-list-item *ngFor="let slide of quizSlides; index as i" (click)="selectSlide(slide)"
+            [class.highlighted]="slide === selectedSlide">
+            {{ slide.slideName }}
+            <div class="flex space-x-2" *ngIf="!previewCourse && !newSlideCreation">
+              <button mat-icon-button (click)="deleteSlide($event, slide, i, deleteSlideDialog)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </a>
+          <a mat-list-item *ngFor="let slide of newSlide; index as i" (click)="selectSlide(slide)"
+            [class.highlighted]="slide === selectedSlide">
+            {{ getTextBeforeUnderscore(slide.slideName) }}
+            <div class="flex space-x-2" *ngIf="!previewCourse">
+              <button mat-icon-button (click)="deleteSlide($event, slide, i, deleteSlideDialog)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </a>
+        </mat-nav-list>
+        <button mat-button (click)="addSlide()" *ngIf="!previewCourse && !courseLoading && !newSlideCreation">Add Slide</button>
+        <button mat-button (click)="rearrangeSlidesOrder()" *ngIf="!previewCourse && !courseLoading && slidesOrderChanged">Rearrange Slides</button>
+      </div>
+      <div class="content-display" *ngIf="!selectedSlide">
+        <div class="header-container">
+          <h4 class="slide-name" style="visibility: hidden;">dummy text</h4>
+          <button mat-icon-button (click)="confirmCloseDialog()" class="close-button">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="content-display" *ngIf="selectedSlide">
+        <div class="header-container">
+          <h4 class="slide-name">{{ selectedSlide.slideName === 'Quiz' ? selectedSlide.slideName : newSlide[0]?.slideName === selectedSlide.slideName ? getTextBeforeUnderscore(selectedSlide.slideName) : getSlideName(selectedSlide.slideName) }}</h4>
+          <button mat-icon-button (click)="confirmCloseDialog()" class="close-button">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div *ngIf="selectedSlide.slideName.includes('Video')">
+          <div *ngIf="slideEditable; else noVideoSlide">
+            <div *ngIf="!editVideoSlideDetails; else editingVideoSlide">
+              <div *ngIf="!previewCourse" class="flex flex-col gt-md:flex-row" style="align-items: end;">
+  
+                <button (click)="editVideoSlide(!editVideoSlideDetails)"
+                  style="width: 85px; color: white; margin-bottom: 20px; background: #37649F;" class="edit-button"
+                  aria-label="Edit" matTooltip="Edit">
+                  <span>Edit</span>
+                </button>
+              </div>
+              <div *ngIf="!videoUpload">
+                <iframe
+                  *ngIf="sanitizedVideoUrl && isValidUrl"
+                  [src]="sanitizedVideoUrl">
+                </iframe>
+                <div *ngIf="!isValidUrl" style="background: black;width: 300px;height: 150px;">
+                  <div class="w-full h-full flex flex-col items-center justify-center">
+                    <h1 style="color: whitesmoke !important;">Sorry</h1>
+                    <p style="color: whitesmoke !important; text-align: center; padding: 10px;">Oops! We can't find the video. Verify the URL.</p>
+                  </div>
+                </div>
+                <!-- <video *ngIf="videosUrl" [src]="VideoForm.value.videourl" style="max-width: 65%; height: auto;" controls></video> -->
+              </div>
+              <br />
+              <!-- <form [formGroup]="VideoForm"> -->
+              <mat-form-field style="width: 60%;">
+                <mat-label>Video Url</mat-label>
+                <input readonly matInput [value]="VideoForm.value.videourl">
+              </mat-form-field>
+              <br />
+              <mat-form-field style="width: 60%; cursor: pointer;">
+                <mat-label>Header</mat-label>
+                <input readonly matInput [value]="VideoForm.value.Header">
+              </mat-form-field>
+              <br />
+              <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                <mat-label class="custom-mat-label">Body</mat-label>
+                <div matInput class="view-body-message">
+                  <app-view-html [html]="VideoForm.value.Body" style="border-top: 0px !important;"></app-view-html>
+                </div>
+              </div>
+              <br />
+                <!-- <mat-form-field style="width: 60%; cursor: pointer;">
+                  <mat-label>Body</mat-label>
+                  <input readonly matInput formControlName="Body">
+                </mat-form-field> -->
+                <mat-slide-toggle *ngIf="!previewCourse" [checked]="VideoForm.value.mandatory" style="width: 60%; cursor: pointer;" [disabled]="true">
+                  Is Required
+                  </mat-slide-toggle>
+              <!-- </form> -->
+              <br />
+            </div>
+            <ng-template #editingVideoSlide>
+  
+              <div class="flex flex-col gt-md:flex-row" style="align-items: end;">
+                <button (click)="editVideoSlide(!editVideoSlideDetails)"
+                   class="matcancelbutton"
+                  aria-label="Edit" matTooltip="Edit">
+                  <span>Cancel</span>
+                </button>
+              </div>
+              <!-- <div class="flex flex-col gt-md:flex-row" *ngIf="!previewCourse && !courseLoading">
+  
+                <mat-form-field>
+                  <mat-label>Upload File</mat-label>
+                  <input type="file" (change)="onSelectFile($event)" #fileInput style="display: none">
+                  <input matInput [value]="selectedFile ? selectedFile.name : ''" placeholder="No file chosen" readonly
+                    (click)="fileInput.click()">
+                  <mat-icon matSuffix (click)="fileInput.click()">attach_file</mat-icon>
+                </mat-form-field>
+                <p>Video Preview</p>
+                <video *ngIf="videoUrl" [src]="videoUrl" style="max-width: 65%; height: auto;" controls></video>
+              </div>
+              <div *ngIf="!videoUpload">
+                <video *ngIf="videosUrl && !videoUrl" [src]="videosUrl" style="max-width: 65%; height: auto;"
+                  controls></video>
+              </div> -->
+              <br />
+              <form [formGroup]="VideoForm">
+                <mat-form-field style="width: 60%;">
+                  <mat-label>Video Url</mat-label>
+                  <input matInput formControlName="videourl">
+                </mat-form-field>
+                <p style="color: #969696; margin-bottom: .25rem">Supported video URLs: Youtube and Vimeo only</p>
+                <br />
+                <mat-form-field style="width: 60%; cursor: pointer;">
+                  <mat-label>Header</mat-label>
+                  <input matInput formControlName="Header">
+                </mat-form-field>
+                <br />
+                <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                  <mat-label class="custom-mat-label">Body</mat-label>
+                  <div matInput style="border-radius: 6px; border: 1px solid rgba(226, 232, 240, 1); width: 100%;">
+                    <ckeditor [config]="editorConfig" formControlName="Body" id="editor1" [editor]="editor" (ready)="onReady($event)"></ckeditor>
+                  </div>
+                </div>
+                <br />
+                <!-- <mat-form-field style="width: 60%; cursor: pointer;">
+                  <mat-label>Body</mat-label>
+                  <input matInput formControlName="Body">
+                </mat-form-field> -->
+                <mat-slide-toggle formControlName="mandatory" style="width: 60%; cursor: pointer;">
+                  Is Required
+                </mat-slide-toggle>
+              </form>
+              <br />
+              <button *ngIf="!uploadingContent" type="submit" (click)="Submit()" mat-raised-button color="accent"
+                aria-label="Submit" matTooltip="Submit">
+                <span>Submit</span>
+              </button>
+              <button *ngIf="uploadingContent" type="submit" mat-raised-button color="accent" aria-label="Submit"
+                matTooltip="Submit" disabled>
+                <span>Submit</span>
+              </button>
+              <i *ngIf="uploadingContent">Uploading Media....</i>
+            </ng-template>
+          </div>
+          <ng-template #noVideoSlide>
+            <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
+              <mat-spinner *ngIf="courseLoading"></mat-spinner>
+            </div>
+            <div *ngIf="!previewCourse && !courseLoading">
+              <!-- <div class="flex flex-col gt-md:flex-row">
+  
+                <mat-form-field>
+                  <mat-label>Upload File</mat-label>
+                  <input type="file" (change)="onSelectFile($event)" #fileInput style="display: none">
+                  <input matInput [value]="selectedFile ? selectedFile.name : ''" placeholder="No file chosen" readonly
+                    (click)="fileInput.click()">
+                  <mat-icon matSuffix (click)="fileInput.click()">attach_file</mat-icon>
+                </mat-form-field>
+                <p>Video Preview</p>
+                <video *ngIf="videoUrl" [src]="videoUrl" style="max-width: 65%; height: auto;" controls></video>
+              </div>
+              <div *ngIf="!videoUpload">
+                <video *ngIf="videosUrl" [src]="videosUrl" style="max-width: 65%; height: auto;" controls></video>
+              </div>
+              <br /> -->
+              <br />
+              <form [formGroup]="VideoForm">
+                <mat-form-field style="width: 60%;">
+                  <mat-label>Video Url</mat-label>
+                  <input matInput formControlName="videourl">
+                </mat-form-field>
+                <br />
+                <mat-form-field style="width: 60%;">
+                  <mat-label>Header</mat-label>
+                  <input matInput formControlName="Header">
+                </mat-form-field>
+                <br />
+                <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                  <mat-label class="custom-mat-label">Body</mat-label>
+                  <div matInput style="border-radius: 6px; border: 1px solid rgba(226, 232, 240, 1); width: 100%;">
+                    <ckeditor [config]="editorConfig" formControlName="Body" id="editor1" [editor]="editor" (ready)="onReady($event)"></ckeditor>
+                  </div>
+                </div>
+                <br />
+                <!-- <mat-form-field style="width: 60%;">
+                  <mat-label>Body</mat-label>
+                  <input matInput formControlName="Body">
+                </mat-form-field> -->
+                <mat-slide-toggle formControlName="mandatory" style="width: 60%; cursor: pointer;">
+                  Is Required
+                </mat-slide-toggle>
+              </form>
+              <br />
+              <button *ngIf="!uploadingContent" type="submit" (click)="Submit()" mat-raised-button color="accent"
+                aria-label="Submit" matTooltip="Submit">
+                <span>Submit</span>
+              </button>
+              <button *ngIf="uploadingContent" type="submit" mat-raised-button color="accent" aria-label="Submit"
+                matTooltip="Submit" disabled>
+                <span>Submit</span>
+              </button>
+              <i *ngIf="uploadingContent">Uploading Media....</i>
+            </div>
+          </ng-template>
+        </div>
+        <div *ngIf="selectedSlide.slideName === 'Quiz'">
+          <div *ngIf="previewCourse; else editableQuizCourse">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-bold">Quiz Edit</h2>
+  
+            </div>
+            <form [formGroup]="QuizSlideForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <mat-form-field class="w-full">
+                <mat-label>Passing Percentage</mat-label>
+                <input matInput formControlName="passingMarks" type="number" min="0" max="100" step="1">
+              </mat-form-field>
+              <mat-form-field class="w-full">
+                <mat-label>Success Message</mat-label>
+                <input readonly matInput formControlName="successMsg">
+              </mat-form-field>
+              <mat-form-field class="w-full">
+                <mat-label>Failure Message</mat-label>
+                <input readonly matInput formControlName="failMsg">
+              </mat-form-field>
+            </form>
+            <div class="p-3"></div>
+            <h3>Submitted Questions</h3>
+            <div>
+              <div class="col-70">
+                <div class="vertical-stepper-wrapper">
+                  <form [formGroup]="QuestionsOptions" fxFlex class="event-form w-100-p">
+                    <div fxLayout="column" class="p-20" style="padding: 1rem !important;">
+                      &nbsp;
+                    </div>
+                  </form>
+                  <span *ngIf="mainBulkArray.length > 0">
+                    <div *ngFor="let qest of mainBulkArray; let i = index;">
+                      <div
+                        class="flex flex-col gt-xs:flex-row flex flex-col mt-4 px-8 pt-10 bg-card shadow rounded overflow-hidden"
+                        style="background: rgb(255, 254, 254) !important;">
+                        <div class="flex justify-between items-center w-full">
+                          <div>{{i + 1}}. {{qest.questionName}}</div>
+                        </div>
+                        <div class="mx-2 mt-4 space-y-1.5">
+                          <ng-container *ngFor="let item of qest.courseSessionQuestionOptionBean">
+                            <div class="group flex items-center">
+                              <mat-checkbox disabled readonly [(ngModel)]="item.correctOption"
+                                [ngModelOptions]="{standalone: true}" class="flex items-center"
+                                [color]="'primary'"></mat-checkbox>
+                              <label>{{item.questionOptionName}}</label>
+                            </div>
+                          </ng-container>
+                        </div>
+                        <br />
+                      </div>
+                    </div>
+                  </span>
+                  <span *ngIf="QuestionsData && QuestionsData.questionWithOptions.length > 0">
+                    <div *ngFor="let question of QuestionsData.questionWithOptions; let i = index;">
+                      <div
+                        class="flex flex-col gt-xs:flex-row flex flex-col mt-4 px-8 pt-10 bg-card shadow rounded overflow-hidden"
+                        style="background: rgb(255, 254, 254) !important;">
+                        <div class="flex justify-between items-center w-full">
+                          <div>
+                            <span>{{ i + 1 }}.</span>
+                            <span *ngIf="!questionEditMode[i]">{{ question.label }}</span>
+                            <mat-form-field *ngIf="questionEditMode[i]" appearance="outline" class="full-width">
+                              <input readonly matInput [(ngModel)]="editedQuestions[i].label" class="full-width">
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="mx-2 mt-4 space-y-1.5">
+                          <ng-container *ngFor="let option of question.options; let j = index;">
+                            <div class="group flex items-center">
+                              <mat-checkbox disabled readonly [(ngModel)]="option.isCorrect"
+                                [ngModelOptions]="{ standalone: true }" class="flex items-center"
+                                [color]="'primary'"></mat-checkbox>
+                              <label *ngIf="!questionEditMode[i]">{{ option.label }}</label>
+                              <mat-form-field *ngIf="questionEditMode[i]" appearance="outline">
+                                <input readonly matInput [(ngModel)]="editedQuestions[i].options[j].label"
+                                  class="full-width">
+                              </mat-form-field>
+                            </div>
+                          </ng-container>
+                        </div>
+                        <br />
+                      </div>
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #editableQuizCourse>
+            <div style="display: flex; justify-content: center; width: 100%;"
+              *ngIf="quizLoader; else QuizLoadingElseBLock">
+              <mat-spinner></mat-spinner>
+            </div>
+            <ng-template #QuizLoadingElseBLock>
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Quiz Edit</h2>
+  
+              </div>
+              <form [formGroup]="QuizSlideForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <mat-form-field class="w-full">
+                  <mat-label>Passing Percentage</mat-label>
+                  <input matInput formControlName="passingMarks" type="number" min="0" max="100" step="1">
+                </mat-form-field>
+                <mat-form-field class="w-full">
+                  <mat-label>Success Message</mat-label>
+                  <input matInput formControlName="successMsg">
+                </mat-form-field>
+                <mat-form-field class="w-full">
+                  <mat-label>Failure Message</mat-label>
+                  <input matInput formControlName="failMsg">
+                </mat-form-field>
+                <!-- <div class="col-span-2 flex justify-end" *ngIf="newQuizFlag">
+                  <button type="submit" (click)="SaveQuizSlide()" class="edit-button"
+                    style="background: #37649F !important;color: white !important;">Submit</button>
+                </div> -->
+              </form>
+              <div class="p-3"></div>
+              <button (click)="addQuiz(quizcontent)" class="bulk-update-btn-cus" style="float: right;">
+                Add questions
+              </button>
+              <h3>Submitted Questions</h3>
+              <div>
+                <div class="col-70">
+                  <div class="vertical-stepper-wrapper">
+                    <form [formGroup]="QuestionsOptions" fxFlex class="event-form w-100-p">
+                      <div fxLayout="column" class="p-20" style="padding: 1rem !important;">
+                        &nbsp;
+                      </div>
+                    </form>
+                   
+                    <span *ngIf="QuestionsData && QuestionsData.questionWithOptions.length > 0">
+                      <div *ngFor="let question of QuestionsData.questionWithOptions; let i = index;">
+                        <div
+                          class="flex flex-col gt-xs:flex-row flex flex-col mt-4 px-8 pt-10 bg-card shadow rounded overflow-hidden"
+                          style="background: rgb(255, 254, 254) !important;">
+                          <div class="flex justify-between items-center w-full">
+                            <div>
+                              <span>{{ i + 1 }}.</span>
+                              <span *ngIf="!questionEditMode[i]">{{ question.label }}</span>
+                              <mat-form-field *ngIf="questionEditMode[i]" appearance="outline" class="full-width">
+                                <input matInput [(ngModel)]="editedQuestions[i].label" class="full-width">
+                              </mat-form-field>
+                            </div>
+                            <div class="flex space-x-2">
+                              <button [disabled]="!quizDeleteOption" mat-icon-button *ngIf="!questionEditMode[i]" (click)="deleteQuestion(i, deleteQuestionModel)">
+                                <mat-icon>delete</mat-icon>
+                              </button>
+                              <button mat-icon-button *ngIf="!questionEditMode[i]" (click)="editQuestion(i, quizcontent)">
+                                <mat-icon>edit</mat-icon>
+                              </button>
+                              <button mat-icon-button *ngIf="!questionEditMode[i]" (click)="moveUp(i)"
+                                [disabled]="i === 0">
+                                <mat-icon>arrow_upward</mat-icon>
+                              </button>
+                              <button mat-icon-button *ngIf="!questionEditMode[i]" (click)="moveDown(i)"
+                                [disabled]="i === QuestionsData.questionWithOptions.length - 1">
+                                <mat-icon>arrow_downward</mat-icon>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="mx-2 mt-4 space-y-1.5">
+                            <ng-container *ngFor="let option of question.options; let j = index;">
+                              <div class="group flex items-center">
+                                <mat-checkbox [(ngModel)]="option.isCorrect" [ngModelOptions]="{ standalone: true }"
+                                  class="flex items-center" [color]="'primary'"></mat-checkbox>
+                                <label *ngIf="!questionEditMode[i]">{{ option.label }}</label>
+                                <mat-form-field *ngIf="questionEditMode[i]" appearance="outline">
+                                  <input matInput [(ngModel)]="editedQuestions[i].options[j].label" class="full-width">
+                                </mat-form-field>
+                              </div>
+                            </ng-container>
+                          </div>
+                          <br />
+                        </div>
+                      </div>
+                    </span>
+                    <div mat-dialog-actions fxLayoutAlign="end center" class="m-0 p-6" fxLayout="row">
+                      <button type="submit" (click)="submitquestionforms()" class="bulk-update-btn-cus"
+                        matTooltip="Submit">
+                        <span>Save</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ng-template>
+        </div>
+        <div *ngIf="selectedSlide.slideName.includes('Audio')">
+          <div *ngIf="audioSlideEditable; else noAudioSlide">
+            <div *ngIf="!editAudioSlideDetails; else editingAudioSlide">
+              <div class="flex flex-col gt-md:flex-row" style="align-items: end;">
+  
+                <button *ngIf="!previewCourse" (click)="editAudioSlide(!editAudioSlideDetails, 'edit')"
+                  style="width: 85px; color: white; margin-bottom: 20px; background: #37649F;" class="edit-button"
+                  aria-label="Edit" class="edit-button">
+                  <span>Edit</span>
+                </button>
+              </div>
+              <div *ngIf="!audioUpload && ContentId != '00000000-0000-0000-0000-000000000000'">
+                <audio [src]="audiosUrl" controls controlsList="nodownload noplaybackrate"></audio>
+              </div>
+              <br />
+                <mat-form-field style="width: 60%; cursor: pointer;">
+                  <mat-label>Header</mat-label>
+                  <input readonly matInput [value]="AudioForm.value.Header">
+                </mat-form-field>
+                <br />
+                <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                  <mat-label class="custom-mat-label">Body</mat-label>
+                  <div matInput class="view-body-message">
+                    <app-view-html [html]="AudioForm.value.Body" style="border-top: 0px !important;"></app-view-html>
+                  </div>
+                </div>
+                <mat-slide-toggle *ngIf="!previewCourse" disabled [checked]="AudioForm.value.mandatory" style="width: 60%; cursor: pointer;">
+                  Is Required
+                </mat-slide-toggle>
+              <br />
+            </div>
+            <ng-template #editingAudioSlide>
+              <div class="flex flex-col gt-md:flex-row" style="align-items: end;">
+                <button (click)="editAudioSlide(!editAudioSlideDetails, 'cancel')"
+                  style="width: 85px; color: white; margin-bottom: 20px; background: darkred;" class="matcancelbutton"
+                  aria-label="Edit" matTooltip="Edit">
+                  <span>Cancel</span>
+                </button>
+              </div>
+              <div class="flex flex-col gt-md:flex-row" *ngIf="editAudioSlideDetails">
+  
+                <mat-form-field>
+                  <mat-label>Upload Audio</mat-label>
+                  <input type="file" (change)="onSelectAudioFile($event)" #fileInputAudio style="display: none" accept="audio/mp3">
+                  <input matInput [value]="selectedFile ? selectedFile.name : ''" placeholder="No file chosen" readonly
+                    (click)="fileInputAudio.click()">
+                  <mat-icon matSuffix (click)="fileInputAudio.click()">attach_file</mat-icon>
+                </mat-form-field>
+                <div>
+                  <p style="color: #969696;">Maximum file size allowed: 15MB</p>
+                  <p style="margin-bottom: 2rem;color: #969696;">File types allowed: Audio (MP3, WAV, OGG, M4A, or AAC)</p>
+                </div>
+                
+                <p>Audio Preview</p>
+                <audio *ngIf="audioUrl && audioUpload" [src]="audioUrl" controls controlsList="nodownload noplaybackrate"></audio>
+              </div>
+              <div *ngIf="!audioUpload && ContentId != '00000000-0000-0000-0000-000000000000'">
+                <audio *ngIf="audiosUrl" [src]="audiosUrl" controls controlsList="nodownload noplaybackrate"></audio>
+              </div>
+              <br />
+              <form [formGroup]="AudioForm">
+                <mat-form-field style="width: 60%; cursor: pointer;">
+                  <mat-label>Header</mat-label>
+                  <input matInput formControlName="Header">
+                </mat-form-field>
+                <br />
+                <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                  <mat-label class="custom-mat-label">Body</mat-label>
+                  <div matInput style="border-radius: 6px; border: 1px solid rgba(226, 232, 240, 1); width: 100%;">
+                    <ckeditor [config]="editorConfig" formControlName="Body" id="editor1" [editor]="editor" (ready)="onReady($event)"></ckeditor>
+                  </div>
+                </div>
+                <br />
+                <mat-slide-toggle formControlName="mandatory" style="width: 60%; cursor: pointer;">
+                  Is Required
+                </mat-slide-toggle>
+              </form>
+              <br />
+              <button *ngIf="!uploadingContent" type="submit" (click)="Submit()" mat-raised-button color="accent"
+                aria-label="Submit" matTooltip="Submit">
+                <span>Submit</span>
+              </button>
+              <button *ngIf="uploadingContent" type="submit" mat-raised-button color="accent" aria-label="Submit"
+                matTooltip="Submit" disabled>
+                <span>Submit</span>
+              </button>
+              <i *ngIf="uploadingContent">Uploading Media....</i>
+            </ng-template>
+          </div>
+          <ng-template #noAudioSlide>
+            <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
+              <mat-spinner *ngIf="audioCourseLoading"></mat-spinner>
+            </div>
+            <div *ngIf="!previewCourse && !audioCourseLoading">
+  
+              <mat-form-field>
+                <mat-label>Upload Audio</mat-label>
+                <input type="file" (change)="onSelectAudioFile($event)" #fileInput style="display: none" accept="audio/mp3">
+                <input matInput [value]="selectedFile ? selectedFile.name : ''" placeholder="No file chosen" readonly
+                  (click)="fileInput.click()">
+                <mat-icon matSuffix (click)="fileInput.click()">attach_file</mat-icon>
+              </mat-form-field>
+              <div>
+                <p style="color: #969696;">Maximum file size allowed: 15MB</p>
+                <p style="margin-bottom: 2rem;color: #969696;">File types allowed: Audio (MP3, WAV, OGG, M4A, or AAC)</p>
+              </div>
+              <p>Audio Preview</p>
+              <audio *ngIf="audioUpload && audioUrl" [src]="audioUrl" controls controlsList="nodownload noplaybackrate"></audio>
+              <div *ngIf="!audioUpload">
+                <audio *ngIf="audiosUrl && ContentId != '00000000-0000-0000-0000-000000000000'" [src]="audiosUrl"
+                  controls controlsList="nodownload noplaybackrate"></audio>
+              </div>
+              <br />
+              <form [formGroup]="AudioForm">
+                <mat-form-field style="width: 60%;">
+                  <mat-label>Header</mat-label>
+                  <input matInput formControlName="Header">
+                </mat-form-field>
+                <br />
+                <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                  <mat-label class="custom-mat-label">Body</mat-label>
+                  <div matInput style="border-radius: 6px; border: 1px solid rgba(226, 232, 240, 1); width: 100%;">
+                    <ckeditor [config]="editorConfig" formControlName="Body" id="editor1" [editor]="editor" (ready)="onReady($event)"></ckeditor>
+                  </div>
+                </div>
+                <br />
+                <mat-slide-toggle formControlName="mandatory" style="width: 60%; cursor: pointer;">
+                  Is Required
+                </mat-slide-toggle>
+              </form>
+              <br />
+              <button *ngIf="!uploadingContent" type="submit" (click)="Submit()" mat-raised-button color="accent"
+                aria-label="Submit" matTooltip="Submit">
+                <span>Submit</span>
+              </button>
+              <button *ngIf="uploadingContent" type="submit" mat-raised-button color="accent" aria-label="Submit"
+                matTooltip="Submit" disabled>
+                <span>Submit</span>
+              </button>
+              <i *ngIf="uploadingContent">Uploading Media....</i>
+            </div>
+          </ng-template>
+        </div>
+        <div>
+          <p>{{ selectedSlide.content }}</p>
+        </div>
+        <div *ngIf="selectedSlide.slideName.includes('Image')">
+          <div *ngIf="ImageSlideEditable; else noImageSlide">
+            <div *ngIf="!imageslideDetails; else editingImageSlide">
+              <div class="flex flex-col gt-md:flex-row" style="align-items: end;">
+                <button *ngIf="!previewCourse" (click)="EditImageslide(!imageslideDetails)"
+                  style="width: 85px; color: white; margin-bottom: 20px; background: #37649F;" class="edit-button"
+                  aria-label="Edit" matTooltip="Edit">
+                  <span>Edit</span>
+                </button>
+              </div>
+              <div *ngIf="!imageUpload && ContentId !== '00000000-0000-0000-0000-000000000000'">
+                <img *ngIf="imagesUrl" [src]="imagesUrl" alt="Existing Image">
+              </div>
+              <br />
+              <mat-form-field style="width: 60%; cursor: pointer;">
+                <mat-label>Header</mat-label>
+                <input readonly matInput [value]="ImageForm.value.Header">
+              </mat-form-field>
+              <br />
+              <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                <mat-label class="custom-mat-label">Body</mat-label>
+                <div matInput class="view-body-message">
+                  <app-view-html [html]="ImageForm.value.Body" style="border-top: 0px !important;"></app-view-html>
+                </div>
+              </div>
+              <br />
+            </div>
+            <ng-template #editingImageSlide>
+              <div class="flex flex-col gt-md:flex-row" style="align-items: end;">
+                <button (click)="EditImageslide(!imageslideDetails)"
+                  style="width: 85px; color: white; margin-bottom: 20px; background: darkred;" class="matcancelbutton"
+                  aria-label="Edit" matTooltip="Edit">
+                  <span>Cancel</span>
+                </button>
+              </div>
+              <div class="flex flex-col gt-md:flex-row" *ngIf="imageslideDetails">
+                <mat-form-field>
+                  <mat-label>Upload Image</mat-label>
+                  <input type="file" accept="image/*" (change)="onSelectImageFile($event)" #fileInputImage style="display: none">
+                  <input matInput [value]="selectedFile ? selectedFile.name : ''" placeholder="No file chosen" readonly
+                    (click)="fileInputImage.click()">
+                  <mat-icon matSuffix (click)="fileInputImage.click()">attach_file</mat-icon>
+                </mat-form-field>
+                <p>Image Preview</p>
+                <img *ngIf="imageUrl && imageUpload" [src]="imageUrl" alt="Image Preview">
+              </div>
+              <div *ngIf="!imageUpload && ContentId !== '00000000-0000-0000-0000-000000000000'">
+                <img *ngIf="imagesUrl" [src]="imagesUrl" alt="Existing Image">
+              </div>
+              <br />
+              <form [formGroup]="ImageForm">
+                <mat-form-field style="width: 60%; cursor: pointer;">
+                  <mat-label>Header</mat-label>
+                  <input matInput formControlName="Header">
+                </mat-form-field>
+                <br />
+                <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                  <mat-label class="custom-mat-label">Body</mat-label>
+                  <div matInput style="border-radius: 6px; border: 1px solid rgba(226, 232, 240, 1); width: 100%;">
+                    <ckeditor [config]="editorConfig" formControlName="Body" id="editor1" [editor]="editor" (ready)="onReady($event)"></ckeditor>
+                  </div>
+                </div>
+                <br />
+                <!-- <mat-form-field style="width: 60%; cursor: pointer;">
+                  <mat-label>Body</mat-label>
+                  <input matInput formControlName="Body">
+                </mat-form-field> -->
+              </form>
+              <br />
+              <button *ngIf="!uploadingContent" type="submit" (click)="Submit()" mat-raised-button color="accent"
+                aria-label="Submit" matTooltip="Submit">
+                <span>Submit</span>
+              </button>
+              <button *ngIf="uploadingContent" type="submit" mat-raised-button color="accent" aria-label="Submit"
+                matTooltip="Submit" disabled>
+                <span>Submit</span>
+              </button>
+              <i *ngIf="uploadingContent">Uploading Media....</i>
+            </ng-template>
+          </div>
+          <ng-template #noImageSlide>
+            <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
+              <mat-spinner *ngIf="imageCourseLoading"></mat-spinner>
+            </div>
+            <div *ngIf="!previewCourse && !imageCourseLoading">
+              <mat-form-field>
+                <mat-label>Upload Image</mat-label>
+                <input type="file" accept="image/*" (change)="onSelectImageFile($event)" #fileInputImage
+                  style="display: none">
+                <input matInput [value]="selectedFile ? selectedFile.name : ''" placeholder="No file chosen" readonly
+                  (click)="fileInputImage.click()">
+                <mat-icon matSuffix (click)="fileInputImage.click()">attach_file</mat-icon>
+              </mat-form-field>
+              <p>Image Preview</p>
+              <img *ngIf="imageUrl && imageUpload" [src]="imageUrl" alt="Image Preview">
+            
+            <div *ngIf="!imageUpload && ContentId != '00000000-0000-0000-0000-000000000000'">
+              <img *ngIf="imagesUrl" [src]="imagesUrl" alt="Existing Image">
+            </div>
+            <br />
+            <form [formGroup]="ImageForm">
+              <mat-form-field style="width: 60%; cursor: pointer;">
+                <mat-label>Header</mat-label>
+                <input matInput formControlName="Header">
+              </mat-form-field>
+              <br />
+              <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                <mat-label class="custom-mat-label">Body</mat-label>
+                <div matInput style="border-radius: 6px; border: 1px solid rgba(226, 232, 240, 1); width: 100%;">
+                  <ckeditor [config]="editorConfig" formControlName="Body" id="editor1" [editor]="editor" (ready)="onReady($event)"></ckeditor>
+                </div>
+              </div>
+              <br />
+              <!-- <mat-form-field style="width: 60%; cursor: pointer;">
+                <mat-label>Body</mat-label>
+                <input matInput formControlName="Body">
+              </mat-form-field> -->
+            </form>
+            <br />
+            <button *ngIf="!uploadingContent" type="submit" (click)="Submit()" mat-raised-button color="accent"
+              aria-label="Submit" matTooltip="Submit">
+              <span>Submit</span>
+            </button>
+            <button *ngIf="uploadingContent" type="submit" mat-raised-button color="accent" aria-label="Submit"
+              matTooltip="Submit" disabled>
+              <span>Submit</span>
+            </button>
+            <i *ngIf="uploadingContent">Uploading Media....</i>
+          </div>
+          </ng-template>
+        </div>
+        <div *ngIf="selectedSlide.slideName.includes('Text')">
+          <div *ngIf="textSlideEditable; else noTextSlide">
+            <div *ngIf="!textSlideDetails; else editingTextSlide">
+              <div class="flex flex-col gt-md:flex-row" style="align-items: end;">
+                <button *ngIf="!previewCourse" (click)="EditTextslide(!textSlideDetails)"
+                  style="width: 85px; color: white; margin-bottom: 20px; background: #37649F;" class="edit-button"
+                  aria-label="Edit" matTooltip="Edit">
+                  <span>Edit</span>
+                </button>
+              </div>
+              <br />
+              <mat-form-field style="width: 60%; cursor: pointer;">
+                <mat-label>Header</mat-label>
+                <input readonly matInput [value]="TextForm.value.Header">
+              </mat-form-field>
+              <br />
+              <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                <mat-label class="custom-mat-label">Body</mat-label>
+                <div matInput class="view-body-message">
+                  <app-view-html [html]="TextForm.value.Body" style="border-top: 0px !important;"></app-view-html>
+                </div>
+              </div>
+              <br />
+            </div>
+            <ng-template #editingTextSlide>
+              <div class="flex flex-col gt-md:flex-row" style="align-items: end;">
+                <button (click)="EditTextslide(!textSlideDetails)"
+                  style="width: 85px; color: white; margin-bottom: 20px; background: darkred;" class="matcancelbutton"
+                  aria-label="Edit" matTooltip="Edit">
+                  <span>Cancel</span>
+                </button>
+              </div>
+              <br />
+              <form [formGroup]="TextForm">
+                <mat-form-field style="width: 60%; cursor: pointer;">
+                  <mat-label>Header</mat-label>
+                  <input matInput formControlName="Header">
+                </mat-form-field>
+                <br />
+                <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                  <mat-label class="custom-mat-label">Body</mat-label>
+                  <div matInput style="border-radius: 6px; border: 1px solid rgba(226, 232, 240, 1); width: 100%;">
+                    <ckeditor [config]="editorConfig" formControlName="Body" id="editor1" [editor]="editor" (ready)="onReady($event)"></ckeditor>
+                  </div>
+                </div>
+                <br />
+                <!-- <mat-form-field style="width: 60%; cursor: pointer;">
+                  <mat-label>Body</mat-label>
+                  <input matInput formControlName="Body">
+                </mat-form-field> -->
+              </form>
+              <br />
+              <button *ngIf="!uploadingContent" type="submit" (click)="Submit()" mat-raised-button color="accent"
+                aria-label="Submit" matTooltip="Submit">
+                <span>Submit</span>
+              </button>
+              <button *ngIf="uploadingContent" type="submit" mat-raised-button color="accent" aria-label="Submit"
+                matTooltip="Submit" disabled>
+                <span>Submit</span>
+              </button>
+            </ng-template>
+          </div>
+          <ng-template #noTextSlide>
+            <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
+              <mat-spinner *ngIf="imageCourseLoading"></mat-spinner>
+            </div>
+            <br />
+            <div *ngIf="!imageCourseLoading">
+              <form [formGroup]="TextForm">
+                <mat-form-field style="width: 60%; cursor: pointer;">
+                  <mat-label>Header</mat-label>
+                  <input matInput formControlName="Header">
+                </mat-form-field>
+                <br />
+                <div style="width: 100%; display: flex; flex-direction: column;" class="gap-4">
+                  <mat-label class="custom-mat-label">Body</mat-label>
+                  <div matInput style="border-radius: 6px; border: 1px solid rgba(226, 232, 240, 1); width: 100%;">
+                    <ckeditor [config]="editorConfig" formControlName="Body" id="editor1" [editor]="editor" (ready)="onReady($event)"></ckeditor>
+                  </div>
+                </div>
+                <br />
+              </form>
+              <br />
+              <button *ngIf="!uploadingContent" type="submit" (click)="Submit()" mat-raised-button color="accent"
+                aria-label="Submit" matTooltip="Submit">
+                <span>Submit</span>
+              </button>
+              <button *ngIf="uploadingContent" type="submit" mat-raised-button color="accent" aria-label="Submit"
+                matTooltip="Submit" disabled>
+                <span>Submit</span>
+              </button>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+  </mat-dialog-content>
+</ng-template>
+
+<ng-template #quizcontent>
+  <h2 mat-dialog-title>Quiz Add</h2>
+  <div class="dialog-content-container flex flex-col md:w-160 md:min-w-160 p-2">
+    <form [formGroup]="QuestionsOptions">
+      <div class="mb-4">
+     
+        <mat-form-field style="width: 100%;" appearance="outline">
+          <mat-label>Question</mat-label>
+          <textarea id="desc-text-area" #input4 matInput rows="3" formControlName="question" maxlength="1000"></textarea>
+          <mat-hint align="end">{{input4.value?.length || 0}}/1000</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class="mb-4">
+        <span class="block text-base font-normal">How many answers should be correct?</span>
+        <mat-radio-group 
+        formControlName="questionType" 
+        (change)="onAnswerTypeChange($event)" 
+        class="flex flex-col">
+        <mat-radio-button value="single" class="mt-2">Single Answer</mat-radio-button>
+        <mat-radio-button value="multipleSingle" class="mt-2">Multiple Answers (Choose only 1)</mat-radio-button>
+        <mat-radio-button value="multipleAll" class="mt-2">Multiple Answers (Must choose all)</mat-radio-button>
+        <mat-radio-button value="trueFalse" class="mt-2">True/False</mat-radio-button>
+      </mat-radio-group>
+      </div>
+      
+            
+      <div class="mb-4">
+        <mat-label>Options</mat-label>
+        <ng-container *ngIf="addOption.length > 0">
+          <div class="mt-2 space-y-2">
+            <ng-container *ngFor="let item of addOption; let i = index;">
+              <div class="group flex items-center">
+                <!-- Disable checkboxes in edit mode -->
+                <mat-checkbox 
+                [(ngModel)]="item.selected" 
+                [ngModelOptions]="{ standalone: true }" 
+                class="flex items-center" 
+                [color]="'primary'" 
+                [disabled]="editExistingQuiz || disableCheckbox(item)">
+              </mat-checkbox>
+              
+            
+                <!-- Display text as input field or label based on edit mode -->
+                <ng-container *ngIf="editExistingQuiz; else displayText">
+                  <mat-form-field style="width: 100%;">
+                    <input matInput [(ngModel)]="item.optionvalue" [ngModelOptions]="{ standalone: true }">
+                  </mat-form-field>
+                </ng-container>
+                <ng-template #displayText>
+                  <label class="ml-2">{{ item.optionvalue }}</label>
+                </ng-template>
+            
+                <!-- Remove button should be hidden in edit mode -->
+                <mat-icon 
+                  *ngIf="!editExistingQuiz" 
+                  matTooltip="Remove option" 
+                  class="hidden group-hover:flex ml-auto icon-size-5 cursor-pointer" 
+                  svgIcon="heroicons_solid:x" 
+                  (click)="removeTaskFromNoteAdd(i)" 
+                  color="warn">
+                </mat-icon>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+
+      <div *ngIf="!editExistingQuiz" class="mb-4 flex items-center" style="gap: 20px;">
+        <!-- <mat-icon class="icon-size-5 text-hint" svgIcon="heroicons_solid:plus"></mat-icon> -->
+        <mat-form-field style="width: 100%;" appearance="outline" class="ml-2">
+          <input #newTaskInput matInput
+            formControlName="option" maxlength="200">
+          <mat-hint align="end">{{newTaskInput.value?.length || 0}}/200</mat-hint>
+        </mat-form-field>
+        <button (click)="addTaskToNote($event); newTaskInput.value = ''" class="bulk-update-btn-cus">
+          Add
+        </button>
+      </div>
+
+      <!-- Submit and Close Buttons -->
+      <div class="flex justify-end space-x-4 mt-4">
+        <button (click)="SubmitQuestionForm()" class="bulk-update-btn-cus">
+          Save
+        </button>
+        <button (click)="modalReferences.close()" class="bulk-update-btn-cus">
+          Close
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+<ng-template #deleteSlideDialog>
+  <h2 mat-dialog-title>Delete Slide</h2>
+  <div class="flex flex-col md:w-160 md:min-w-160 p-4">
+    Are you sure, you want to delete the {{this.deleteSlideDetails.slide.slideName}} slide?
+    <div class="flex justify-end space-x-4 mt-4">
+      <button (click)="deleteSlideConfirmation()" class="bulk-update-btn-cus">
+        Delete
+      </button>
+      <button (click)="modalReferences.close()" class="bulk-update-btn-cus">
+        Cancel
+      </button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #confirmationDialog>
+  <h2 mat-dialog-title>Close Slide Creation</h2>
+  <div class="flex flex-col md:w-160 md:min-w-160 p-4">
+    You are about to navigate away without saving. Are you sure?
+    <div class="flex justify-end space-x-4 mt-4">
+      <button (click)="closeSlideCreationDialogWithoutSaving()" class="bulk-update-btn-cus">
+        Yes
+      </button>
+      <button (click)="closeSlideCreationDialog.close()" class="bulk-update-btn-cus">
+        Cancel
+      </button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #deleteQuestionModel>
+  <h2 mat-dialog-title>Delete Question</h2>
+  <div class="flex flex-col md:w-160 md:min-w-160 p-4">
+    Are you sure, you want to delete the question?
+    <div class="flex justify-end space-x-4 mt-4">
+      <button (click)="deleteQuestionConfirmation()" class="bulk-update-btn-cus">
+        Delete
+      </button>
+      <button (click)="modalReferences.close()" class="bulk-update-btn-cus">
+        Cancel
+      </button>
+    </div>
+  </div>
+</ng-template>

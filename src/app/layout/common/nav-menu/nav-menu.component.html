@@ -1,0 +1,173 @@
+<button (click)="handleMenuClick()" [ngClass]="showMenu ? 'menu-button-border menuIcon' : 'menuIcon'" style="padding: 0.5rem 1rem;
+    font-size: 14px;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;">
+    <span class="menu-txt">Menu</span>
+    <span class="spnMnuIcon" *ngIf="!showMenu"></span>
+    <span class="spnMnuIconShow" *ngIf="showMenu"></span>
+    
+</button>
+
+<div *ngIf="isAdminUser">
+    <div [class.show]="showMenu" [class.hide]="!showMenu" class="menu navbar-collapse collapse show">
+        <div [ngClass]="{'menu-bar-options-container': true, 'open': showMenu}">
+            <div class="md:px-28 overflow-y-auto custom-scrollbar" style="max-height: 70vh;">
+                <ul class="text-center navbar-nav me-auto mb-2 mb-lg-0 menu-grp">
+                    <!-- Conditionally hide these items when logged in with specific user IDs -->
+                    <li class="nav-item" *ngIf="!isAdminUser">
+                        <a class="nav-link active menu-item" (click)="handleHomeClick();showMenu = false" aria-current="page" [routerLink]="['/']">{{homeText}}</a>
+                    </li>
+                    <li class="nav-item dropdown" *ngIf="!isAdminUser && (userOnbe === 'true' || userNeoCurrency === 'true')">
+                        <a class="nav-link dropdown-toggle" (click)="showGroup=!showGroup" [ngClass]="{'show': showGroup}" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Redeem
+                        </a>
+                        <ul class="dropdown-menu-user" [ngClass]="{'show': showGroup}">
+                            <li *ngIf="userOnbe === 'true'">
+                                <a class="dropdown-item" style="padding: 0.5rem 1rem !important;" (click)="showGroup=!showGroup; showMenu = false" [routerLink]="['/redeem']">
+                                  KOHLER Rewards Card
+                                </a>
+                              </li>
+                              <li *ngIf="userNeoCurrency === 'true'">
+                                <a class="dropdown-item" style="padding: 0.5rem 1rem !important;" (click)="showGroup=!showGroup; showMenu = false" [routerLink]="['/kohler-direct-gift-cards']">
+                                  KOHLER Direct Gift Cards
+                                </a>
+                              </li>
+                            <!-- <li><a class="dropdown-item" style="padding: 0.5rem 1rem !important; cursor: pointer;" (click)="showGroup=!showGroup;showMenu = false" (click)="navigateToRedeemPages('Concierge Shopping Request')">Concierge Shopping Request</a></li>
+                            <li><a class="dropdown-item" style="padding: 0.5rem 1rem !important; cursor: pointer;" (click)="showGroup=!showGroup;showMenu = false" (click)="navigateToRedeemPages('Travel Concierge Request')">Travel Concierge Request</a></li>
+                            <li><a class="dropdown-item" style="padding: 0.5rem 1rem !important; cursor: pointer;" (click)="showGroup=!showGroup;showMenu = false" (click)="navigateToRedeemPages('Tuition Reimbursement Request')">Tuition Reimbursement Request</a></li> -->
+                        </ul>
+                    </li>
+                
+                    <li class="nav-item" *ngIf="!hideTransactionsAndNotifications && !isAdminUser">
+                        <a class="nav-link menu-item" (click)="showMenu=!showMenu" aria-current="page" [routerLink]="['/transactions']">Transactions</a>
+                    </li>
+                
+                    <li class="nav-item" *ngIf="!hideTransactionsAndNotifications && !isAdminUser">
+                        <a class="nav-link menu-item" (click)="showMenu=!showMenu" aria-current="page" [routerLink]="['/notifications']">Notifications</a>
+                    </li>
+                    <!-- <li class="nav-item" *ngIf="!isAdminUser">
+                        <a class="nav-link menu-item" (click)="handleLMSClick();showMenu = false" aria-current="page" [routerLink]="['/lms-home']">LMS Home</a>
+                    </li> -->
+                    <li class="nav-item" *ngIf="!isAdminUser">
+                        <a class="nav-link active menu-item" (click)="showMenu=!showMenu" aria-current="page" [routerLink]="['/academy-curriculums']">Academy</a>
+                    </li>
+                    <li class="nav-item" *ngIf="!isAdminUser">
+                        <a class="nav-link menu-item" (click)="showMenu = false" aria-current="page" [routerLink]="['/program-rules']">Program Rules</a>
+                    </li>
+                    <li class="nav-item dropdown" *ngIf="isAdminUser && loggedInUserData?.showLemsAdmin && loggedInUserData?.showLMSAdmin">
+                        <a class="nav-link dropdown-toggle" (click)="showGroupforadmin=!showGroupforadmin" [ngClass]="{'show': showGroupforadmin}" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            LMS Admin Panel
+                        </a>
+                        <ul class="dropdown-menu" [ngClass]="{'show': showGroupforadmin}">
+                            <li><a class="dropdown-item" (click)="showMenu = false" [routerLink]="['/curriculum-manager']">Curriculum Manager</a></li>
+                            
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            
+                            <li><a class="dropdown-item" (click)="showMenu = false" [routerLink]="['/training-course-manager']">Training Courses</a></li>
+                            
+                        </ul>
+                        </li>
+                        <li class="nav-item" *ngIf="isAdminUser && loggedInUserData?.showIncentiveAdmin">
+                            <a class="nav-link menu-item" (click)="showMenu=!showMenu" aria-current="page"  (click)="gotoIncentiveModule()" style="cursor: pointer;"> Incentive Admin Panel</a>
+                        </li>
+                        
+                        
+                        <!-- Incentive Admin Panel - Visible only for adminincentive@yopmail.com -->
+                        <!-- <li class="nav-item dropdown" *ngIf="userId === 'adminincentive@yopmail.com'">
+                        <a class="nav-link dropdown-toggle" (click)="showGroupforadminsins=!showGroupforadminsins" [ngClass]="{'show': showGroupforadminsins}" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Incentive Admin Panel
+                        </a>
+                        <ul class="dropdown-menu" [ngClass]="{'show': showGroupforadminsins}">
+                            <li><a class="dropdown-item" (click)="showMenu = false" [routerLink]="['/incentive-admin-home']">Home</a></li>
+                            
+                        </ul>
+                        </li> -->
+                </ul>
+            </div>
+        </div>
+        <div (click)="showMenu = false" style="width: 100vw; height: 100vh;"></div>
+    </div>
+</div>
+<div *ngIf="!isAdminUser">
+    <div [class.show]="showMenu" [class.hide]="!showMenu" class="menu navbar-collapse collapse show">
+        <div [ngClass]="{'menu-bar-options-container': true, 'open': showMenu}">
+            <div class="md:px-28 overflow-y-auto custom-scrollbar" style="max-height: 70vh;">
+                <ul class="text-center navbar-nav me-auto mb-2 mb-lg-0 menu-grp">
+                    <div *ngFor="let items of navigationArray;">
+                    <li class="nav-item" *ngIf="(items.menuId === '' && !items.isPublish && !items.isHide) || (items.menuId === 'HM' && !items.isPublish && !items.isHide)">
+                        <a class="nav-link active menu-item" aria-current="page" (click)="handleHomeClick(); routeToDynamicMenu(items, '/dashboards')">{{items.menuName}}</a>
+                    </li>
+                    <li class="nav-item dropdown" *ngIf="items.menuId === 'RD' && !items.isHide && (userOnbe === 'true' || userNeoCurrency === 'true')">
+                        <a class="nav-link dropdown-toggle" (click)="showGroup=!showGroup" [ngClass]="{'show': showGroup}" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            {{items.menuName}}
+                        </a>
+                        <ul class="dropdown-menu-user" [ngClass]="{'show': showGroup}">
+                            <div *ngFor="let subItem of sideNavSubItemArray">
+                                <li *ngIf="userOnbe === 'true' && subItem.menuId === 'KRC' && !subItem.isHide">
+                                    <a class="dropdown-item" style="padding: 0.5rem 1rem !important;" (click)="routeToDynamicMenu(subItem, '/redeem')">
+                                    {{subItem.menuName}}
+                                    </a>
+                                </li>
+                                <li *ngIf="userNeoCurrency === 'true'  && subItem.menuId === 'KRGC' && !subItem.isHide">
+                                    <a class="dropdown-item" style="padding: 0.5rem 1rem !important;" (click)="routeToDynamicMenu(subItem, '/kohler-direct-gift-cards')">
+                                    {{subItem.menuName}}
+                                    </a>
+                                </li>
+                            </div>
+                            <!-- <li><a class="dropdown-item" style="padding: 0.5rem 1rem !important; cursor: pointer;" (click)="showGroup=!showGroup;showMenu = false" (click)="navigateToRedeemPages('Concierge Shopping Request')">Concierge Shopping Request</a></li>
+                            <li><a class="dropdown-item" style="padding: 0.5rem 1rem !important; cursor: pointer;" (click)="showGroup=!showGroup;showMenu = false" (click)="navigateToRedeemPages('Travel Concierge Request')">Travel Concierge Request</a></li>
+                            <li><a class="dropdown-item" style="padding: 0.5rem 1rem !important; cursor: pointer;" (click)="showGroup=!showGroup;showMenu = false" (click)="navigateToRedeemPages('Tuition Reimbursement Request')">Tuition Reimbursement Request</a></li> -->
+                        </ul>
+                    </li>
+                
+                    <li class="nav-item" *ngIf="items.menuId === 'TR' && !items.isHide && !hideTransactionsAndNotifications">
+                        <a class="nav-link menu-item" aria-current="page" (click)="routeToDynamicMenu(items, '/transactions')">{{items.menuName}}</a>
+                    </li>
+                
+                    <li class="nav-item" *ngIf="items.menuId === 'NT' && !items.isHide && !hideTransactionsAndNotifications">
+                        <a class="nav-link menu-item" aria-current="page" (click)="routeToDynamicMenu(items, '/notifications')">{{items.menuName}}</a>
+                    </li>
+                    <li class="nav-item" *ngIf="items.menuId === 'AC' && !items.isHide">
+                        <a class="nav-link active menu-item" aria-current="page" (click)="routeToDynamicMenu(items, '/academy-curriculums')">{{items.menuName}}</a>
+                    </li>
+                    <li class="nav-item" *ngIf="items.menuId === 'PR' && !items.isHide">
+                        <a class="nav-link menu-item" aria-current="page" (click)="routeToDynamicMenu(items, '/program-rules')">{{items.menuName}}</a>
+                    </li>
+                    <li class="nav-item" *ngIf="items.menuId === 'OL' && !items.isHide">
+                        <a class="nav-link menu-item" aria-current="page" (click)="routeToDynamicMenu(items, '/')">{{items.menuName}}</a>
+                    </li>
+                    <li class="nav-item" *ngIf="items.menuId === 'basic' && !items.isHide">
+                        <a class="nav-link menu-item" aria-current="page" (click)="routeToDynamicMenu(items, '/')">{{items.menuName}}</a>
+                    </li>
+                    <li class="nav-item dropdown" *ngIf="items.menuId === 'collapsable' && !items.isHide">
+                        <a class="nav-link dropdown-toggle" (click)="items['showGroup']=!items['showGroup']"
+                            [ngClass]="{'show': items['showGroup']}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{items.menuName}}
+                        </a>
+                        <ul class="dropdown-menu-user" [ngClass]="{'show': items['showGroup']}">
+                            <div *ngFor="let subItem of sideNavSubItemArray">
+                                <li
+                                    *ngIf="items.id === subItem.subMenuId && subItem.menuId !== 'KRC' && subItem.menuId !== 'KRGC' && !subItem.isHide">
+                                    <a class="dropdown-item" style="padding: 0.5rem 1rem !important;cursor: pointer;"
+                                        (click)="routeToDynamicMenu(subItem, '/')">
+                                        {{subItem.menuName}}
+                                    </a>
+                                </li>
+                            </div>
+                        </ul>
+                    </li>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        <div (click)="showMenu = false" style="width: 100vw; height: 100vh;"></div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+
+  
+::ng-deep .mat-datepicker-content .mat-calendar {
+  height: unset !important;
+}
+
+::ng-deep .mat-calendar-body-cell-content {
+  top: 15% !important;
+  width: 78% !important;
+  height: 60% !important;
+}
+
+::ng-deep .mat-calendar-body-cell-container {
+  padding-bottom: 6px !important;
+  padding-top: 6px !important;
+}
+
+.ml-1-8 {
+  margin-left: -1.8rem;
+}

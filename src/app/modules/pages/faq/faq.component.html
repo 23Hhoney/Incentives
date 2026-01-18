@@ -1,0 +1,85 @@
+<div class="container mt-4 mb-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li
+          class="breadcrumb-item active"
+          style="cursor: pointer;"
+          aria-current="page"
+          routerLink="/dashboards"
+        >
+          Home
+        </li>
+      </ol>
+    </nav>
+  
+    <!-- Loader -->
+    <div *ngIf="loader" class="loader-container">
+      Loading...
+    </div>
+  
+    <!-- Content -->
+    <div *ngIf="!loader">
+      <div style="align-items: center; display: flex; justify-content: space-between;" class="mt-3 mb-2">
+  
+        <!-- Dynamic Heading -->
+        <div *ngIf="sectionsArray.length && sectionsArray[0]?.items?.length && sectionsArray[0].items[0]?.text; else defaultHeading"
+             [innerHTML]="sanitizeHtml(sectionsArray[0].items[0].text)"
+             style="flex: 0 0 80%; max-width: 80%;">
+        </div>
+      
+        <!-- Default Heading -->
+        <ng-template #defaultHeading>
+          <h3 class="text-black" style="flex: 0 0 80%; max-width: 80%;">FAQs</h3>
+        </ng-template>
+      
+        <!-- Search -->
+        <div style="flex: 0 0 18%; max-width: 18%;">
+          <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded" style="width: 100%;">
+            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+            <input
+              #FAQSearchBar
+              matInput
+              (keyup)="searchFAQ(FAQSearchBar.value)"
+              [placeholder]="'Search FAQ'"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+      
+  
+      <!-- FAQ List -->
+      <div class="card rounded-2xl">
+        <div class="card-body">
+          <div class="m-4">
+            <div *ngFor="let faq of faqs; let i = index" class="mt-4">
+              <div style="display: flex; gap: 4px;">
+                <h6 style="align-items: end; display: flex; padding-bottom: 4px;">
+                  {{ i + 1 }}.
+                </h6>
+                <p style="margin-bottom: 0 !important;" [innerHTML]="sanitizeHtml(faq.question)"></p>
+              </div>
+              <div style="display: flex; gap: 4px;">
+                <h6 style="align-items: start; display: flex; visibility: hidden;">
+                  {{ i + 1 }}.
+                </h6>
+                <p style="margin-bottom: 0 !important;" [innerHTML]="sanitizeHtml(faq.answer)"></p>
+              </div>
+            </div>
+  
+            <!-- Contact -->
+            <!-- <address style="font-style: normal;">
+              <h6>Contact Us:</h6>
+              <div>P: (888) 633-1275</div>
+              <div>F: 212-208-0926</div>
+              <div>
+                E:
+                <a href="mailto:tritonsupport@kohlerpreferredpartners.com">
+                  tritonsupport@kohlerpreferredpartners.com
+                </a>
+              </div>
+            </address> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  

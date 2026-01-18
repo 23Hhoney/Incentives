@@ -1,0 +1,16 @@
+ :host ::ng-deep .active-grid-wrapper .custom-scrollbar {
+  display: flex;
+  position: absolute;
+  top: -4px;
+  left: -255px !important;
+  overflow-y: auto;
+  z-index: 11;
+  flex-direction: row;
+  background-color: rgba(241, 241, 241, 0.6) !important;
+  width: auto;
+  scrollbar-width: thin;
+  padding: 6px 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 3px 10px rgba(0, 0, 0, 0.19);
+  border: solid 1px #f4f4f4;
+}

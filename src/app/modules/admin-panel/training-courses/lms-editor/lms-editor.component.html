@@ -1,0 +1,838 @@
+<div class="editor-container">
+  <div style="display: flex; flex-direction: column; height: 100%; position: relative; overflow: hidden;">
+    <!-- Toolbar -->
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background-color: #f6f6f6; border-bottom: 1px solid #e0e0e0; z-index: 10; overflow: visible;">
+      <!-- Left section: Add Elements dropdown -->
+      <div style="position: relative; display: inline-block; flex-shrink: 0;">
+        <button (click)="toggleBlockMenu()"
+          style="background-color: #222; color: white; border: none; border-radius: 4px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: background-color 0.2s;">
+          <i class="fa fa-plus" style="margin-right: 5px;"></i> Add Elements
+        </button>
+        <div [ngStyle]="{
+          display: showBlockMenu ? 'block' : 'none',
+          position: 'absolute',
+          backgroundColor: 'white',
+          minWidth: '160px',
+          boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+          zIndex: '9999',
+          borderRadius: '4px',
+          overflow: 'hidden',
+          top: '40px',
+          left: '0'
+        }">
+          <button (click)="addElement('text'); hideBlockMenu()"
+            style="width: 100%; padding: 12px 16px; text-align: left; background: none; border: none; cursor: pointer; font-size: 14px; transition: background-color 0.2s; display: flex; align-items: center;">
+            <i class="fa fa-font" style="margin-right: 10px; width: 16px;"></i> Text Box
+          </button>
+          <button *ngIf="SlideType !== 'video'" (click)="addElement('image'); hideBlockMenu()"
+            style="width: 100%; padding: 12px 16px; text-align: left; background: none; border: none; cursor: pointer; font-size: 14px; transition: background-color 0.2s; display: flex; align-items: center;">
+            <i class="fa fa-image" style="margin-right: 10px; width: 16px;"></i> Image 
+          </button>
+          <button (click)="addElement('button'); hideBlockMenu()"
+            style="width: 100%; padding: 12px 16px; text-align: left; background: none; border: none; cursor: pointer; font-size: 14px; transition: background-color 0.2s; display: flex; align-items: center;">
+            <i class="fa fa-square" style="margin-right: 10px; width: 16px;"></i> Button 
+          </button>
+        </div>
+      </div>
+    
+      <!-- Middle section: Element-specific controls -->
+      <div *ngIf="selectedElement" style="display: flex; align-items: center; gap: 5px; flex-grow: 1; margin: 0 15px; overflow-x: auto; min-width: 0;">
+        <button (click)="editElement(selectedElement)"
+          style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+          <ng-container *ngIf="selectedElement.type === 'video'">
+            <ng-container
+              *ngIf="!selectedElement.sanitizedVideoUrl && !selectedElement.localVideoUrl && !selectedElement.videoUrl && !selectedElement.content">
+              <i class="fa fa-plus" style="margin-right: 5px;"></i> Add Video
+            </ng-container>
+            <ng-container
+              *ngIf="selectedElement.sanitizedVideoUrl || selectedElement.localVideoUrl || selectedElement.videoUrl || selectedElement.content">
+              <i class="fa fa-refresh" style="margin-right: 5px;"></i> Replace Video
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="selectedElement.type === 'audio'">
+            <ng-container
+              *ngIf="!selectedElement.content && !selectedElement.contentFileId">
+              <i class="fa fa-plus" style="margin-right: 5px;"></i> Add Audio
+            </ng-container>
+            <ng-container
+              *ngIf="selectedElement.content || selectedElement.contentFileId">
+              <i class="fa fa-refresh" style="margin-right: 5px;"></i> Replace Audio
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="selectedElement.type !== 'video' && selectedElement.type !== 'audio'">
+            <i class="fa fa-edit" style="margin-right: 5px;"></i> Edit
+          </ng-container>
+        </button>
+      
+        <div *ngIf="selectedElement.type === 'image' && hasValidImageContent(selectedElement)"
+          style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+          <button (click)="cropImage()"
+            style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <i class="fa fa-crop" style="margin-right: 5px;"></i> Crop
+          </button>
+          <button (click)="openHyperlinkDialog()"
+            style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <i class="fa fa-link" style="margin-right: 5px;"></i> Hyperlink
+          </button>
+          <button (click)="replaceImage()"
+            style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <i class="fa fa-refresh" style="margin-right: 5px;"></i> Replace
+          </button>
+          <button (click)="duplicateElement(selectedElement)"
+            style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <i class="fa fa-copy" style="margin-right: 5px;"></i> Duplicate
+          </button>
+          <button (click)="bringToFront()"
+            style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <i class="fa fa-arrow-up" style="margin-right: 5px;"></i> Bring to Front
+          </button>
+          <button (click)="sendToBack()"
+            style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <i class="fa fa-arrow-down" style="margin-right: 5px;"></i> Send to Back
+          </button>
+        </div>
+   
+   
+      
+        <div *ngIf="selectedElement.type === 'button'" style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+          <button (click)="duplicateElement(selectedElement)" 
+                  style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <i class="fa fa-copy" style="margin-right: 5px;"></i> Duplicate
+          </button>
+          <button (click)="toggleButtonStyle('bold')"
+                  [ngClass]="{'active': buttonStyle.bold}"
+                  style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <strong>B</strong>
+          </button>
+          <button (click)="toggleButtonStyle('italic')"
+                  [ngClass]="{'active': buttonStyle.italic}"
+                  style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <em>I</em>
+          </button>
+          <button (click)="toggleButtonStyle('underline')"
+                  [ngClass]="{'active': buttonStyle.underline}"
+                  style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <u>U</u>
+          </button>
+        </div>
+      
+        <div *ngIf="selectedElement.type === 'text'" style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+          <button (click)="duplicateElement(selectedElement)"
+            style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <i class="fa fa-copy" style="margin-right: 5px;"></i> Duplicate
+          </button>
+        </div>
+      
+        <div *ngIf="selectedElement.type === 'video'" style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+          <button (click)="openConfirmDialog('video', selectedElement)"
+            [disabled]="!selectedElement.sanitizedVideoUrl && !selectedElement.localVideoUrl"
+            [ngStyle]="{ 'cursor': (!selectedElement.sanitizedVideoUrl && !selectedElement.localVideoUrl) ? 'not-allowed' : 'pointer' }"
+            style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <i class="fa fa-trash" style="margin-right: 5px;"></i> Delete Video
+          </button>
+          <div style="display: flex; align-items: center; background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <input type="checkbox" [(ngModel)]="selectedElement.requireUserToWatch"
+                   [disabled]="!selectedElement.sanitizedVideoUrl && !selectedElement.localVideoUrl"
+                   id="requireWatchVideo" style="margin-right: 5px;"
+                   (change)="markElementsAsModified()">
+            <label for="requireWatchVideo" style="cursor: pointer;">Require user to watch</label>
+          </div>
+        </div>
+      
+        <div *ngIf="selectedElement.type === 'audio'" style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+          <button 
+            (click)="openConfirmDialog('audio', selectedElement)"
+            style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;"
+            [disabled]="!selectedElement.content && !selectedElement.contentFileId" 
+            [ngStyle]="{'cursor': selectedElement.content || selectedElement.contentFileId ? 'pointer' : 'not-allowed'}">
+            <i class="fa fa-trash" style="margin-right: 5px;"></i> Delete Audio
+          </button>
+          <div style="display: flex; align-items: center; background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <input type="checkbox" [(ngModel)]="selectedElement.requireUserToWatch" 
+                   [disabled]="!selectedElement.content && !selectedElement.contentFileId" 
+                   id="requireListenAudio" style="margin-right: 5px;"
+                   (change)="markElementsAsModified()">
+            <label for="requireListenAudio" style="cursor: pointer;">Require user to listen</label>
+          </div>
+          <div style="display: flex; align-items: center; background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+            <span style="margin-right: 5px;">AutoPlay</span>
+            <div class="toggle-switch" style="display: inline-block;">
+              <input type="checkbox" [(ngModel)]="selectedElement.autoPlay" 
+                     [disabled]="!selectedElement.content && !selectedElement.contentFileId" 
+                     id="autoPlayToggle-toolbar"
+                     (change)="markElementsAsModified()">
+              <label for="autoPlayToggle-toolbar" class="toggle-slider" style="margin: 0;"></label>
+            </div>
+          </div>
+        </div>
+      
+        <button *ngIf="selectedElement.type !== 'video' && selectedElement.type !== 'audio'"  (click)="openConfirmDialog('element', selectedElement)"
+          style="background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; white-space: nowrap; flex-shrink: 0;">
+          <i class="fa fa-trash" style="margin-right: 5px;"></i> Delete
+        </button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+        <button (click)="onSaveClick(confirmBox)" [disabled]="!hasUnsavedChanges" 
+          [style.opacity]="hasUnsavedChanges ? '1' : '0.5'"
+          style="background-color: #28a745; color: white; border: none; border-radius: 4px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: background-color 0.2s; white-space: nowrap;">
+          <i class="fa fa-save" style="margin-right: 5px;"></i> Save Slide
+        </button>
+        <button (click)="closeEditor()"
+          style="background-color: #222; color: white; border: none; border-radius: 4px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: background-color 0.2s; white-space: nowrap;">
+          <i class="fa fa-close" style="margin-right: 5px;"></i> Close
+        </button>
+      </div>
+    </div> 
+    
+    
+    <div *ngIf="isLoading" style="position: fixed;  bottom: 562px;  right: 10px; background-color: rgba(0, 0, 0, 0.7); 
+        color: white; padding: 10px 15px; border-radius: 4px; z-index: 2000; 
+        display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+      <div style="border: 2px solid white; border-top: 2px solid transparent; 
+          border-radius: 50%; width: 16px; height: 16px; 
+          animation: spin 1s linear infinite; margin-right: 10px;"></div>
+      <span>{{ loadingMessage || 'Saving changes, please wait...' }}</span>
+    </div>
+    <!-- Canvas Container -->
+    <div style="height: 100%; max-height: calc(100vh - 122px); overflow: auto; position: relative; padding: 2px; background-color: #f0f0f0;">
+            <div #canvas
+              style="position: relative; width: 100%; min-height: 800px; height: 100%; background-color: #ffffff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); overflow: hidden;"
+              [style.background-size]="getBackgroundSize()"
+              (click)="deselectAll()">
+          
+           
+              <div *ngIf="showCenterLine" style="position: absolute; top: 0; bottom: 0; left: 50%; width: 0; z-index: 5; pointer-events: none;"
+              [style.border-left]="selectedElement?.isCenteredHorizontally ? '2px solid #FFD700' : '4px dotted blue'">
+              </div>
+    
+        <!-- Grid visualization (only shown when showGridBlocks is true) -->
+        <div *ngIf="showGridBlocks"
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+          <div *ngFor="let row of [].constructor(gridRows); let r = index">
+            <div *ngFor="let col of [].constructor(gridColumns); let c = index"
+              [style.position]="'absolute'"
+              [style.width.%]="cellWidthPercent"
+              [style.height.%]="cellHeightPercent"
+              [style.left.%]="c * (cellWidthPercent + gridGutterPercent)"
+              [style.top.%]="r * (cellHeightPercent + gridGutterPercent)"
+              [style.background-color]="isGridCellHighlighted(r, c) ? 'rgba(0, 123, 255, 0.2)' : 'transparent'"
+              [style.border]="'1px dashed rgba(200, 200, 200, 0.5)'">
+            </div>
+          </div>
+        </div>
+    
+        <!-- Alignment guides -->
+        <div *ngFor="let guide of alignmentGuides">
+          <div *ngIf="guide.xPercent !== undefined"
+            style="position: absolute; top: 0; bottom: 0; width: 1px; background-color: #ff3860; pointer-events: none;"
+            [style.left.%]="guide.xPercent">
+          </div>
+          <div *ngIf="guide.yPercent !== undefined"
+            style="position: absolute; left: 0; right: 0; height: 1px; background-color: #ff3860; pointer-events: none;"
+            [style.top.%]="guide.yPercent">
+          </div>
+        </div>
+    
+        <!-- Elements (unchanged) -->
+        <div *ngFor="let element of elements" 
+        [id]="'element-' + element.id"
+        [class.selected]="selectedElement?.id === element.id"
+        class="element-container"
+        [style.position]="'absolute'"
+        [style.left.%]="element.xPercent"
+        [style.top.%]="element.yPercent"
+        [style.width.%]="element.widthPercent"
+        [style.height.%]="element.heightPercent"
+        [style.border]="selectedElement?.id === element.id ? '2px solid #3273dc' : hoveredElement?.id === element.id ? '1px solid #3273dc' : '1px solid transparent'"
+        [style.box-shadow]="selectedElement?.id === element.id ? '0 0 8px rgba(50, 115, 220, 0.5)' : 'none'"
+        [style.cursor]="'move'"
+        [style.user-select]="'none'"
+        [style.z-index]="element.zIndex !== undefined ? element.zIndex : (selectedElement?.id === element.id ? 10 : 1)"
+        [style.padding]="'2px'"
+        [style.box-sizing]="'border-box'"
+        [id]="'element-' + (element.id || element.contentFileId)"
+        (mousedown)="startDrag($event, element)"
+        (mouseover)="onElementHover(element)"
+        (mouseleave)="onElementLeave()"
+        (click)="selectElement(element, $event)"
+        
+        >
+        
+       
+          <!-- Element content based on type -->
+          <ng-container [ngSwitch]="element.type">
+            <!-- Text element -->
+      <div *ngSwitchCase="'text'" class="ck-content"
+        style="width: 100%; padding: 8px; pointer-events: none; white-space: normal; overflow-wrap: break-word; line-height: 1.5; box-sizing: border-box;"
+        [style.fontSize.px]="element.style?.fontSize || 14" [style.fontWeight]="element.style?.bold ? 'bold' : 'normal'"
+        [style.fontStyle]="element.style?.italic ? 'italic' : 'normal'"
+        [style.textDecoration]="element.style?.underline ? 'underline' : 'none'"
+        [style.textAlign]="element.style?.textAlign || 'left'" [innerHTML]="getSafeHtml(element.content)">
+      </div>
+            <!-- Image element -->
+            <div *ngSwitchCase="'image'" style="width: 100%; height: 100%;">
+              <img *ngIf="element.content" [src]="element.content" alt="Image"
+                style="width: 100%; height: 100%; object-fit: contain;">
+              <div *ngIf="!element.content"
+                style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+                <i class="fas fa-image" style="font-size: 24px; margin-bottom: 8px;"></i>
+                <p style="margin: 0;">Click edit button in header to add image</p>
+              </div>
+            </div>
+          
+            <div *ngSwitchCase="'video'" class="video-container"
+              style="width: 100%; height: 100%; position: relative; overflow: hidden;">
+              <!-- YouTube/Vimeo Video -->
+              <div *ngIf="element.isYoutubeOrVimeo && element.sanitizedVideoUrl"
+                style="position: relative; width: 100%; height: 100%; overflow: hidden; pointer-events: none">
+                <iframe [src]="element.sanitizedVideoUrl" frameborder="0"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                </iframe>
+              </div>
+
+              <!-- Local Video -->
+              <video *ngIf="!element.isYoutubeOrVimeo && element.localVideoUrl" [src]="element.localVideoUrl"
+                style="width: 100%; height: 100%; object-fit: contain; pointer-events: none" (click)="$event.preventDefault()"
+                (mousedown)="$event.preventDefault()" controls preload="metadata">
+              </video>
+
+              <!-- Placeholder when no content -->
+              <div *ngIf="!element.sanitizedVideoUrl && !element.localVideoUrl"
+                style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+                <i class="fas fa-video" style="font-size: 24px; margin-bottom: 8px;"></i>
+                <p style="margin: 0;">Select this element and click add button in header to add video</p>
+              </div>
+            </div>
+            
+            <div *ngSwitchCase="'audio'" style="width: 100%; height: 100%;">
+              <audio *ngIf="element.content" [src]="element.content" controls  style="width: 100%; height: 80%;pointer-events: none;"></audio>
+              
+              <div *ngIf="!element.content"
+                style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+                <i class="fas fa-music" style="font-size: 24px; margin-bottom: 8px;"></i>
+                <p style="margin: 0;">Select this element and click add button in header to add audio</p>
+              </div>
+              
+             
+            </div>
+            
+            
+
+            <!-- Button element -->
+            <div *ngSwitchCase="'button'" 
+            style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 4px;"
+            [ngStyle]="{
+              'backgroundColor': element.style?.backgroundColor || '#007bff',
+              'color': element.style?.color || '#ffffff',
+              'font-weight': element.style?.bold ? 'bold' : 'normal',
+              'font-style': element.style?.italic ? 'italic' : 'normal',
+              'text-decoration': element.style?.underline ? 'underline' : 'none'
+            }">
+         <span>{{element.content || 'Click me'}}</span>
+         <!-- <i *ngIf="element.hyperlink" class="fa fa-link" style="margin-left: 5px; font-size: 0.8em;"></i> -->
+       </div>
+       
+       
+          </ng-container>
+    
+          <!-- Resize handles (unchanged) -->
+          <div *ngIf="selectedElement?.id === element.id">
+            <div (mousedown)="startResize($event, element, 'top-left')" style="position: absolute; width: 10px; height: 10px; background-color: white; border: 1px solid #3273dc; border-radius: 50%; top: -5px; left: -5px; cursor: nwse-resize;"></div>
+            <div (mousedown)="startResize($event, element, 'top-center')" style="position: absolute; width: 10px; height: 10px; background-color: white; border: 1px solid #3273dc; border-radius: 50%; top: -5px; left: 50%; transform: translateX(-50%); cursor: ns-resize;"></div>
+            <div (mousedown)="startResize($event, element, 'top-right')" style="position: absolute; width: 10px; height: 10px; background-color: white; border: 1px solid #3273dc; border-radius: 50%; top: -5px; right: -5px; cursor: nesw-resize;"></div>
+            <div (mousedown)="startResize($event, element, 'left-center')" style="position: absolute; width: 10px; height: 10px; background-color: white; border: 1px solid #3273dc; border-radius: 50%; top: 50%; left: -5px; transform: translateY(-50%); cursor: ew-resize;"></div>
+            <div (mousedown)="startResize($event, element, 'right-center')" style="position: absolute; width: 10px; height: 10px; background-color: white; border: 1px solid #3273dc; border-radius: 50%; top: 50%; right: -5px; transform: translateY(-50%); cursor: ew-resize;"></div>
+            <div (mousedown)="startResize($event, element, 'bottom-left')" style="position: absolute; width: 10px; height: 10px; background-color: white; border: 1px solid #3273dc; border-radius: 50%; bottom: -5px; left: -5px; cursor: nesw-resize;"></div>
+            <div (mousedown)="startResize($event, element, 'bottom-center')" style="position: absolute; width: 10px; height: 10px; background-color: white; border: 1px solid #3273dc; border-radius: 50%; bottom: -5px; left: 50%; transform: translateX(-50%); cursor: ns-resize;"></div>
+            <div (mousedown)="startResize($event, element, 'bottom-right')" style="position: absolute; width: 10px; height: 10px; background-color: white; border: 1px solid #3273dc; border-radius: 50%; bottom: -5px; right: -5px; cursor: nwse-resize;"></div>
+          </div>
+        </div>
+        <div *ngIf="showCropper" class="cropper-overlay">
+          <div class="cropper-container">
+            <h3 style="margin-top: 0; margin-bottom: 15px;">Crop Image</h3>
+            <div class="image-cropper-wrapper">
+              <!-- Add loading indicator -->
+              <div *ngIf="!imageLoaded" class="cropper-loading">
+                <p>Loading image...</p>
+              </div>
+              
+              <image-cropper
+              *ngIf="imageLoaded"
+              [imageBase64]="currentCropImage"
+              [maintainAspectRatio]="cropperSettings.maintainAspectRatio"
+              [format]="cropperSettings.format"
+              [resizeToWidth]="cropperSettings.resizeToWidth"
+              [onlyScaleDown]="cropperSettings.onlyScaleDown"
+              [roundCropper]="cropperSettings.roundCropper"
+              [alignImage]="cropperSettings.alignImage"
+              [autoCrop]="cropperSettings.autoCrop"
+              [containWithinAspectRatio]="cropperSettings.containWithinAspectRatio"
+              [imageQuality]="cropperSettings.imageQuality"
+              [transform]="cropperSettings.transform"
+              [canvasRotation]="cropperSettings.canvasRotation"
+              [cropperMinWidth]="cropperSettings.cropperMinWidth"
+              [cropperStaticWidth]="cropperSettings.cropperStaticWidth"
+              [cropperStaticHeight]="cropperSettings.cropperStaticHeight"
+              (imageCropped)="onImageCropped($event)"
+              (cropperReady)="onCropperReady()"
+              (loadImageFailed)="onLoadImageFailed()">
+            </image-cropper>
+            
+            </div>
+            <div class="cropper-actions">
+              <button mat-button (click)="cancelCrop()">Cancel</button>
+              <button mat-raised-button color="primary" (click)="applyCrop()" [disabled]="!imageLoaded">Apply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- CKEditor dialog -->
+    <div *ngIf="showCKEditor"
+     style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+      <div
+        style="background-color: white; border-radius: 8px; width: 80%; max-width: 1000px; max-height: 90vh; overflow: auto; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 18px;">Edit Text</h3>
+        <div class="home-text-editor" (paste)="onPaste($event)">
+          <angular-editor [formControl]="editorControl" [config]="HomePageEditorConfig">
+            <ng-template #customButtons let-executeCommandFn="executeCommandFn">
+              <ae-toolbar-set>
+                <!-- Custom Heading Dropdown -->
+                <div class="ae-select-dropdown" (clickOutside)="closeDropdowns()">
+                  <button type="button" class="angular-editor-button" (mousedown)="$event.preventDefault()" (click)="toggleHeadingDropdown($event)">
+                    {{ selectedHeading ? selectedHeading : 'Heading' }}
+                  </button>
+                  <div class="size-dropdown-menu" *ngIf="showHeadingDropdown">
+                    <button
+                      type="button"
+                      *ngFor="let heading of headings"
+                      [class.active]="heading.name === selectedHeading"
+                      [attr.aria-pressed]="heading.name === selectedHeading"
+                      (mousedown)="$event.preventDefault()"
+                      (click)="applyHeading(heading)"
+                    >
+                      {{ heading.name }}
+                    </button>
+                  </div>
+                </div>
+                <!-- Custom Text Color Picker -->
+                <div class="ae-select-dropdown color-picker-dropdown" (clickOutside)="closeDropdowns()">
+                  <button type="button" class="angular-editor-button color-btn" (click)="toggleTextColorPicker($event)" title="Text Color">
+                    <span class="color-icon">A</span>
+                    <span class="color-bar" [style.background-color]="selectedTextColor"></span>
+                  </button>
+                  <div class="custom-color-picker figma-picker" *ngIf="showTextColorPicker" (click)="$event.stopPropagation()">
+                    <!-- Saturation/Brightness Canvas -->
+                    <div class="color-canvas-wrapper">
+                      <div class="color-canvas" 
+                           #textColorCanvas
+                           [style.background-color]="'hsl(' + textColorHsv.h + ', 100%, 50%)'"
+                           (mousedown)="onCanvasMouseDown($event, 'text')"
+                           (mousemove)="onCanvasMouseMove($event, 'text')"
+                           (mouseup)="onCanvasMouseUp()">
+                        <div class="saturation-overlay"></div>
+                        <div class="brightness-overlay"></div>
+                        <div class="color-cursor" 
+                             [style.left.%]="textColorHsv.s" 
+                             [style.top.%]="100 - textColorHsv.v"></div>
+                      </div>
+                    </div>
+                    <!-- Hue Slider -->
+                    <div class="hue-slider-wrapper">
+                      <div class="hue-slider" 
+                           (mousedown)="onHueMouseDown($event, 'text')"
+                           (mousemove)="onHueMouseMove($event, 'text')"
+                           (mouseup)="onHueMouseUp()">
+                        <div class="hue-cursor" [style.left.%]="(textColorHsv.h / 360) * 100"></div>
+                      </div>
+                    </div>
+                    <!-- RGB Display Row with Preview and Editable Inputs -->
+                    <div class="rgb-input-row" style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; justify-content: center;">
+                      <div [ngStyle]="{width: '36px', height: '36px', borderRadius: '50%', border: '2px solid #e0e0e0', background: selectedTextColorRgb, flexShrink: 0}"></div>
+                      <div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #888;">
+                        <i class="fa fa-eyedropper" style="font-size: 14px;"></i>
+                      </div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px;">
+                      <div style="display: flex; flex-direction: column; align-items: center;">
+                        <input type="number" min="0" max="255" [(ngModel)]="textColorR" (ngModelChange)="onTextRgbInput('r', $event)" style="width: 48px; height: 32px; text-align: center; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+                        <span style="font-size: 11px; color: #888; margin-top: 4px;">R</span>
+                      </div>
+                      <div style="display: flex; flex-direction: column; align-items: center;">
+                        <input type="number" min="0" max="255" [(ngModel)]="textColorG" (ngModelChange)="onTextRgbInput('g', $event)" style="width: 48px; height: 32px; text-align: center; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+                        <span style="font-size: 11px; color: #888; margin-top: 4px;">G</span>
+                      </div>
+                      <div style="display: flex; flex-direction: column; align-items: center;">
+                        <input type="number" min="0" max="255" [(ngModel)]="textColorB" (ngModelChange)="onTextRgbInput('b', $event)" style="width: 48px; height: 32px; text-align: center; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+                        <span style="font-size: 11px; color: #888; margin-top: 4px;">B</span>
+                      </div>
+                    </div>
+                    <button type="button" class="apply-color-btn" (click)="applyTextColor()">Apply</button>
+                  </div>
+                </div>
+
+                <!-- Custom Background Color Picker -->
+                <div class="ae-select-dropdown color-picker-dropdown" (clickOutside)="closeDropdowns()">
+                  <button type="button" class="angular-editor-button color-btn" (click)="toggleBgColorPicker($event)" title="Background Color">
+                    <span class="color-icon bg-icon">A</span>
+                    <span class="color-bar" [style.background-color]="selectedBgColor"></span>
+                  </button>
+                  <div class="custom-color-picker figma-picker" *ngIf="showBgColorPicker" (click)="$event.stopPropagation()">
+                    <!-- Saturation/Brightness Canvas -->
+                    <div class="color-canvas-wrapper">
+                      <div class="color-canvas" 
+                           #bgColorCanvas
+                           [style.background-color]="'hsl(' + bgColorHsv.h + ', 100%, 50%)'"
+                           (mousedown)="onCanvasMouseDown($event, 'bg')"
+                           (mousemove)="onCanvasMouseMove($event, 'bg')"
+                           (mouseup)="onCanvasMouseUp()">
+                        <div class="saturation-overlay"></div>
+                        <div class="brightness-overlay"></div>
+                        <div class="color-cursor" 
+                             [style.left.%]="bgColorHsv.s" 
+                             [style.top.%]="100 - bgColorHsv.v"></div>
+                      </div>
+                    </div>
+                    <!-- Hue Slider -->
+                    <div class="hue-slider-wrapper">
+                      <div class="hue-slider" 
+                           (mousedown)="onHueMouseDown($event, 'bg')"
+                           (mousemove)="onHueMouseMove($event, 'bg')"
+                           (mouseup)="onHueMouseUp()">
+                        <div class="hue-cursor" [style.left.%]="(bgColorHsv.h / 360) * 100"></div>
+                      </div>
+                    </div>
+                    <!-- RGB Display Row with Preview and Editable Inputs -->
+                    <div class="rgb-input-row" style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; justify-content: center;">
+                      <div [ngStyle]="{width: '36px', height: '36px', borderRadius: '50%', border: '2px solid #e0e0e0', background: selectedBgColorRgb, flexShrink: 0}"></div>
+                      <div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #888;">
+                        <i class="fa fa-eyedropper" style="font-size: 14px;"></i>
+                      </div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px;">
+                      <div style="display: flex; flex-direction: column; align-items: center;">
+                        <input type="number" min="0" max="255" [(ngModel)]="bgColorR" (ngModelChange)="onBgRgbInput('r', $event)" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()" style="width: 48px; height: 32px; text-align: center; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+                        <span style="font-size: 11px; color: #888; margin-top: 4px;">R</span>
+                      </div>
+                      <div style="display: flex; flex-direction: column; align-items: center;">
+                        <input type="number" min="0" max="255" [(ngModel)]="bgColorG" (ngModelChange)="onBgRgbInput('g', $event)" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()" style="width: 48px; height: 32px; text-align: center; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+                        <span style="font-size: 11px; color: #888; margin-top: 4px;">G</span>
+                      </div>
+                      <div style="display: flex; flex-direction: column; align-items: center;">
+                        <input type="number" min="0" max="255" [(ngModel)]="bgColorB" (ngModelChange)="onBgRgbInput('b', $event)" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()" style="width: 48px; height: 32px; text-align: center; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+                        <span style="font-size: 11px; color: #888; margin-top: 4px;">B</span>
+                      </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; justify-content: center;">
+                      <button type="button" class="apply-color-btn" style="background: #ff4d4d;" (click)="removeBgColor()">Remove</button>
+                      <button type="button" class="apply-color-btn" (click)="applyBgColor()">Apply</button>
+                    </div>
+                  </div>
+                </div>
+                 
+                <!-- Font Size Dropdown -->
+                <div class="ae-select-dropdown" (clickOutside)="closeDropdowns()">
+                  <button type="button" class="angular-editor-button" (mousedown)="$event.preventDefault()" (click)="toggleFontSizeDropdown($event)">
+                    {{ selectedFontSize ? selectedFontSize : 'Size' }}
+                  </button>
+                  <div class="size-dropdown-menu" *ngIf="showFontSizeDropdown">
+                    <button
+                      type="button"
+                      *ngFor="let size of fontSizes"
+                      [class.active]="size.name === selectedFontSize"
+                      [attr.aria-pressed]="size.name === selectedFontSize"
+                      (mousedown)="$event.preventDefault()"
+                      (click)="applySizeKeepingColor(size); showFontSizeDropdown=false"
+                    >
+                      {{ size.name }}
+                    </button>
+                  </div>
+                </div>
+          
+                <!-- Font Family Dropdown -->
+                <div class="ae-select-dropdown" (clickOutside)="closeDropdowns()">
+                  <button type="button" class="angular-editor-button" (mousedown)="$event.preventDefault()" (click)="toggleFontFamilyDropdown($event)">
+                    {{ selectedFontFamily ? selectedFontFamily : 'Font' }}
+                  </button>
+                  <div class="size-dropdown-menu" *ngIf="showFontFamilyDropdown">
+                    <button
+                      type="button"
+                      *ngFor="let font of fonts"
+                      [class.active]="selectedFontFamily === font"
+                      (mousedown)="$event.preventDefault()"
+                      (click)="setFontFamily(font); showFontFamilyDropdown=false"
+                    >
+                      {{ font }}
+                    </button>
+                  </div>
+                </div>
+          
+              </ae-toolbar-set>
+            </ng-template>
+          </angular-editor>
+        </div>
+        
+        <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+          <button (click)="showCKEditor = false"
+            style="padding: 8px 16px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; margin-right: 10px; cursor: pointer;">Cancel</button>
+          <button (click)="saveEditorContent()"
+            style="padding: 8px 16px; background-color: #3273dc; color: white; border: none; border-radius: 4px; cursor: pointer;">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image dialog -->
+    <div *ngIf="showImageDialog" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+      <div style="background-color: white; border-radius: 8px; width: 80%; max-width: 500px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 18px;">
+          {{ selectedElement?.needsReplacement ? 'Replace Image' : 'Image Settings' }}
+        </h3>
+        
+        <!-- File Upload -->
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">
+            {{ selectedElement?.needsReplacement ? 'Upload New Image' : 'Upload Image' }}
+          </label>
+          <input type="file" (change)="onImageUpload($event)" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <!-- Image Preview -->
+        <div *ngIf="imageUrl" style="margin-bottom: 15px; text-align: center;">
+          <img [src]="imageUrl" style="max-width: 100%; max-height: 200px; border: 1px solid #ddd;">
+        </div>
+        
+        <!-- Save and Cancel -->
+        <div style="display: flex; justify-content: flex-end;">
+          <button (click)="showImageDialog = false" style="padding: 8px 16px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; margin-right: 10px; cursor: pointer;">Cancel</button>
+          <button (click)="saveImageContent()" style="padding: 8px 16px; background-color: #3273dc; color: white; border: none; border-radius: 4px; cursor: pointer;">Save</button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="showHyperlinkDialog" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+      <div style="background-color: white; border-radius: 8px; width: 80%; max-width: 500px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 18px;">Add Hyperlink</h3>
+        
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">URL</label>
+          <input type="text" [(ngModel)]="hyperlinkUrl" placeholder="Enter URL, email, or phone number" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+    
+        <div style="display: flex; justify-content: flex-end;">
+          <button (click)="showHyperlinkDialog = false" style="padding: 8px 16px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; margin-right: 10px; cursor: pointer;">Cancel</button>
+          <button (click)="saveHyperlink()" style="padding: 8px 16px; background-color: #3273dc; color: white; border: none; border-radius: 4px; cursor: pointer;">Save</button>
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="showVideoDialog"
+      style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+      <div
+        style="background-color: white; border-radius: 8px; width: 80%; max-width: 500px; max-height: 90vh; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow-y: auto;">
+        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 18px;">Video Settings</h3>
+    
+        <!-- Video URL Input -->
+        <div style="margin-bottom: 15px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <label style="font-weight: bold;">YouTube or Vimeo URL</label>
+        
+          </div>
+          <input type="text" [(ngModel)]="videoUrl" (ngModelChange)="onVideoUrlInput()"
+            placeholder="Enter YouTube or Vimeo URL"
+            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+    
+          <!-- Preview for YouTube/Vimeo videos -->
+          <div *ngIf="videoUrl && isYoutubeOrVimeo" style="margin-top: 10px;">
+            <div *ngIf="sanitizedVideoUrl" class="video-preview" style="position: relative; width: 100%; overflow: hidden;">
+              <iframe [src]="sanitizedVideoUrl" style="width: 100%; height: 200px;" frameborder="0"
+                allow="autoplay; fullscreen; picture-in-picture" webkitallowfullscreen mozallowfullscreen allowfullscreen>
+              </iframe>
+            </div>
+            <div *ngIf="!sanitizedVideoUrl" class="video-preview-error"
+              style="padding: 10px; background-color: #fff3f3; border: 1px solid #ffcaca; color: #d83030; border-radius: 4px;">
+              <p style="margin: 5px 0 0; font-size: 12px;">
+                For YouTube: Make sure the video is public or has proper sharing permissions.
+                For YouTube Shorts: The URL should be in the format "https://www.youtube.com/shorts/VIDEO_ID"
+              </p>
+            </div>
+          </div>
+    
+        </div>
+    
+        <!-- Video File Upload -->
+        <div style="margin-bottom: 15px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <label style="font-weight: bold;">Upload Video (Max 100 MB)</label>
+
+          </div>
+          <input type="file" (change)="onVideoUpload($event)" accept="video/mp4,video/webm,video/ogg"
+            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+          <p style="margin-top: 5px; color: #666; font-size: 12px;">Supported formats: MP4, M4V, MOV</p>
+    
+          <!-- Preview for local videos -->
+          <div *ngIf="localVideoUrl" style="margin-top: 10px;">
+            <video [src]="localVideoUrl" controls width="100%" height="200"></video>
+          </div>
+        </div>
+    
+        <!-- Save and Cancel -->
+        <div style="display: flex; justify-content: flex-end;">
+          <button (click)="showVideoDialog = false"
+            style="padding: 8px 16px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; margin-right: 10px; cursor: pointer;">Cancel</button>
+          <button (click)="saveVideoContent()"
+            style="padding: 8px 16px; background-color: #3273dc; color: white; border: none; border-radius: 4px; cursor: pointer;">Save</button>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+    <div *ngIf="showAudioDialog"
+      style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+      <div
+        style="background-color: white; border-radius: 8px; width: 80%; max-width: 500px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 18px;">Audio Settings</h3>
+    
+        <!-- Audio File Upload -->
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">Upload Audio (Max 25 MB)</label>
+          <input type="file" (change)="onAudioUpload($event)" accept="audio/*"
+            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" #audioFileInput>
+        </div>
+    
+        <!-- Show current file status -->
+        <div *ngIf="selectedElement" style="margin-bottom: 15px;">
+          <div *ngIf="selectedElement.file" style="color: #28a745; font-size: 14px;">
+            ✓ Selected: {{ selectedElement.file.name }}
+          </div>
+          <div *ngIf="!selectedElement.file && (selectedElement.content || selectedElement.contentFileId)"
+            style="color: #dc3545; font-size: 14px;">
+            ⚠ Previous audio will be replaced. Please select a new file.
+          </div>
+          <div *ngIf="!selectedElement.file && !selectedElement.content && !selectedElement.contentFileId"
+            style="color: #6c757d; font-size: 14px;">
+            No audio file selected
+          </div>
+        </div>  
+        <!-- Save and Cancel -->
+        <div style="display: flex; justify-content: flex-end;">
+          <button (click)="showAudioDialog = false"
+            style="padding: 8px 16px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; margin-right: 10px; cursor: pointer;">
+            Cancel
+          </button>
+          <button (click)="saveAudioContent()"
+            style="padding: 8px 16px; background-color: #3273dc; color: white; border: none; border-radius: 4px;">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Button dialog -->
+    <div *ngIf="showButtonDialog" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+      <div style="background-color: white; border-radius: 8px; width: 80%; max-width: 500px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 18px;">Button Settings</h3>
+        
+        <!-- Button Text -->
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">Button Text</label>
+          <input type="text" [(ngModel)]="buttonText" placeholder="Button text" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <!-- Button Hyperlink -->
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">Button Link (URL)</label>
+          <input type="text" [(ngModel)]="buttonHyperlink" placeholder="https://example.com" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <!-- Button Styling -->
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">Button Color</label>
+          <input type="color" [(ngModel)]="buttonColor" style="width: 100%; height: 40px; padding: 0; border: 1px solid #ddd; cursor: pointer;">
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">Text Color</label>
+          <input type="color" [(ngModel)]="buttonTextColor" style="width: 100%; height: 40px; padding: 0; border: 1px solid #ddd; cursor: pointer;">
+        </div>
+    
+        <!-- Save and Cancel -->
+        <div style="display: flex; justify-content: flex-end;">
+          <button (click)="showButtonDialog = false" style="padding: 8px 16px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; margin-right: 10px; cursor: pointer;">Cancel</button>
+          <button (click)="saveButtonContent()" style="padding: 8px 16px; background-color: #3273dc; color: white; border: none; border-radius: 4px; cursor: pointer;">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #confirmDeleteDialog let-data>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Delete Confirmation</h3>
+    <button mat-icon-button (click)="dialogRef.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{ data?.message || 'Are you sure you want to delete this item?' }}</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button class="cancel-button" (click)="dialogRef.close()">Cancel</button>
+    <button mat-button (click)="confirmDelete(data?.type, data?.item)" class="delete-button">Delete</button>
+  </div>
+</ng-template>
+
+<ng-template #confirmEditorDialog let-data>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Exit without saving changes</h3>
+    <button mat-icon-button (click)="dialogRef.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to exit without saving changes</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button class="cancel-button" (click)="dialogRef.close()">Cancel</button>
+    <button mat-button (click)="confirmEditWithout()" class="delete-button">Yes</button>
+  </div>
+</ng-template>
+
+<ng-template #confirmEditorDialogInaddMode let-data>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Exit without saving changes</h3>
+    <!-- Fixed: Use correct dialog reference -->
+    <button mat-icon-button (click)="dialogRefinAddMode.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to exit without saving changes</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button class="cancel-button" (click)="dialogRefinAddMode.close()">Cancel</button>
+    <button mat-button (click)="confirmAddWithoutSavingData()" class="delete-button">Yes</button>
+  </div>
+</ng-template>
+
+<ng-template #confirmBox>
+  <div mat-dialog-title class="dialog-headers">
+    <h3>Push to Language Versions</h3>
+    <!-- <button mat-icon-button (click)="modalReferenceforSlideConfirm.close()" class="close-buttons">
+      <mat-icon>close</mat-icon>
+    </button> -->
+  </div>
+  <div class="modal-body">
+    <p>Do you want to push this slide to alternate language versions of the course?</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button (click)="confirmNo()" class="no-button">No</button>
+    <button mat-button (click)="confirmYes()" class="cancel-button">Yes</button>
+  </div>
+</ng-template>

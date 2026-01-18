@@ -1,0 +1,387 @@
+<!-- Loading bar -->
+<fuse-loading-bar></fuse-loading-bar>
+
+<!-- Navigation -->
+<ng-container *ngIf="isScreenSmall && !hideNavigation">
+    <fuse-vertical-navigation
+        class="dark bg-gray-900 print:hidden"
+        [mode]="'over'"
+        [name]="'mainNavigation'"
+        [navigation]="navigation.default"
+        [opened]="false" style="display: none;">
+        <!-- Navigation header hook -->
+        <ng-container fuseVerticalNavigationContentHeader>
+            <!-- Logo -->
+            <div class="flex items-center h-20 pt-6 px-8">
+                <img
+                class="w-24"
+                src="assets/images/logo/logo-text-on-dark.svg"
+                alt="Logo image">
+            </div>
+        </ng-container>
+    </fuse-vertical-navigation>
+</ng-container>
+
+<!-- Wrapper -->
+<div class="flex flex-col flex-auto w-full min-w-0 ">
+    <div class="header" style="box-shadow: 0px 2px 20px rgb(1 41 112 / 10%) !important">
+
+        <div style="border-bottom: #eeeeee solid 1px;" class="bg-light-stl" [ngClass]="{'md:px-8 user-stl-cus': userRole!=='incentiveadmin', 'incen-admin-stl-cus': userRole==='incentiveadmin'}">
+            <div class="divPoints text-center" *ngIf="userRole==='normaluser' && shiftMenuBar">
+                <!-- <span *ngIf="isPointLocked" class="text-danger inline-flex">POINTS ON HOLD ></span>  -->
+                <span class="spnPoints inline-flex items-center" [ngStyle]="{ 'cursor': isPointLocked ? 'pointer' : 'default' }" (click)="showPointsOnHold(pointsOnHold)">
+                    {{remainingPoints ? formatNumberWithCommas(remainingPoints) : 0}} points&nbsp;<svg *ngIf="isPointLocked" width="24" height="23" viewBox="0 0 24 23" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M18.0004 10.6786L6.00042 10.6786C5.05364 10.6786 4.28613 11.4141 4.28613 12.3214L4.28613 18.8928C4.28613 19.8002 5.05364 20.5357 6.00042 20.5357L18.0004 20.5357C18.9472 20.5357 19.7147 19.8002 19.7147 18.8928V12.3214C19.7147 11.4141 18.9472 10.6786 18.0004 10.6786Z"
+                            stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                        <path
+                            d="M12.0004 17.25C12.9472 17.25 13.7147 16.5145 13.7147 15.6071C13.7147 14.6998 12.9472 13.9643 12.0004 13.9643C11.0536 13.9643 10.2861 14.6998 10.2861 15.6071C10.2861 16.5145 11.0536 17.25 12.0004 17.25Z"
+                            stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                        <path
+                            d="M16.2853 7.39285V6.57143C16.2965 5.49308 15.8603 4.45463 15.0727 3.68443C14.2851 2.91422 13.2105 2.47534 12.0853 2.46428H11.9996C10.8744 2.45355 9.79075 2.87155 8.98706 3.62635C8.18337 4.38115 7.7254 5.41095 7.71387 6.48928L7.71387 7.39285"
+                            stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                    </svg>
+                    <!-- <img *ngIf="!isPointLocked" src="assets/images/unlock.png" width="24" height="23" alt="" style="width: 24px !important;"> -->
+                </span>
+            </div>
+        </div>
+        <div class="bg-light-stl" [ngClass]="{'md:px-8 user-stl-cus': userRole!=='incentiveadmin', 'incen-admin-stl-cus': userRole==='incentiveadmin'}" style="margin-top: 0px;box-shadow: 0px 2px 20px rgb(1 41 112 / 10%) !important;">
+            <div style="justify-content: space-between;" class="relative flex flex-0 items-center w-full h-16 sm:h-16 z-49  bg-card bg-transparent print:hidden">
+                <div [ngClass]="{'w-2/12': userRole!=='incentiveadmin', 'incen-admin-stl-cus logo-area pl-6': userRole==='incentiveadmin'}">
+                    <ng-container>
+                    
+                        <!-- Logo -->
+                        <div class="flex items-center mx-2 lg:mr-8 ml-0">
+                            <div class="">
+                                <div class="cursor-pointer" (click)="handleRouteHome()">
+                                    <img *ngIf="logoUrl" 
+                                         style="max-width: 153px; max-height: 42px; object-fit: cover;" 
+                                         class="dark: logo-stl-wd" 
+                                         [src]="logoUrl">
+                                    
+                                    <span *ngIf="!logoUrl && logoTitle" 
+                                          style="font-family: 'Helvetica Neue LT Pro'; font-weight: 700; font-size: 15px;">
+                                        {{logoTitle}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Horizontal navigation -->
+                        <!-- <fuse-horizontal-navigation
+                            class="mr-2"
+                            [name]="'mainNavigation'"
+                            [navigation]="navigation.horizontal"></fuse-horizontal-navigation> -->
+                    </ng-container>
+                    <!-- Navigation toggle button -->
+                    <!-- <ng-container *ngIf="isScreenSmall">
+                        <button
+                            mat-icon-button
+                            (click)="toggleNavigation('mainNavigation')">
+                            <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+                        </button>
+                    </ng-container> -->
+                </div>
+                <div>
+                    <div class="divPoints text-left" *ngIf="userRole==='incentiveadmin'">
+                        <div class="incen-admin-header-cus inline-flex">
+                            <img class="cursor-pointer" style="width: 30px;height: 30px;margin-top: 8px;" src="assets/images/Account.png"> 
+                            <span>Public User Manager</span>
+                        </div>
+                    </div>
+                    <div class="divPoints text-center" *ngIf="userRole==='normaluser' && !shiftMenuBar">
+                        <!-- <span *ngIf="isPointLocked" class="text-danger inline-flex">POINTS ON HOLD ></span>  -->
+                        <span class="spnPoints inline-flex items-center" [ngStyle]="{ 'cursor': isPointLocked ? 'pointer' : 'default' }" (click)="showPointsOnHold(pointsOnHold)">
+                            {{remainingPoints ? formatNumberWithCommas(remainingPoints) : 0}} points &nbsp;<svg *ngIf="isPointLocked" width="24" height="23" viewBox="0 0 24 23" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M18.0004 10.6786L6.00042 10.6786C5.05364 10.6786 4.28613 11.4141 4.28613 12.3214L4.28613 18.8928C4.28613 19.8002 5.05364 20.5357 6.00042 20.5357L18.0004 20.5357C18.9472 20.5357 19.7147 19.8002 19.7147 18.8928V12.3214C19.7147 11.4141 18.9472 10.6786 18.0004 10.6786Z"
+                                    stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                                <path
+                                    d="M12.0004 17.25C12.9472 17.25 13.7147 16.5145 13.7147 15.6071C13.7147 14.6998 12.9472 13.9643 12.0004 13.9643C11.0536 13.9643 10.2861 14.6998 10.2861 15.6071C10.2861 16.5145 11.0536 17.25 12.0004 17.25Z"
+                                    stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                                <path
+                                    d="M16.2853 7.39285V6.57143C16.2965 5.49308 15.8603 4.45463 15.0727 3.68443C14.2851 2.91422 13.2105 2.47534 12.0853 2.46428H11.9996C10.8744 2.45355 9.79075 2.87155 8.98706 3.62635C8.18337 4.38115 7.7254 5.41095 7.71387 6.48928L7.71387 7.39285"
+                                    stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                            </svg>
+                            <!-- <img *ngIf="!isPointLocked" src="assets/images/unlock.png" width="24" height="23" alt="" style="width: 24px !important;"> -->
+        
+                        </span>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="w-full text-center" *ngIf="userRole==='incentiveadmin'">
+                        
+                        <div>
+                            <button class="gotoadmin-btn inline-flex"> 
+                                <img class="cursor-pointer" style="width: 14px; height: 14px;margin-top: 2px; margin-right: 6px;" src="assets/images/key-img.png">
+                                <span class="gotoadmin-txt"> Go To Admin User Manager  </span></button>
+                        </div>
+                    </div>
+                   
+                   
+                    <div class="w-full text-right" *ngIf="userRole!=='incentiveadmin'">
+                        <div class="inline-flex pl-2 ml-auto space-x-0.5 sm:space-x-2 gap-4 items-center">
+                            <div *ngIf="userRole=='admin'" class="mx-2">
+                                <span class="text-center" style="font-weight: bolder;">{{UserName}}</span>
+                            </div>
+                            
+                            <notifications *ngIf="userRole === 'normaluser'" [totalUnreadCount]="unreadCount"></notifications>
+                          
+                            <user style="padding-right: 0.5rem !important" class="flex items-center"></user>
+                            
+                            <button *ngIf="userRole=='normaluser'" class="nav-search" (click)="handleManageTaxInformationEdit(ManageTaxInformation)">
+                                <svg width="24" height="25" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M14.625 8.0625C14.625 9.67969 14.0977 11.1914 13.2188 12.3867L17.6484 16.8516C18.1055 17.2734 18.1055 18.0117 17.6484 18.4336C17.2266 18.8906 16.4883 18.8906 16.0664 18.4336L11.6016 13.9688C10.4062 14.8828 8.89453 15.375 7.3125 15.375C3.26953 15.375 0 12.1055 0 8.0625C0 4.05469 3.26953 0.75 7.3125 0.75C11.3203 0.75 14.625 4.05469 14.625 8.0625ZM7.3125 13.125C9.10547 13.125 10.7578 12.1758 11.6719 10.5938C12.5859 9.04688 12.5859 7.11328 11.6719 5.53125C10.7578 3.98438 9.10547 3 7.3125 3C5.48438 3 3.83203 3.98438 2.91797 5.53125C2.00391 7.11328 2.00391 9.04688 2.91797 10.5938C3.83203 12.1758 5.48438 13.125 7.3125 13.125Z" fill="#212121"></path>
+                                </svg>
+                            </button>
+                        
+                            <div style="vertical-align: middle;
+                            height: 40px;
+                            display: inline-flex;
+                            align-items: center;
+                            padding: 0 0 0 0.5rem;">
+                                <app-nav-menu></app-nav-menu>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    
+                    
+                </div>
+                <!-- Components -->
+                <!-- <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
+                    <languages></languages>
+                    <fuse-fullscreen class="hidden md:block"></fuse-fullscreen>
+                    
+                    <shortcuts></shortcuts>
+                    <messages></messages>
+                    
+                    <button
+                        class="lg:hidden"
+                        mat-icon-button
+                        (click)="quickChat.toggle()">
+                        <mat-icon [svgIcon]="'heroicons_outline:chat-alt-2'"></mat-icon>
+                    </button>
+                </div> -->
+            </div>
+        
+            <!-- Content -->
+            
+        </div>
+    </div>
+
+    <div class="flex-1" style="padding-top: 80px;" [ngClass]="{'user-stl-cus md:px-28': userRole!=='incentiveadmin' && !isHomePage, 'home-page-no-padding': isHomePage && userRole!=='incentiveadmin', 'incen-admin-stl-cus': userRole==='incentiveadmin'}">
+        <div class="flex flex-col flex-auto w-full h-full">
+            <router-outlet *ngIf="true"></router-outlet>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    
+
+    <!-- Footer -->
+    <!-- <div class="relative flex flex-0 items-center w-full h-14 sm:h-20 px-4 md:px-6 z-49 border-t bg-card dark:bg-transparent print:hidden">
+        <span class="font-medium text-secondary">Fuse &copy; {{currentYear}}</span>
+    </div> -->
+    <footer>
+        <div class="container md:px-28" style="padding-left: 6rem !important;padding-right: 7rem !important;">
+            <div class="grid">
+                <div style="width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    flex-wrap: wrap;
+                    gap: 10px;">
+                    <div>
+                        <img src="assets/images/kohler_light.png" class="logo-stl">
+                        <div class="footermenu mt-2 pr-2">
+                            <ul class="inline-flex">
+                                <li><a href="https://www.linkedin.com/company/kohler" style="font-size: 29px;"><i class="fa-brands fa-linkedin-in img-sz"></i></a></li>
+                                <li><a href="https://x.com/kohler?lang=en&mx=2" style="font-size: 29px;"><i class="fa-brands fa-x-twitter img-sz"></i></a></li>
+                                <li><a href="https://www.instagram.com/kohler/?hl=en" style="font-size: 29px;"><i class="fa-brands fa-instagram img-sz"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- <div class="col">
+                        <h5>About Us</h5>
+                    </div> -->
+                    <div class="col" routerLink="/contact-us" style="cursor: pointer;">
+                        <h5>Contact Us</h5>
+                    </div>
+                    <div *ngIf="userRole==='normaluser'" class="col" routerLink="/faq" style="cursor: pointer;">
+                        <h5>FAQ</h5>
+                    </div>
+                    <div *ngIf="userRole==='normaluser'" class="col" routerLink="/feedback" style="cursor: pointer;">
+                        <h5>Feedback</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 pb-5 footernav">
+                <div class="footermenu">
+                    <ul>
+                        <li>Copyright © 2024 Kohler Co.</li>
+                        <li><a routerLink="/termsofuse" style="color: #fff !important;text-decoration: underline;">Terms of Use.</a></li>
+                        <li><a routerLink="/privacy-policy" style="color: #fff !important;text-decoration: underline;">Privacy Policy.</a></li>
+                        <li><a (click)="openServiceRequest()" style="color: #fff !important;text-decoration: underline; cursor: pointer;">Subject Access Request.</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+</div>
+
+<ng-template #pointsOnHold>
+    <div mat-dialog-title class="flex justify-between items-center">
+        <h3 class="dialog-title">Points On Hold</h3>
+        <button mat-icon-button (click)="dialog.close()" class="close-button">
+          <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div mat-dialog-content class="flex flex-col">
+        <div style="width: 100%; height: 100%; overflow-y: scroll; display: flex; flex-direction: column; gap: 35px;">
+            <div class="flex flex-row gap-2" style="gap: 25px !important; flex-direction: column !important;">
+                <h5>Your Points are on hold for one (or two) of the following reasons:</h5>
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; gap: 5px;">
+                        <span>
+                            1) 
+                        </span>    
+                        <span>
+                            We do not have your W9 on file
+                        </span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 5px;">
+                    <span>
+                        2) 
+                    </span>  
+                    <span>
+                        You have not passed all the Required Monthly Training which are currently posted
+                    </span>
+                </div>
+            </div>
+            <div class="flex flex-row gap-2 flex-wrap" style="gap: 25px !important;">
+                <h3>W9 Submission Instructions:</h3>
+                <div>
+                    To complete and submit your W-9 form, download the form below and fill out the required fields. When form is completed, please fax or email form (email subject: [Your BP#] W9) to Kohler Preferred Partners at 212-208-0926 or <a href="mailto: tritonsupport@kohlerpreferredpartners.com">tritonsupport@kohlerpreferredpartners.com</a>. You can also upload your W9 to your account by clicking “My Account” and clicking “Edit” next to “Manage Tax Information”.
+                </div>
+                <div style="display: flex;
+                flex-direction: column;
+                gap: 15px;">
+                    <span>To complete the W-9 form:</span>
+                    <div style="display: flex; flex-direction: column;">
+                        <div style="display: flex; gap: 5px;">
+                            <span>1)</span>
+                            <span>
+                                Please write your BP# (The number you use to login to Kohler Preferred Partners) at the top of the form.
+                            </span>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <span>2)</span>
+                            <span>
+                                Please check off the "individual/sole proprietor" as your federal tax classification.
+                            </span>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <span>3)</span>
+                            <span>
+                                Make sure to add your Social Security Number to the section below, Part 1 "Tax Payer Identification Number (TIN)." Please do not fill out the Employer Identification Number (EIN). This is in accordance with income tax filing procedure.
+                            </span>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <span>4)</span>
+                            <span>
+                                Please fill out your current home address and sign the form.
+                            </span>
+                        </div>
+                    </div>
+                    <div>Please download your W9 form here: <a (click)="openW9FormPdf()" style="cursor: pointer;">W9-Form.pdf</a></div>
+                </div>
+            </div>
+            <div class="flex flex-row gap-2 flex-wrap">
+                <h5 style="font-size: 14px;">IMPORTANTNOTE: </h5> You will not be able to redeem points earned on the Kohler Preferred Partners site until your completed and signed form has been submitted and processed. Please allow 2 business days for forms to be processed.
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!-- Quick chat -->
+<quick-chat #quickChat="quickChat"></quick-chat>
+
+<ng-template #ManageTaxInformation>
+    <div class="flex flex-row justify-between items-center"
+         style="border-bottom: 1px solid #dee2e6;">
+      <div class="font-normal"
+           style="font-size: 1.25rem; line-height: 1.5; font-family: HelveticaNeueBold; padding-top: 3px">User Search
+      </div>
+      <mat-icon style="font-size: 20px; cursor: pointer;" (click)="handleCancelManageTaxModal();">close</mat-icon>
+    </div>
+  
+    <mat-dialog-content user-tax-info-upload-mat-dialog-content class="flex flex-col w-full">
+      <form [formGroup]="manageSearchForm">
+        <div class="flex flex-col" style="padding: 0.8rem 0.8rem !important;">
+          <div class="flex flex-row gap-5 flex-wrap mat-select-container" style="align-items: flex-end;">
+            <mat-form-field custom-mat-select class="edit-profile-password-mat-field">
+              <mat-label>Type</mat-label>
+              <mat-select formControlName="dropdownSelect" (selectionChange)="onTypeChange($event.value)">
+                <mat-option *ngFor="let option of dropDownValues" [value]="option.id">
+                  {{ option.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+  
+            <mat-form-field custom-mat-select class="edit-profile-password-mat-field">
+                <mat-label>Search</mat-label>
+                <input matInput formControlName="secondText" placeholder="Enter to search" (keydown.enter)="handleSearch()">
+                </mat-form-field>
+          </div>
+  
+          <!-- Row with the instructional text and buttons -->
+          <div class="flex flex-row justify-between items-center mt-4">
+            <!-- Instructional text -->
+            <span class="text-gray-500" style="font-size: 0.875rem;">
+              To populate search results and different search headers (depending on search type), please hit the 'Search' button.
+            </span>
+  
+            <!-- Search button -->
+            <div class="flex flex-row justify-end gap-4" style="margin-right: -20px;">
+              <button type="button" style="padding: 0.375rem 1.75rem;border-radius: 10px;" class="button-search" (click)="handleSearch()">Search</button>
+            </div>
+          </div>
+          <div class="my-2">
+            
+          </div>
+          <div class="w-full" style="overflow-x: auto;">
+            <app-data-grid
+                [gridSettings]="gridColumns"
+                [enableRowClick]="true"
+                [dataSource]="dataSource"
+                [pages]="pages"
+                [pageIndex]="currentPage"
+                [loading]="loading"
+                [sortBy]="sortBy"
+                [sortDirection]="sortDirection"
+                (fetchPageData)="onPageChange($event)"
+                (sortChangeClick)="handleSortChange($event)"
+                (linkClick)="handleRowClick($event)" 
+                [nodataMessage]="'No Records Found'"
+                >
+            </app-data-grid>
+          </div>
+        </div>
+      </form>
+    </mat-dialog-content>
+  
+    <mat-dialog-actions class="flex gap-4 m-0 px-4 py-0" align="end" style="border-top: 1px solid #dee2e6">
+      <button type="button" style="padding: 0.375rem 1.75rem;border-radius: 10px;" class="button-search" data-bs-dismiss="modal"
+              (click)="handleCancelManageTaxModal()">Close</button>
+    </mat-dialog-actions>
+  </ng-template>
+  
+  
+  
+  
+  

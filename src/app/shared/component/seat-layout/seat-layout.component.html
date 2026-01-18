@@ -1,0 +1,133 @@
+<!-- MAIN ROW -->
+<div fxLayout="row" class="mt-28 mb-28 p-20" fxLayoutAlign="center">
+
+    <!-- SEAT LAYOUT COLUMN -->
+    <div fxFlex="50" fxLayout="row" fxLayoutAlign="center">
+        <div *ngIf="loading" style="display: flex; justify-content: center; align-items: center">
+            <mat-progress-spinner diameter="80" strokeWidth="8" color="accent" mode="indeterminate">
+            </mat-progress-spinner>
+        </div>
+        <div *ngIf="!loading" class="front-style">{{'SEATFONT' | translate}}</div>
+        <div *ngIf="!loading" class="p-16 border">
+            <div fxLayout="row" fxLayoutAlign="end">
+                <button mat-icon-button disabled>
+                    <mat-icon [matTooltip]="'SEATDRIVER' | translate">event_seat</mat-icon>
+                </button>
+            </div>
+            <div *ngFor="let rows of seatLayout" fxLayout="row wrap" fxLayoutAlign="flex-start">
+                <ng-container *ngFor="let seat of rows.seats; let i = index">
+                    <div class="pass-space" *ngIf="seat.pass&&seat"></div>
+                    <div [matTooltip]="seat.occupantName" *ngIf="!seat.pass">
+                        <button mat-icon-button (click)="selectSeat(seat)" [class.white]="seat.available"
+                            [class.green]="seat.selected" [class.red]="seat.occupantId === student?.id"
+                            [class.selectedSeats]="!seat.available">
+                            <mat-icon>event_seat</mat-icon>
+                        </button>
+                    </div>
+                </ng-container>
+            </div>
+            <!-- <div class="" >Rear</div> -->
+        </div>
+
+    </div>
+    <!-- SEAT LAYOUT COLUMN -->
+
+    <!-- SEAT INFO COLUMN -->
+    <div fxFlex="50" *ngIf="showAssignPanel">
+        <div fxLayout="row" class="mt-4" fxLayoutAlign="center">
+            <p class="seatText1"> {{ 'SEATSELETED' | translate }}: {{seatDetails?.seatName}}</p>
+        </div>
+        <div fxLayout="row" class="mb-20" fxLayoutAlign="center">
+            <div fxFlex="33" fxLayoutAlign="center center">
+                <button mat-icon-button class="green">
+                    <mat-icon>event_seat</mat-icon>
+                </button>&nbsp;- {{ 'SEATRESEVERD' | translate }}
+            </div>
+            <div fxFlex="33" fxLayoutAlign="center center">
+                <button mat-icon-button class="selectedSeats">
+                    <mat-icon>event_seat</mat-icon>
+                </button>&nbsp;- {{ 'SEATSELECT' | translate }}
+            </div>
+            <div fxFlex="33" fxLayoutAlign="center center">
+                <button mat-icon-button class="white">
+                    <mat-icon>event_seat</mat-icon>
+                </button>&nbsp;- {{ 'SEATAVALIABLE'  | translate }}
+            </div>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-around">
+            <span>{{ 'SEATAVALNO' | translate }} : {{vehicleNo}}</span>
+        </div>
+
+
+        <div fxLayout="row" class="mb-20" fxLayoutAlign="center" *ngIf="haveMultiAssociation">
+            <mat-form-field class="wth" appearance="outline">
+                <mat-select [placeholder]="selectPlaceHolder" (selectionChange)="selectStudent($event)" matInput>
+                    <mat-option *ngFor="let item of dropdownList" [value]="item">
+                        {{item.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-around">
+            <div fxFlex="30" fxLayout="column" fxLayoutAlign="space-around space-between">
+                <span>{{ 'STDNAME' | translate }}</span>
+
+                <span>{{ 'STDCLASS' | translate }}</span>
+
+                <span>{{ 'STDSEC' | translate }}</span>
+
+                <span>{{ 'STDROLL' | translate }}</span>
+            </div>
+
+            <div fxFlex="70" fxLayout="column" fxLayoutAlign="space-around space-between">
+                <span>: {{student?.name}}</span>
+
+                <span>: {{student?.class}}</span>
+
+                <span>: {{student?.section}}</span>
+
+                <span>: {{student?.rollnumber}}</span>
+            </div>
+        </div>
+        <!--  <div *ngIf="(seatDetails?.seatName !== '' && student?.name !== null ) " 
+        (click) = " 'submit = true '" -->
+        <div fxLayout="row" fxLayoutAlign="center">
+            <button type="submit"  mat-raised-button color="accent" aria-label="Submit" 
+            [matTooltip]="'ORGSUMBIT' | translate" (click)="onSubmit()"><span >{{'ORGSUMBIT' | translate}}</span></button>
+
+      
+        </div>
+    </div>
+    <!-- SEAT INFO COLUMN -->
+
+
+</div>
+<!-- MAIN ROW -->
+
+
+
+<!--
+<div fxLayout="row" class="mt-24 pl-28 pr-28" fxLayoutAlign="center">
+    <div fxFlex="33" fxLayoutAlign="center center">
+        <button mat-icon-button class="green">
+            <mat-icon>event_seat</mat-icon>
+        </button>&nbsp;Selected
+    </div>
+    <div fxFlex="33" fxLayoutAlign="center center">
+        <button mat-icon-button disabled class="red">
+            <mat-icon>event_seat</mat-icon>
+        </button>&nbsp;Not Available
+    </div>
+    <div fxFlex="33" fxLayoutAlign="center center">
+        <button mat-icon-button class="white">
+            <mat-icon>event_seat</mat-icon>
+        </button>&nbsp;Available
+    </div>
+</div>
+
+<div fxLayout="row" class="mt-20 mb-20" fxLayoutAlign="center">
+    <span class="seatText1">Seat Selected : {{seatDetails?.seatName}}</span>
+</div>
+-->

@@ -1,0 +1,203 @@
+<div class="">
+    <div class="body-items">
+        <!-- First Column -->
+        <div class="body-items-space">
+          <div class="container " style="margin-top: 5.25rem !important;">
+            <div class="flex flex-col space-y-1">
+              <!-- First Container -->
+              <div class="container mb-2 headingblack text-center">
+                <div class="row flex flex-wrap">
+                  <div class="flex justify-between">
+                    <div class="flex flex-row items-center">
+                      <div class="ml-2 px-6 text-center c-details">
+                        <span class=" largetext">
+                          CLICK PROGRAM RULES FOR 2024 PROGRAM DETAILS
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Second Container -->
+              <div class="container mb-2 headingblack">
+                <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="assets/images/hero_slide.jpg" class="d-block w-100" alt="...">
+                            <div class="carousel-caption d-block">
+                                <p> NEW Bidet Seat Naming Change Course</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              <!-- <div style="height: 50%;">
+                <figure style="height: 100%;">
+                  <img style="height: 100%;" src="assets/images/hero_slide.jpg" alt="">
+                </figure>
+                <span style="
+                  right: -12px;
+                  position: relative;
+                  top: -34%;
+                  color: white;
+                  font-size: 23px;
+                  width: 71%;
+                  display: flex;">
+                  NEW Bidet Seat Naming Change Course
+                </span>
+              </div> -->
+              <!-- <div class="carousel-container relative overflow-hidden w-full mt-8">
+                <div class="carousel-inner flex transition-transform duration-300" [style.transform]="getTransform()">
+                  <div class="carousel-item w-full flex-shrink-0" *ngFor="let image of images">
+                    <img [src]="image" alt="Carousel image" class="w-full min-h-80 object-cover">
+                  </div>
+                </div>
+                <button class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-700 text-white p-2" (click)="prev()">
+                  &lt;
+                </button>
+                <button class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-700 text-white p-2" (click)="next()">
+                  &gt;
+                </button>
+              </div> -->
+            </div>
+          </div>
+        </div>
+        <!-- Second Column -->
+        <div class="body-items-space">
+          <div class="mt-24 mb-2">
+            <div>
+              <h3 class="academy-curri">ACADEMY CURRICULUMS &gt;&gt;</h3>
+              <p class="text-danger pb-4">* Required Courses available to complete</p>
+            </div>
+      
+            <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
+              <mat-spinner *ngIf="loading"></mat-spinner>
+            </div>
+
+            <div class="mt-4" *ngIf="!loading">
+              <div *ngFor="let curriculum of curriculums">
+                <div *ngIf="curriculum.list.length > 0" class="mt-4 mb-2">
+                  <div class="d-flex justify-content-between" style="justify-content: space-between;">
+                    <div class="d-flex flex-row align-items-center">
+                      <div class="ml-2 c-details">
+                        <a [routerLink]="['/others', curriculum.id]">
+                          <span style="cursor: pointer;">{{ curriculum.name }}</span>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="d-flex flex-row align-items-center">
+                      <div class="ms-2 c-details">
+                        <h5>{{ curriculum.totalCompleted }}/{{ curriculum.totalAvailableCourse }}</h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="progress progress1 mt-1" style="height: 16px !important; margin-bottom: 23px;">
+                    <div class="progress-bar" *ngIf="curriculum.totalAvailableCourse > 0 && curriculum.totalCompleted > 0"
+                         role="progressbar" style="background: #0073ff !important;"
+                         [ngStyle]="{ 'width': curriculum.totalAvailableCourse > 0 && curriculum.totalCompleted > 0 ? curriculum.totalCompleted * 100 / curriculum.totalAvailableCourse + '%' : 'unset' }"
+                         aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="border-bottom: 0.5px solid #979393; margin: 10px 0;">
+        <mat-divider></mat-divider>
+      </div>
+    <div class="w-full">
+        <div class="container mt-3">
+            <div class="flex-wrap">
+
+                <!-- <div class="col-lg-12 col-md-12 col-sm-12 flex-column justify-content-between">
+                    <div class="p-3">
+                        <div class="text-center">
+                            <div class="place-items-center">
+                                <h3 style="font-weight: 700;" class="mb-2 textsmall">QUICK LINKS TO TRAINING</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 d-flex flex-column justify-content-between">
+                    <div class="p-3 mb-2">
+                        <div class="text-center">
+                            <div style="width: 100%;
+                              display: flex !important;
+                              justify-content: space-evenly;
+                              flex-wrap: wrap;
+                              gap: 10px;
+                              text-align: start;">
+                                <a href="#" class="training-items-links">KOHLER BRAND</a>
+                                <a href="#" class="training-items-links">KOHLER PRODUCT</a>
+                                <a href="#" class="training-items-links">SELLING SKILLS VIDEOS</a>
+                                <a href="#" class="training-items-links">KOHLER VIRTUAL TRAINING</a>
+                                <a href="#" class="training-items-links">BOLD IN THE KNOW</a>
+                                <a href="#" class="training-items-links">KALLISTA</a>
+                                <a href="#" class="training-items-links">STERLING</a>
+                                <a href="#" class="training-items-links">ROBERN</a>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="col-lg-12 col-md-12 col-sm-12 flex-column justify-content-between">
+                    <div class="mt-4 mb-4">
+                        <div class="text-center">
+                            <h3 style="font-size: 24px !important; font-weight: 600; padding-bottom: 30px;" class="mediumtext">NEWS YOU CAN USE &gt;&gt;</h3>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+    <div class="w-full">
+    
+        <div class="grid grid-cols-3 gap-4 w-full">
+            <!--FIRST SECTION-->
+            <div class="col-lg-4 col-md-4 col-sm-4 d-flex flex-column justify-content-between">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <div>
+                            <img src="assets/images/news1.jpg" class="img-fluid">
+                            <h4 style="font-weight: 600 !important; font-size: 20px !important;" class="imagecap mt-3 mb-4 font-normal text-lg">NEW Bidet Seat Naming Change Course</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--SECOND SECTION-->
+            <div class="col-lg-4 col-md-4 col-sm-4 d-flex flex-column justify-content-between">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <div>
+                            <img src="assets/images/news2.jpg" class="img-fluid">
+                            <h4 style="font-weight: 600 !important; font-size: 20px !important;" class="imagecap mt-3 mb-4 font-normal text-lg">NEW KOHLER x Studio McGee Part 3 Course</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--THIRD SECTION-->
+            <div class="col-lg-4 col-md-4 col-sm-4 d-flex flex-column justify-content-between">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <div>
+                            <img src="assets/images/news3.jpg" class="img-fluid">
+                            <h4 style="font-weight: 600 !important; font-size: 20px !important;" class="imagecap mt-3 mb-4 font-normal text-lg">NEW Pivot Faucet Wall Collections</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+  
+    
+</div>

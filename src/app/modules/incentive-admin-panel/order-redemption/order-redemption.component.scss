@@ -1,0 +1,170 @@
+.selected-tab {
+    color: #04202E;
+    font-weight: 700;
+    font-size: 12px;
+    width: inherit;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #04202E;
+}
+.unselected-tab {
+    color: #565D6D;
+    font-weight: 400;
+    font-size: 12px;
+    width: inherit;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #fff;
+}
+.table-columns {
+    font-size: 14px;
+    font-weight: 400;
+    color: #171A1F;
+}
+.separator {
+    border-left: 1px solid #BDC1CA;
+    height: 85px; /* Adjust height as needed */
+    margin: 0 10px; /* Adjust margin as needed */
+}
+.btn-cus {
+    width: 124px;
+    height: 36px;
+    padding: 7px 11px 7px 12px;
+    gap: 0px;
+    border-radius: 4px;
+    background: #04202E;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    // text-align: left;
+}
+.mat-dialog-container {
+    border-radius: 0px !important;
+    padding: 0px !important;
+    background: white;
+    color: #1e293b;
+    width: 1483px;
+    height: 90vh;
+    box-shadow: 0px 0px 1px 0px #171A1F12;
+    box-shadow: 0px 0px 2px 0px #171A1F1F;
+
+}
+.add-sku-field-container {
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    .three-section-width {
+      width: 30%;
+      @media only screen and (max-width: 664px) {
+        width: 100%;
+      }
+    }
+  }
+
+::ng-deep .mat-form-field[order-redemption-mat-field].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+    height: 34px !important;
+    min-height: 34px !important;
+}
+::ng-deep .mat-form-field[order-redemption-user-details-mat-field].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding-left: 5px !important;
+}
+::ng-deep .mat-datepicker-popup{
+    top: 10% !important;
+    height: fit-content !important;
+}
+::ng-deep .mat-datepicker-content .mat-calendar {
+    width: 296px;
+    height: 100% !important;
+}
+.cus-background-tags {
+    background: #565D6D;
+}
+.border-color-cus-sku-list {
+    border-color: #BDC1CA
+}
+.mat-label-text-sku-list {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 22px;
+    text-align: left;
+}
+.user-id-search {
+    cursor: pointer;
+    color: #0D78C9;
+}
+
+.user-id-search-add-order {
+    position: absolute;
+    top: -25px;
+    right: 0;
+    cursor: pointer;
+    color: #0D78C9;
+}
+
+.full-width {
+    width: 48%;
+}
+
+.two-section-width {
+    width: 48%;
+    @media only screen and (max-width: 664px) {
+      width: 100%;
+    }
+  }
+
+.save-btn {
+    width: 124px;
+    height: 36px;
+    padding: 7px 11px 7px 12px;
+    gap: 0px;
+    border-radius: 6px;
+    opacity: 0.4;
+    background: #9CA5AC;
+    color: #FFFFFF; 
+    border: none;
+}
+
+.save-btn.enabled-save-btn {
+    background-color: #05202E !important;
+    color: white;
+    opacity: 1;
+}
+.close-btn-cus {
+    width: 106px;
+    height: 36px;
+    padding: 7px 34.5px 7px 35.5px;
+    gap: 0px;
+    border-radius: 4px;
+    background: #04202E;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    text-align: left;
+}
+
+::ng-deep .mat-form-field[order-redemption-mat-field].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix .mat-form-field-label-wrapper {
+    top: -25px;
+    height: auto;
+    padding-top: 0;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .cancel-button {
+    background: #37649F !important;;
+    color: white !important;;
+    margin-right: 20px; /* Adds gap between Cancel and Delete buttons */
+  }
+  
+  .delete-button {
+    background: #000000 !important;;
+    color: white !important;;
+  }

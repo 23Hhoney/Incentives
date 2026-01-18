@@ -1,0 +1,377 @@
+<div class="w-full  mt-2">
+    <div class="grid grid-cols-12 gap-4 w-full">
+        <div class="col-span-12 sm:col-span-12 md:col-span-9 w-full "> 
+            <div class="d-flex flex-row mb-3 gap-4">
+                <img [src]="profilePicture" class="img-fluid img-sz" alt="profile" style="border-radius: 50%;" />
+                <div class="mt-4">
+                    <h1 class="text-black">
+                        Hi, {{userName}}
+                        </h1>
+                        <strong>
+                            Account Number : {{getBpNumber()}}
+                        </strong>
+                </div>
+            </div>
+        </div>
+        <div class="col-span-12 sm:col-span-12 md:col-span-3 w-full "> 
+            <div class="profile-ifno-bg rounded-2xl">
+                <div class="profile-edit">
+                    <div class="flex mb-2">
+                        <div class="w-8/12">
+                            <p class="float-start">Change Profile Picture</p>
+                        </div>
+                        <div class="w-4/12">
+                            <button class="btn btn-default border-100 btn-small" (click)="handleProfilePictureEdit(EditProfilePicture)">Edit</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-edit">
+                    <div class="flex mb-2">
+                        <div class="w-8/12">
+                            <p class="float-start">Edit Profile/Password</p>
+                        </div>
+                        <div class="w-4/12">
+                            <button class="btn btn-default border-100 btn-small" (click)="handleProfileAndPasswordChange(EditProfilePassword)">Edit</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-edit">
+                    <div class="flex mb-2">
+                        <div class="w-8/12">
+                            <p class="float-start">Manage Tax Infomation</p>
+                        </div>
+                        <div class="w-4/12">
+                            <button class="btn btn-default border-100 btn-small" (click)="handleManageTaxInformationEdit(ManageTaxInformation)">Edit</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-edit">
+                    <div class="flex">
+                        <div class="w-8/12">
+                            <p class="float-start">Access Tax Forms</p>
+                        </div>
+                        <div class="w-4/12">
+                            <button class="btn btn-default border-100 btn-small" (click)="handleAccessTaxInformationEdit(AccessTaxInformation)">View</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class=" mt-3 mb-3 g-0">
+        <div class="w-full p-6 card rounded-2xl cardblue bg-card overflow-hidden">
+            <div class="card-body p-0">
+                <span></span>
+                <h4 class="mb-0">Total List Price Sales</h4>
+                <div *ngIf="isPointsAndSummaryLoading" class="flex items-center justify-center w-full">
+                    <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+                </div>
+                <div *ngIf="!isPointsAndSummaryLoading" class="d-flex justify-between items-center mt-2">
+                    <div class="c-details">
+                        <span>${{formatNumberWithCommas(totalSales)}}</span>
+                    </div>
+                    <div class="c-details">
+                        <span>${{ formatNumberWithCommas(targetValue) }}</span>
+                    </div>
+                </div>
+                <div *ngIf="!isPointsAndSummaryLoading" class="progress mt-2 mb-3">
+                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': totalSales > 0 ? totalSales * 100 / 5000000 + '%' : 'unset' }" aria-valuenow="50"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div *ngIf="!isPointsAndSummaryLoading" class="row md:flex align-items-center">
+                    <div class="w-full sm:w-full md:w-1/2">
+                        <h2 class="mt-3">${{formatNumberWithCommas(totalSales)}}</h2>
+                    </div>
+                    <div class="w-full sm:w-full md:w-1/2 text-right" (click)="navigateTo('performance')">
+                        <button class="btn btn-lg btn-outline-light mt-8 text-uppercase">TRACK MY PERFORMANCE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class=" mt-3 mb-3 g-0">
+        <div class="card rounded-2xl carddarkblue p-3 mb-2">
+            <div class="card-body">
+                <span></span>
+                <h4 class="mb-0">Status</h4>
+                <div *ngIf="isStatusLoading" class="flex items-center justify-center w-full">
+                    <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+                </div>
+                <div *ngIf="!isStatusLoading" class="row">
+                    <div class="w-full sm:w-full md:w-1/2">
+                        <div class="d-flex items-center justify-between account-status">
+                            <h3 class="m-0">{{userStatus}}</h3>
+                            <img src="assets/images/arrow.png" class="img-sz-arr">
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right mt--4" (click)="navigateTo('program-rules')">
+                    <button class="btn btn-lg btn-outline-light uppercase">Program RULES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class=" mt-3 mb-3 g-0">
+        <div class="card rounded-2xl carddarkblue p-3 mb-2">
+            <div class="card-body">
+                <span></span>
+                <h4 class="mb-0">Current Point Balance</h4>
+                <div *ngIf="isPointsAndSummaryLoading" class="flex items-center justify-center w-full">
+                    <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+                </div>
+                <h3 *ngIf="!isPointsAndSummaryLoading" class="number-text mt-4">{{formatNumberWithCommas(remainingPoints ? remainingPoints : 0)}}</h3>
+                <div class="text-right mt-4">
+                    <button class="btn btn-lg btn-outline-light uppercase" (click)="navigateTo('transactions')">View Account Transactions</button>&nbsp;
+                    <button class="btn btn-lg btn-outline-light uppercase" (click)="navigateTo('performance')">TRACK MY PERFORMANCE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class=" mt-3 mb-3 g-0">
+        <div class="card rounded-2xl carddarkblue p-3 mb-2">
+            <div class="card-body">
+                <span></span>
+                <h4 class="mb-0">Training Course</h4>
+                <div *ngIf="isUserCourseCompletedLoading" class="flex items-center justify-center w-full">
+                    <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+                </div>      
+                <h3 *ngIf="!isUserCourseCompletedLoading" class="number-text mt-4">Completed {{courseData.totalCompleted}}/{{courseData.totalCourses}}</h3>
+                <div class="text-right mt-4" (click)="navigateTo('academy-curriculums')">
+                    <button class="btn btn-lg btn-outline-light text-uppercase">TRAINING COURSES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class=" mt-3 mb-3 g-0">
+        <div class="card rounded-2xl carddarkblue p-3 mb-2">
+            <div class="card-body">
+                <span></span>
+                <h4 class="mb-0">Notifications</h4>
+                <div *ngIf="isNotificationLoading" class="flex items-center justify-center w-full">
+                    <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+                </div> 
+                <h3 *ngIf="!isNotificationLoading"  class="number-text mt-4">{{totalUnreadNotifications}} New Unread Messages</h3>
+                <div class="text-right mt-4" (click)="navigateTo('notifications')">
+                    <a class="btn btn-lg btn-outline-light text-uppercase">VIEW NOTIFICATIONS</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class=" mt-3 mb-4 g-0">
+        <div class="card rounded-2xl carddarkblue p-3 mb-2">
+            <div class="card-body">
+                <h4 class="mb-0">Account Transactions</h4>
+                <div class="mt-4">Latest Transactions</div>
+                <div *ngIf="isLatestTransactionLoading" class="flex items-center justify-center w-full">
+                    <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+                </div> 
+                <h3 *ngIf="!isLatestTransactionLoading" class="number-text mt-4">{{latestTransaction.invoiceNumber}} {{latestTransaction.orderNumber}} {{latestTransaction.dateProcessed}} {{latestTransaction.type}}</h3>
+                <div class="text-right mt-4" (click)="navigateTo('transactions')">
+                    <button class="btn btn-lg btn-outline-light text-uppercase">VIEW ACCOUNT TRANSACTIONS</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #EditProfilePicture>
+    <div class="flex flex-col w-full">
+        <div class="flex flex-row justify-between items-center" style="padding: 0.4rem 0.8rem !important; border-bottom: 1px solid #dee2e6;">
+            <div class="font-normal" style="font-size: 1.25rem;line-height: 1.5; font-family: HelveticaNeueBold;padding-top: 3px">Change Profile Picture</div>
+            <mat-icon style="font-size: 17px;" (click)="this.modal.close();">close</mat-icon>
+        </div>
+        <div *ngIf="isProfileUpdating" class="flex items-center justify-center w-full">
+            <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+        </div>
+        <div *ngIf="!isProfileUpdating" class="flex flex-row items-center flex-wrap" style="padding: 0.8rem 0.8rem !important; border-bottom: 1px solid #dee2e6;">
+            <div class="img-container">
+                <img [src]=selectedProfilePicture style="border-radius: 50%; object-fit: cover;" class="img-fluid img-sz" alt="profile" />
+            </div>
+            
+            <div class="col-md-6" class="upload-container">
+                <form>
+                    <div>
+                        <label for="upload-picture" class="form-label">Change Profile Picture</label>
+                        <input type="file" class="form-control" id="upload-picture" (change)="onFileSelect($event)" accept="image/png, image/jpeg, image/jpg, image/webp">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3" style="padding: 0.4rem 0.8rem !important; margin: calc(0.5rem* .5);">
+            <button type="button" style="padding: 0.375rem 0.75rem" class="btn btn-secondary" data-bs-dismiss="modal" (click)="this.modal.close()">Close</button>
+            <button type="button" style="padding: 0.375rem 0.75rem;" class="btn btn-primary" (click)="handleProfilePictureUpdate()" [disabled]="isProfileUpdating">Update Profile</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #EditProfilePassword>
+    <div class="flex flex-col w-full">
+        <div class="flex flex-row justify-between items-center" style="padding: 0.4rem 0.8rem !important; border-bottom: 1px solid #dee2e6; font-family: HelveticaNeueBold;">
+            <div class="font-normal" style="font-size: 1.25rem;line-height: 1.5; padding-top: 3px;">Edit Profile / Password</div>
+            <mat-icon style="font-size: 17px;" (click)="handleCanceProfileAndPasswordUpdate();">close</mat-icon>
+        </div>
+        <div *ngIf="isUserProfileLoading" class="flex items-center justify-center w-full h-full my-10">
+            <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+        </div>
+        <mat-dialog-content class="mat-typography p-0 m-0" *ngIf="!isUserProfileLoading">
+            <form [formGroup]="profileAndPasswordForm" class="flex flex-wrap flex-col py-2">
+                <div class="w-full flex flex-col" style="padding: 0.75rem !important;">
+                    <div class="flex flex-row w-full gap-4 flex-wrap justify-center">
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>First Name *</mat-label>
+                            <input matInput formControlName="firstName">
+                        </mat-form-field>
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>Last Name *</mat-label>
+                            <input matInput formControlName="lastName">
+                        </mat-form-field>
+                    </div>
+                    <div class="flex flex-row w-full gap-4 flex-wrap justify-center">
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>Contact Number *</mat-label>
+                            <input matInput formControlName="contactNumber" placeholder="(xxx) xxx-xxxx" maxlength="14" appPhoneNumberFormatter>
+                        </mat-form-field>
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>Email *</mat-label>
+                            <input matInput formControlName="email">
+                        </mat-form-field>
+                    </div>
+                    <div class="h4 pb-2 mb-6 text-danger" style="border-bottom: 1px solid #dee2e6">
+                    </div>
+                    <span style="font-size: 0.9375rem; font-family: HelveticaNeueBold; margin-bottom: 1rem; font-weight: 500; line-height: 1.2;">Change Password</span>
+                    <div class="flex flex-row w-full gap-4 flex-wrap justify-center">
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>Current Password</mat-label>
+                            <input matInput formControlName="currentPassword" type="password">
+                        </mat-form-field>
+                        <mat-form-field  class="edit-profile-password-mat-field hidden-mat-field" style="visibility: hidden;">
+                            <mat-label>Label</mat-label>
+                            <input matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex flex-row w-full gap-4 flex-wrap justify-center">
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>New Password</mat-label>
+                            <input matInput formControlName="newPassword" type="password">
+                            <mat-error *ngIf="profileAndPasswordForm.get('newPassword').hasError('minlength')">
+                                Password must be at least 8 characters long
+                            </mat-error>
+                            <mat-error *ngIf="profileAndPasswordForm.get('newPassword')?.value?.length && profileAndPasswordForm.get('newPassword')?.hasError('passwordStrength')">
+                                Password must contain at least one number, one uppercase letter, one lowercase letter, and one special character.
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>Confirm New Password</mat-label>
+                            <input matInput type="password" formControlName="confirmNewPassword">
+                        </mat-form-field>
+                    </div>
+                    <mat-error *ngIf="profileAndPasswordForm.hasError('mismatch')">
+                        Passwords do not match
+                    </mat-error>
+                </div>
+            </form>
+        </mat-dialog-content>
+        <mat-dialog-actions class="flex gap-4 m-0 px-4 py-2" align="end" style="border-top: 1px solid #dee2e6">
+            <button type="button" style="padding: 0.375rem 0.75rem" class="btn btn-secondary" data-bs-dismiss="modal" (click)="handleCanceProfileAndPasswordUpdate()">Close</button>
+            <button type="button" style="padding: 0.375rem 0.75rem;" class="btn btn-primary" (click)="handleProfileAndPasswordSubmit()" [disabled]="isProfileUpdating">Save Changes</button>
+        </mat-dialog-actions>
+    </div>
+</ng-template>
+
+<ng-template #ManageTaxInformation>
+    <div class="flex flex-row justify-between items-center" style="padding: 0.4rem 0.8rem !important; border-bottom: 1px solid #dee2e6;">
+        <div class="font-normal" style="font-size: 1.25rem; line-height: 1.5; font-family: HelveticaNeueBold; padding-top: 3px">Manage Tax Information</div>
+        <mat-icon style="font-size: 17px; cursor: pointer;" (click)="handleCancelManageTaxModal();">close</mat-icon>
+    </div>
+    <mat-dialog-content user-tax-info-upload-mat-dialog-content class="flex flex-col w-full">
+        <form [formGroup]="manageTaxInformationForm">
+            <div class="flex flex-col" style="padding: 0.8rem 0.8rem !important;">
+                <div class="flex flex-row gap-5 flex-wrap mat-select-container" style="align-items: flex-end;">
+                    <mat-form-field custom-mat-select class="edit-profile-password-mat-field">
+                        <mat-label>Year</mat-label>
+                        <mat-select formControlName="year">
+                            <mat-option *ngFor="let year of yearsArray" [value]="year">{{ year }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div class="edit-profile-password-mat-field">
+                        <label for="upload-document" class="form-label">Upload Document</label>
+                        <input type="file" class="form-control" id="upload-document" accept="application/pdf" (change)="onManageTaxFileSelect($event)" #fileInput>
+                    </div>
+                    
+                </div>
+                <div style="margin-top: 1rem !important;">Please download your W9 form here: <a (click)="openW9FormPdf()" style="cursor: pointer;">W9-Form.pdf</a></div>
+                <h6 style="margin-top: 1.5rem !important; font-size: 0.9375rem !important;">Document List</h6>
+                <app-data-grid
+                    [gridSettings]="taxInformationGridColumns"
+                    [dataSource]="taxInformationDataSource"
+                    [pages]="taxInformationPages"
+                    [pageIndex]="taxInformationCurrentPage"
+                    [loading]="taxInformationLoading"
+                    [totalRecordCount]="taxInformationApiRequest.itemCount"
+                    (fetchPageData)="onPageChange($event)"
+                    (sortChangeClick)="handleSortChange($event)"
+                    (buttonClick)="handleButtonClick($event, deletepopup)"
+                    [showPagination]="false"
+                    (emitRecordCount)="changePageCount($event)">
+                </app-data-grid>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="flex gap-4 m-0 px-4 py-0" align="end" style="border-top: 1px solid #dee2e6">
+        <button type="button" style="padding: 0.375rem 0.75rem" class="btn btn-secondary" data-bs-dismiss="modal" (click)="handleCancelManageTaxModal()">Close</button>
+        <button type="button" style="padding: 0.375rem 0.75rem;" class="btn btn-primary mat-custom-loader" (click)="saveUserTaxDocument()" [disabled]="isUploadingTaxInformation">
+            <mat-progress-spinner
+                *ngIf="isUploadingTaxInformation"
+                [diameter]="21"
+                [mode]="'indeterminate'">
+            </mat-progress-spinner>
+            <span *ngIf="!isUploadingTaxInformation">Save Changes</span>
+        </button>
+    </mat-dialog-actions>
+</ng-template>
+
+
+
+<ng-template #deletepopup>
+    <div mat-dialog-title class="flex items-center justify-between">
+      <h3>Delete Confirmation</h3>
+      <button mat-icon-button (click)="closeDeleteModal()" class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <mat-dialog-content>
+        <p>Are you sure, you want to delete this field?</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="flex gap-2">
+      <button mat-button (click)="closeDeleteModal()" class="btn btn-secondary px-2 py-2 rounded-md">Cancel</button>
+      <button mat-button (click)="deleteTaxInformation(); closeDeleteModal()" class="btn btn-primary px-2 py-2 rounded-md">Delete</button>
+    </mat-dialog-actions>
+  </ng-template>
+
+  <ng-template #AccessTaxInformation>
+    <div class="flex flex-row justify-between items-center" style="padding: 0.4rem 0.8rem !important;">
+        <div class="font-normal" style="font-size: 1.25rem;line-height: 1.5; font-family: HelveticaNeueBold;padding-top: 3px">Access Tax Forms</div>
+        <mat-icon style="font-size: 17px;" (click)="handleCancelManageTaxModal();">close</mat-icon>
+    </div>
+    <mat-dialog-content user-tax-info-upload-mat-dialog-content class="flex flex-col w-full" style="padding: 0.8rem 0.8rem !important;">
+        <app-data-grid
+            [gridSettings]="accessTaxInformationGridColumns"
+            [dataSource]="accessTaxInformationDataSource"
+            [pages]="accessTaxInformationPages"
+            [pageIndex]="accessTaxFormApiRequest.pageIndex"
+            [loading]="accessTaxFormLoading"
+            [totalRecordCount]="accessTaxFormApiRequest.itemCount"
+            (fetchPageData)="onAccessTaxPageChange($event)"
+            (sortChangeClick)="handleAccessSortChange($event)"
+            (buttonClick)="handleAccessFormButtonClick($event)">
+        </app-data-grid>
+    </mat-dialog-content>
+    <mat-dialog-actions class="flex gap-4 m-0 px-4 py-0" align="end">
+        <button type="button" style="padding: 0.375rem 0.75rem;" class="btn btn-primary mat-custom-loader" (click)="modal.close()">Close</button>
+    </mat-dialog-actions>
+    
+</ng-template>

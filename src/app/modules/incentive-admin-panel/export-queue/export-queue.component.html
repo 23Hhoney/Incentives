@@ -1,0 +1,99 @@
+<div class="overflow-x-auto">
+  <div class="table-container mt-18">
+    <table mat-table [dataSource]="dataSourceReport" class="mat-elevation-z8" style="width: 850px;">
+  
+      <!-- Report Column -->
+      <ng-container matColumnDef="report">
+        <th mat-header-cell *matHeaderCellDef>Report</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="button-container">
+            <button class="report-button" *ngIf="isPointsCreditEnabled" (click)="navigateTo('users-rewards-credit-report')">
+              <mat-icon [svgIcon]="'star-cus-report-queue'" class="report-icon"></mat-icon>
+              <span class="report-text">Points Credit Report (Sales Data)</span>
+            </button>
+            <button class="report-button" *ngIf="isOrderRedemptionEnabled" (click)="navigateTo('users-rewards-redemption')">
+              <mat-icon [svgIcon]="'simple-cart-cus'" class="report-icon"></mat-icon>
+              <span class="report-text">Order Redemption Report</span>
+            </button>
+            <button class="report-button" *ngIf="isUserExportEnabled" (click)="navigateTo('user-report')">
+              <mat-icon [svgIcon]="'users-three'" class="report-icon"></mat-icon>
+              <span class="report-text">User Export</span>
+            </button>
+            <button class="report-button" *ngIf="isPushReportEnabled" (click)="navigateTo('push-report')">
+              <mat-icon [svgIcon]="'chart-line-up'" class="report-icon"></mat-icon>
+              <span class="report-text">Push Report</span>
+            </button>
+            <button class="report-button" *ngIf="isLoginReportEnabled" (click)="navigateTo('login-report')">
+              <mat-icon [svgIcon]="'user-switch'" class="report-icon"></mat-icon>
+              <span class="report-text">Login Report</span>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+      
+      <!-- Quick Pull Column -->
+      <ng-container matColumnDef="quickPull">
+        <th mat-header-cell *matHeaderCellDef>Quick Pull</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="button-container">
+            <button class="quick-pull-items" *ngIf="isPointsCreditEnabled">
+              <a style="border-bottom: 1px solid; cursor: pointer;" (click)="QtdPullForPointsCreditManager();">YTD Quick Pull</a>
+            </button>
+            <button class="quick-pull-items" *ngIf="isOrderRedemptionEnabled">
+              <a style="border-bottom: 1px solid; cursor: pointer;" (click)="QtdPullForPointsOrderRedeem()">YTD Quick Pull</a>
+            </button>
+            <button class="quick-pull-items" *ngIf="isUserExportEnabled">
+              <a style="border-bottom: 1px solid; cursor: pointer;" (click)="submitUserExportFormDirectlyss()">Quick Pull</a>
+            </button>
+            <button class="quick-pull-items" *ngIf="isPushReportEnabled">
+              <a style="border-bottom: 1px solid; cursor: pointer;"(click)="submitUserExportForm()">Quick Pull</a>
+            </button>
+            <button class="quick-pull-items" *ngIf="isLoginReportEnabled">
+              <a style="border-bottom: 1px solid; cursor: pointer;" (click)="QtdPullForLoginReport()">YTD Quick Pull</a>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+      
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      
+    </table>
+    
+  </div>  
+</div>
+<div class="container mx-auto px-4">
+    <div class="w-full mt-10 space-y-6 overflow-x-auto">
+        <div class="w-full space-y-6">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="font-poppins font-normal text-3xl leading-12 mt-4 text-left">
+              Pull Request
+            </div>
+          
+          <div style="align-items: center; display: flex;">
+            <button style="
+              width: 100%;
+              padding: 5px 10px;
+              align-items: center;
+              justify-content: start;
+              border-radius: 4px;" mat-icon-button [matTooltip]="'Refresh Page'" mat-icon-button data-placement="bottom" (click)="fetchList()">
+              <mat-icon [class]="'btn-color-600 refresh-icon'" [svgIcon]="'refresh'"></mat-icon>
+            </button>
+          </div>
+        </div>
+          <div class="my-2"></div>
+          <app-data-grid
+            [gridSettings]="gridColumnsTab1"
+            [dataSource]="dataSource"
+            [loading]="loading"
+            [pages]="pages"
+            [pageIndex]="currentPage"
+            [totalRecordCount]="apiRequest.itemCount"
+            (fetchPageData)="onPageChange($event)"
+            (buttonClick)="handleButtonClick($event)"
+            (emitRecordCount)="changePageCount($event)"
+            (sortChangeClick)="applySort($event)"
+          ></app-data-grid>
+        </div>
+    </div>
+</div>

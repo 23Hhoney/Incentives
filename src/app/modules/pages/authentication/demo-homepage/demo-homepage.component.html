@@ -1,0 +1,904 @@
+<div class="loader" *ngIf="!showError && !publishedPage">
+  <!-- Your loader/spinner HTML or component -->
+  <div class="spinner"></div>
+</div>
+
+<!-- Error Message -->
+<div *ngIf="showError" class="error-container text-center" style="padding: 50px;">
+  <div class="text-3xl font-black" style="font-family: HelveticaNeueBold !important; text-transform: capitalize;">
+    <div>This content has expired</div>
+    <div>Please contact administrator</div>
+  </div>
+</div>
+
+<div class="website-content-container" *ngIf="!showError && publishedPage">
+    <div class="points-on-hold-top-container" style="z-index: 4; box-shadow: 0px 2px 20px rgb(1 41 112 / 10%) !important; width: 100%; border-bottom: 1px solid #d8d8d8;">
+      <div class="bg-light-stl md:px-8 user-stl-cus" style="margin-top: 0px;box-shadow: 0px 2px 20px rgb(1 41 112 / 10%) !important;">
+        <div style="justify-content: space-between;" class="relative flex flex-0 items-center w-full h-16 sm:h-16 z-49  bg-card bg-transparent print:hidden">
+          <div style="display: flex; justify-content: center; align-content: center; width: 100%;">
+            <div style="display: flex; align-items: center;">
+              <div class="divPoints text-center">
+                <span class="spnPoints inline-flex items-center" style="min-width: 121px;" [ngStyle]="{ 'cursor': 'default' }">
+                  0 points &nbsp;<svg width="24" height="23" viewBox="0 0 24 23" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M18.0004 10.6786L6.00042 10.6786C5.05364 10.6786 4.28613 11.4141 4.28613 12.3214L4.28613 18.8928C4.28613 19.8002 5.05364 20.5357 6.00042 20.5357L18.0004 20.5357C18.9472 20.5357 19.7147 19.8002 19.7147 18.8928V12.3214C19.7147 11.4141 18.9472 10.6786 18.0004 10.6786Z"
+                      stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                    <path
+                      d="M12.0004 17.25C12.9472 17.25 13.7147 16.5145 13.7147 15.6071C13.7147 14.6998 12.9472 13.9643 12.0004 13.9643C11.0536 13.9643 10.2861 14.6998 10.2861 15.6071C10.2861 16.5145 11.0536 17.25 12.0004 17.25Z"
+                      stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                    <path
+                      d="M16.2853 7.39285V6.57143C16.2965 5.49308 15.8603 4.45463 15.0727 3.68443C14.2851 2.91422 13.2105 2.47534 12.0853 2.46428H11.9996C10.8744 2.45355 9.79075 2.87155 8.98706 3.62635C8.18337 4.38115 7.7254 5.41095 7.71387 6.48928L7.71387 7.39285"
+                      stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                  </svg>        
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="z-index: 4; box-shadow: 0px 2px 20px rgb(1 41 112 / 10%) !important; width: 100%; border-bottom: 1px solid #d8d8d8;">
+      <div class="bg-light-stl md:px-8 user-stl-cus" style="margin-top: 0px;box-shadow: 0px 2px 20px rgb(1 41 112 / 10%) !important;">
+        <div style="justify-content: space-between;" class="relative flex flex-0 items-center w-full h-16 sm:h-16 z-49  bg-card bg-transparent print:hidden">
+          <div style="display: flex; justify-content: space-between; align-content: center; width: 100%;">
+              <div style="display: flex; align-items: center;">
+                <ng-container>
+                  <div class="flex items-center mx-2 lg:mr-8 ml-0">
+                    <div class="">
+                        <div [ngStyle]="{'border': editHeaderFlag ? '2px solid #0173FF' : 'none'}">
+                            <img *ngIf="logoUrl" 
+                                 style="max-height: 42px; object-fit: cover;" 
+                                 class="dark: logo-stl-wd cursor-pointer logo-container-size" 
+                                 [src]="logoUrl">
+                            
+                            <span *ngIf="!logoUrl && logoTitle" 
+                                  class="cursor-pointer"
+                                  style="font-family: 'Helvetica Neue LT Pro'; font-weight: 700; font-size: 15px;">
+                                {{logoTitle}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                </ng-container>
+              </div>
+              <div class="points-on-hold-container">
+                <div class="divPoints text-center">
+                  <span class="spnPoints inline-flex items-center" style="min-width: 121px;" [ngStyle]="{ 'cursor': 'default' }">
+                    0 points &nbsp;<svg width="24" height="23" viewBox="0 0 24 23" fill="none"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M18.0004 10.6786L6.00042 10.6786C5.05364 10.6786 4.28613 11.4141 4.28613 12.3214L4.28613 18.8928C4.28613 19.8002 5.05364 20.5357 6.00042 20.5357L18.0004 20.5357C18.9472 20.5357 19.7147 19.8002 19.7147 18.8928V12.3214C19.7147 11.4141 18.9472 10.6786 18.0004 10.6786Z"
+                        stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                      <path
+                        d="M12.0004 17.25C12.9472 17.25 13.7147 16.5145 13.7147 15.6071C13.7147 14.6998 12.9472 13.9643 12.0004 13.9643C11.0536 13.9643 10.2861 14.6998 10.2861 15.6071C10.2861 16.5145 11.0536 17.25 12.0004 17.25Z"
+                        stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                      <path
+                        d="M16.2853 7.39285V6.57143C16.2965 5.49308 15.8603 4.45463 15.0727 3.68443C14.2851 2.91422 13.2105 2.47534 12.0853 2.46428H11.9996C10.8744 2.45355 9.79075 2.87155 8.98706 3.62635C8.18337 4.38115 7.7254 5.41095 7.71387 6.48928L7.71387 7.39285"
+                        stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square" />
+                    </svg>        
+                  </span>
+                </div>
+              </div>
+          </div>
+          <!-- <div style="display: flex; justify-content: center; align-content: center; width: 100%;">
+            <button style="padding: 10px 20px; border-radius: 6px; background: black; color: white;" (click)="changeEditHeader()">{{!editHeaderFlag ? 'EDIT HEADER' : 'Save'}}</button>
+          </div> -->
+          <div style="display: flex; justify-content: space-between; align-content: center; width: 100%;">
+            <div class="w-full text-right">
+              <div class="inline-flex right-side-containers-gapping ml-auto space-x-0.5 sm:space-x-2 items-center">
+                <notifications [editMode]="true" [totalUnreadCount]="0"></notifications>
+                <user style="padding-right: 0.5rem !important" [editMode]="true" [showAvatar]="true" class="flex items-center"></user>
+                <button class="nav-search">
+                  <svg width="24" height="25" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.625 8.0625C14.625 9.67969 14.0977 11.1914 13.2188 12.3867L17.6484 16.8516C18.1055 17.2734 18.1055 18.0117 17.6484 18.4336C17.2266 18.8906 16.4883 18.8906 16.0664 18.4336L11.6016 13.9688C10.4062 14.8828 8.89453 15.375 7.3125 15.375C3.26953 15.375 0 12.1055 0 8.0625C0 4.05469 3.26953 0.75 7.3125 0.75C11.3203 0.75 14.625 4.05469 14.625 8.0625ZM7.3125 13.125C9.10547 13.125 10.7578 12.1758 11.6719 10.5938C12.5859 9.04688 12.5859 7.11328 11.6719 5.53125C10.7578 3.98438 9.10547 3 7.3125 3C5.48438 3 3.83203 3.98438 2.91797 5.53125C2.00391 7.11328 2.00391 9.04688 2.91797 10.5938C3.83203 12.1758 5.48438 13.125 7.3125 13.125Z" fill="#212121"></path>
+                  </svg>
+                </button>
+                <div style="vertical-align: middle;
+                height: 40px;
+                display: inline-flex;
+                align-items: center;
+                padding: 0 0 0 0.5rem;">
+                  <button (click)="handleMenuClick()" [ngClass]="showMenu ? 'menu-button-border menuIcon' : 'menuIcon'" style="padding: 0.5rem 1rem;
+                    font-size: 14px;
+                    line-height: 1;
+                    color: rgba(0, 0, 0, 0.55);
+                    display: flex;
+                    align-items: center;">
+                    <span class="menu-txt">Menu</span>
+                    <span class="spnMnuIcon" *ngIf="!showMenu"></span>
+                    <span class="spnMnuIconShow" *ngIf="showMenu"></span>
+                  </button>
+                  <div>
+                    <div [class.show]="showMenu" [class.hide]="!showMenu" class="menu navbar-collapse collapse show">
+                      <div [ngClass]="{'menu-bar-options-container': true, 'open': showMenu}">
+                        <div class="md:px-28 overflow-y-auto custom-scrollbar" style="max-height: 70vh; min-height: 235px;">
+                          <ul style="position: relative; list-style-type: none !important;" class="text-center navbar-nav me-auto mb-2 mb-lg-0 menu-grp">
+                            <div *ngFor="let items of sideNavArray;let i = index">
+                              <div *ngIf="items['showLink']" style="z-index: 10001; position: fixed; height: 100vh; width: 100vw; right: 0; top: 0; background: rgba(0, 0, 0, 0.3);" (click)="items['showLink'] = false; showLink = false;"></div>
+                              <li *ngIf="items.menuId !== 'RD'" class="nav-item" style="justify-content: center; display: flex;">
+                                <div *ngIf="items['showLink']" style="z-index: 100002; display: flex; flex-direction: column; position: fixed; gap: 10px; background: white; align-items: center; padding: 15px; min-width: 250px; box-shadow: 0px 2px 20px rgb(1 41 112 / 10%) !important; border-radius: 4px;">
+                                  <div style="display: flex; align-items: center; margin-bottom: 20px; width: 100%;">
+                                    <mat-icon style="color: #5f6473; font-size: 20px; cursor: pointer;">edit</mat-icon>
+                                    <h6>{{items.menuName}}</h6>
+                                  </div>
+                                  <div>
+                                    <mat-form-field style="min-width: 250px;" points-credits-user-details-mat-field class="w-full">
+                                      <mat-label>URL</mat-label>
+                                      <input type="text" matInput [(ngModel)]="previousLink">
+                                    </mat-form-field>
+                                  </div>
+                                  <div style="display: flex; gap: 10px; align-items: center; width: 100%; justify-content: end;">
+                                    <button style="padding: 7px 15px; font-weight: 600; border-radius: 4px; background: #cccccc; color: black;" (click)="items['showLink'] = false; showLink = false;">Cancel</button>
+                                    <button style="padding: 7px 15px; font-weight: 600; border-radius: 4px; background: black; color: white;" (click)="saveLinkChange();">Confirm</button>
+                                  </div>
+                                </div>
+                                <span *ngIf="!items['isEdit']" style="display: flex; gap: 10px; align-items: center; justify-content: center; width: fit-content;">
+                                  <a class="nav-link active menu-item" aria-current="page">{{items.menuName}}</a>
+                                  <mat-icon class="icon-hover" *ngIf="editHeaderFlag" (click)="items['isEdit'] = true;"  style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;">edit</mat-icon>
+                                </span>
+                                <span *ngIf="items['isEdit']" style="display: flex; gap: 10px; align-items: center; justify-content: center; width: fit-content; padding: 8px 0; padding-right: 30px; border-bottom: 0.5px solid #7e7e7e;">
+                                  <mat-icon class="icon-hover" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;" cdkDragHandle>drag_indicator</mat-icon>
+                                  <input type="text" [(ngModel)]="items.menuName" class="nav-link active menu-item input-like" aria-current="page">
+                                  <img src="assets/icons/menu_icon_link.png"  class="icon-hover" *ngIf="!showLink && editHeaderFlag" (click)="changeLink(items, i)" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;" alt="">
+                                  <mat-icon class="icon-hover" (click)="items['isEdit'] = false;" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;">save</mat-icon>
+                                  <mat-icon class="icon-hover" (click)="items.isHide = !items.isHide;" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;">{{ items.isHide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                                </span>
+                              </li>
+                              <li *ngIf="items.menuId === 'RD'"  class="nav-item dropdown" style="justify-content: center; display: flex; flex-direction: column; align-items: center;">
+                                <span *ngIf="!items['isEdit']" style="display: flex; gap: 10px; align-items: center; justify-content: center; width: fit-content;">
+                                  <a class="nav-link active menu-item" aria-current="page">{{items.menuName}}</a>
+                                  <mat-icon class="icon-hover" style="color: black; font-size: 30px; cursor: pointer; height: 30px; width: 30px;" (click)="showGroup=!showGroup">{{ !showGroup ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}}</mat-icon>
+                                  <mat-icon style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;" *ngIf="editHeaderFlag" (click)="items['isEdit'] = true;" class="icon-hover">edit</mat-icon>
+                                </span>
+                                <span *ngIf="items['isEdit']" style="display: flex; gap: 10px; align-items: center; justify-content: center; width: fit-content; padding: 8px 0; padding-right: 30px; border-bottom: 0.5px solid #7e7e7e;">
+                                  <mat-icon class="icon-hover" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;" cdkDragHandle>drag_indicator</mat-icon>
+                                  <input type="text" [(ngModel)]="items.menuName" class="nav-link active menu-item input-like" aria-current="page">
+                                  <mat-icon class="icon-hover" (click)="items['isEdit'] = false;" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;">save</mat-icon>
+                                  <mat-icon class="icon-hover" (click)="items.isHide = !items.isHide;" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;">{{ items.isHide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                                </span>
+                                <ul *ngIf="!items['isEdit']" style="list-style-type: none !important;" cdkDropList [cdkDropListData]="sideNavSubItemArray" (cdkDropListDropped)="dropSubItem($event)" class="dropdown-menu-user" [ngClass]="{'show': showGroup}">
+                                  <div cdkDrag *ngFor="let subItem of sideNavSubItemArray; let subIndex = index">
+                                    <li>
+                                      <div *ngIf="subItem['showLink']" style="position: fixed; height: 100vh; width: 100vw; right: 0; top: 0; background: rgba(0, 0, 0, 0.3);" (click)="subItem['showLink'] = false; showLink = false;"></div>
+                                      <div *ngIf="subItem['showLink']" style="z-index: 2; display: flex; flex-direction: column; position: fixed; gap: 10px; background: white; align-items: center; padding: 15px; min-width: 200px; box-shadow: 0px 2px 20px rgb(1 41 112 / 10%) !important; border-radius: 4px;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 20px; width: 100%;">
+                                          <mat-icon style="color: #5f6473; font-size: 20px; cursor: pointer;">edit</mat-icon>
+                                          <h6>{{subItem.menuName}}</h6>
+                                        </div>
+                                        <div>
+                                          <mat-form-field style="min-width: 250px;" points-credits-user-details-mat-field class="w-full">
+                                            <mat-label>URL</mat-label>
+                                            <input type="text" matInput [(ngModel)]="previousLink">
+                                          </mat-form-field>
+                                        </div>
+                                        <div style="display: flex; gap: 10px; align-items: center; width: 100%; justify-content: end;">
+                                          <button style="padding: 7px 15px; font-weight: 600; border-radius: 4px; background: #cccccc; color: black;" (click)="subItem['showLink'] = false; showLink = false;">Cancel</button>
+                                          <button style="padding: 7px 15px; font-weight: 600; border-radius: 4px; background: black; color: white;" (click)="saveLinkChange();">Confirm</button>
+                                        </div>
+                                      </div>
+                                      <span *ngIf="!subItem['isEdit']" style="display: flex; gap: 10px; align-items: center; justify-content: center; width: fit-content;">
+                                        <!-- <mat-icon class="icon-hover" (click)="moveUpSubItem(subIndex)" *ngIf="editHeaderFlag && subIndex > 0" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;" >
+                                          arrow_upward
+                                        </mat-icon>
+                                        <mat-icon class="icon-hover" (click)="moveDownSubItem(subIndex)" *ngIf="editHeaderFlag && subIndex < sideNavSubItemArray.length - 1" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;">
+                                          arrow_downward
+                                        </mat-icon> -->
+                                        <a class="nav-link active menu-item" aria-current="page">{{subItem.menuName}}</a>
+                                        <mat-icon class="icon-hover" *ngIf="editHeaderFlag" (click)="subItem['isEdit'] = true;" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;">edit</mat-icon>
+                                        <!-- <mat-icon class="icon-hover" *ngIf="!showLink && editHeaderFlag" (click)="changeSubLink(subItem, subIndex)" style=" height: 30px; width: 30px;color: #2f2f2f; font-size: 20px; cursor: pointer;">open_in_new</mat-icon> -->
+                                      </span>
+                                      <span *ngIf="subItem['isEdit']" style="display: flex; gap: 10px; align-items: center; justify-content: center; width: fit-content; padding: 8px 0; padding-right: 30px; border-bottom: 0.5px solid #7e7e7e;">
+                                        <mat-icon class="icon-hover" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;" cdkDragHandle>drag_indicator</mat-icon>
+                                        <input type="text" [(ngModel)]="subItem.menuName" class="nav-link active menu-item input-like" aria-current="page">
+                                        <img src="assets/icons/menu_icon_link.png"  class="icon-hover" *ngIf="!showLink && editHeaderFlag" (click)="changeSubLink(subItem, subIndex)" style=" height: 30px; width: 30px;color: #2f2f2f; font-size: 20px; cursor: pointer;"alt="">
+                                        <mat-icon class="icon-hover" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;" (click)="subItem['isEdit'] = false;">save</mat-icon>
+                                        <mat-icon class="icon-hover" (click)="subItem.isHide = !subItem.isHide;" style="color: #2f2f2f; font-size: 20px; cursor: pointer; height: 30px; width: 30px;">{{ subItem.isHide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                                      </span>
+                                    </li>
+                                  </div>
+                                </ul>
+                              </li>
+                            </div>
+                            <li class="nav-item" style="position: relative; justify-content: center; display: flex; align-items: center; margin-top: 10px;">
+                              <div *ngIf="showMenuManagePage" style="position: fixed; height: 100vh; width: 100vw; right: 0; top: 0; background: rgba(0, 0, 0, 0.3);" (click)="closeManagePopupForm($event);"></div>
+                              <div *ngIf="showMenuManagePage" [formGroup]="manageNavForm" style="z-index: 2; display: flex; flex-direction: column; position: fixed; gap: 10px; background: white; align-items: center; padding: 15px; min-width: 270px; box-shadow: 0px 2px 20px rgb(1 41 112 / 10%) !important; border-radius: 4px;">
+                                <mat-form-field points-credits-user-details-mat-field class="w-full">
+                                  <mat-label>Menu Name</mat-label>
+                                  <input type="text" matInput formControlName="name" placeholder="Your Page Name">
+                                </mat-form-field>
+                                <mat-form-field points-credits-user-details-mat-field class="w-full">
+                                  <mat-label>Url</mat-label>
+                                  <input type="text" matInput formControlName="url" placeholder="Your Page Url">
+                                </mat-form-field>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                  <button style="padding: 7px 15px; font-weight: 600; border-radius: 4px; background: #cccccc; color: black;" (click)="closeManagePopupForm($event);">Cancel</button>
+                                  <button style="padding: 7px 15px; font-weight: 600; border-radius: 4px; background: black; color: white;" (click)="saveManageUrlPage($event)">Confirm</button>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div (click)="showMenu = false" style="width: 100vw; height: 100vh;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="website-content-body">
+      <div class="website-content-body-right">
+        <div #scrollContainerItem class="sections-container" style="height: 100%; width: 100%; padding: 20px; overflow-y: auto; padding-top: 0 !important;">
+          <div *ngFor="let section of sectionsArray; let i = index; trackBy: trackByFn" [ngStyle]="{
+            'margin-top': i > 0 ? '5px' : '0',
+            'min-height': mobileView ? 'auto' : section.dynamicHeight + 'vh',
+            'height': mobileView ? 'auto' : section.dynamicHeight + 'vh',
+            'position': 'relative',
+            'overflow': 'visible'
+          }">
+            <div class="parent-container">
+              <div *ngFor="let item of section.items; let j = index" class="element-container" [id]="'element-' + item.id" [ngStyle]="{
+                'width': mobileView ? '100%' : item.widthPercent + 'vw',
+                'height': mobileView ? 'auto' : item.heightPercent + 'vh',
+                'top': mobileView ? 'auto' : item.yPercent + 'vh',
+                'left': mobileView ? '0' : item.xPercent + 'vw',
+                'z-index': item['isEdit'] || item['showChartHeading'] ? 9999 : item.zIndex,
+                'border': isPublishedView ? 'none' : ((selectedElement?.id === item.id && editingSection && isEditingSection === i) ? '2px solid #3273dc' : ((hoveredElement?.id === item.id && editingSection && isEditingSection === i) ? '1px solid #3273dc' : '1px solid transparent')),
+                'box-shadow': isPublishedView ? 'none' : (selectedElement?.id === item.id && editingSection && isEditingSection === i ? '0 0 8px rgba(50, 115, 220, 0.5)' : 'none'),
+                'cursor': isPublishedView || !editingSection || isEditingSection !== i ? 'default' : 'move',
+                'user-select': isPublishedView ? 'auto' : 'none',
+                'padding': isPublishedView ? '0' : '2px',
+                'position': mobileView ? 'relative' : 'absolute'
+              }">
+                <ng-container [ngSwitch]="item.type">
+                  <div *ngSwitchCase="'text'" class="text-element widget-zoom" [style]="{
+                    'width': '100%',
+                    'height': '100%',
+                    'padding': '8px',
+                    'overflow': 'hidden',
+                    'font-size.px': item.style?.fontSize || 14,
+                    'color': item.style?.color || '#000',
+                    'background-color': item.style?.backgroundColor || 'transparent',
+                    'font-weight': item.style?.bold ? 'bold' : 'normal',
+                    'font-style': item.style?.italic ? 'italic' : 'normal',
+                    'text-decoration': item.style?.underline ? 'underline' : 'none',
+                    'display': 'block',
+                    'line-height': '1.2',
+                    'word-wrap': 'break-word'
+                  }" [innerHTML]="getSafeHtml(item.text)">
+                  </div>
+                  <div *ngSwitchCase="'greeting'" class="text-element widget-zoom" [ngStyle]="{
+                            'width': '100%',
+                            'height': 'auto',
+                            'padding': '8px',
+                            'overflow': 'visible', 
+                            'color': item.style?.color || '#000',
+                            'background-color': item.style?.backgroundColor || 'transparent',
+                            'font-weight': item.style?.bold ? 'bold' : 'normal',
+                            'font-style': item.style?.italic ? 'italic' : 'normal',
+                            'text-decoration': item.style?.underline ? 'underline' : 'none',
+                            'display': 'block',
+                            'line-height': '1.2',
+                            'white-space': 'nowrap',
+                            'z-index': item.zIndex || 1
+                          }" [innerHTML]="getSafeHtml(item.text)">
+                  </div>
+
+
+                <div *ngSwitchCase="'image'" style="width: 100%; height: 100%; position: relative;">
+                  <!-- Single Image -->
+                  <div *ngIf="item.images; else noImage" style="width: 100%; height: 100%; position: relative;">
+                    <ng-container *ngIf="(item.hyperlink || item.text); else nonClickableImage">
+                      <a [href]="formatHyperlink(item.hyperlink || item.text)" target="_blank" rel="noopener noreferrer"
+                        style="display: block; width: 100%; height: 100%;">
+                        <img [src]="item.images" alt="Image" style="width: 100%; height: 100%; object-fit: cover;">
+                      </a>
+                    </ng-container>
+                    <ng-template #nonClickableImage>
+                      <img [src]="item.images" alt="Image" style="width: 100%; height: 100%; object-fit: cover;">
+                    </ng-template>
+                  </div>
+                
+                  <!-- No Image Template -->
+                  <ng-template #noImage>
+                    <div
+                      style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+                      <i class="fas fa-image" style="font-size: 24px; margin-bottom: 8px;"></i>
+                      <p style="margin: 0;">Click edit button to add image</p>
+                    </div>
+                  </ng-template>
+                </div>
+                  <!-- Video -->
+                <div *ngSwitchCase="'video'" class="video-container" style="width: 100%; height: 100%; position: relative; overflow: hidden;">
+                <ng-container *ngIf="item.isYoutubeOrVimeo && item.videoUrl; else localVideo">
+                  <div style="position: relative; width: 100%; height: 100%; padding-top: 56.25%;">
+                    <iframe [src]="item.videoUrl | safeEmbedUrlpipe:item.autoPlay:item.loop" frameborder="0" [attr.aria-label]="'YouTube video player for ' + item.id"
+                      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                      (error)="onVideoError($event, item)"></iframe>
+                  </div>
+                </ng-container>
+                <ng-template #localVideo>
+                  <video *ngIf="getVideoUrl(item)" [src]="getVideoUrl(item)" [autoplay]="item.autoPlay || false" [controls]="true"
+                    [muted]="item.autoPlay || false" [loop]="item.loop || false" style="width: 100%; height: 100%; object-fit: contain;"
+                    (loadstart)="onVideoLoadStart(item)" (error)="onVideoError($event, item)">
+                    Your browser does not support the video tag.
+                  </video>
+                  <video *ngIf="!getVideoUrl(item) && item.tempVideoUrl" [src]="item.tempVideoUrl"
+                    [autoplay]="item.autoPlay || false" [controls]="true" [muted]="item.autoPlay || false" [loop]="item.loop || false"
+                    style="width: 100%; height: 100%; object-fit: contain; border: 2px solid red;"
+                    (loadstart)="onVideoLoadStart(item)" (error)="onVideoError($event, item)">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div *ngIf="!getVideoUrl(item) && !item.tempVideoUrl"
+                    style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+                    <i class="fas fa-video" style="font-size: 24px; margin-bottom: 8px;"></i>
+                    <p style="margin: 0;">Click edit button to add video</p>
+                  </div>
+                </ng-template>
+              </div>
+                <div *ngSwitchCase="'audio'" style="width: 100%; height: 100%; padding: 8px; display: flex; flex-direction: column;">
+                  <div *ngIf="getAudioUrl(item)"
+                    style="width: 100%; height: 100%; display: flex; flex-direction: column; position: relative;">
+                    <div *ngIf="item.title"
+                      style="font-family: HelveticaNeueBold; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: #333; text-align: left;">
+                      {{ item.title }}
+                    </div>
+                    <div *ngIf="item.subtitle"
+                      style="font-family: HelveticaNeueBold; color: #666; font-size: 13px; margin-bottom: 10px; text-align: left; font-style: italic;">
+                      {{ item.subtitle }}
+                    </div>
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                      <audio [src]="getAudioUrl(item)" [controls]="item.showControls !== false" [autoplay]="item.autoPlay"
+                        style="width: 100%; max-width: 100%; height: auto; min-height: 40px;"
+                        (loadedmetadata)="onAudioLoaded(audioPlayer, item)" preload="metadata">
+                      </audio>
+                
+                
+                    </div>
+                  </div>
+                  <div *ngIf="!getAudioUrl(item)"
+                    style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+                    <i class="fas fa-volume-up" style="font-size: 24px; margin-bottom: 8px;"></i>
+                    <p style="margin: 0;">No audio available. Please check the audio URL.</p>
+                  </div>
+                </div>
+              <div *ngSwitchCase="'button'"
+                style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 4px;"
+                [ngStyle]="{
+                     'backgroundColor': parseButtonStyle(item.salesHeading)?.backgroundColor || '#007bff',
+                     'color': parseButtonStyle(item.salesHeading)?.color || '#ffffff',
+                     'font-weight': parseButtonStyle(item.salesHeading)?.fontWeight || 'normal',
+                     'font-style': parseButtonStyle(item.salesHeading)?.fontStyle || 'normal',
+                     'text-decoration': parseButtonStyle(item.salesHeading)?.textDecoration || 'none',
+                     'z-index': parseButtonStyle(item.salesHeading)?.zIndex || 'auto',
+                     'cursor': item.chartHeading ? 'pointer' : 'default',
+                     'opacity': item.chartHeading ? '1' : '0.6'
+                   }" (click)="onButtonClick(item)" [title]="item.chartHeading ? 'Click to visit: ' + item.chartHeading : ''">
+                <span>{{item.text || 'Click me'}}</span>
+              </div>
+
+                  <div *ngSwitchCase="'template image'" style="height: 100%; position: relative; max-height: 420px;">
+                    <div class="container" style="padding-top: 2px; border-radius: 1rem; overflow: hidden; height: 100%; min-height: 420px;;">
+                      <div id="carouselExampleCaptions" style="height: 100%; min-height: 420px;;" class="carousel slide" data-bs-ride="carousel">            
+                        <div class="carousel-inner" style="height: 100%; min-height: 420px;;">
+                          <div class="carousel-item" style="height: 100%; min-height: 420px;;">
+                            <img style="height: 100%; min-height: 420px; max-height: 420px;" [src]="item.getAllCMSItemViews[0].url" class="d-block w-100" alt="Slide Image">
+                  
+                            <div *ngIf="!item.getAllCMSItemViews[item['selectedIndex']]?.isVideo" class="carousel-caption d-block" style="cursor: pointer;">
+                              <div *ngFor="let textItem of item.getAllCMSItemViews[item['selectedIndex']].newHeadings; let textIndex = index"
+                                style="position: absolute;"
+                                [ngStyle]="{
+                                  'top': textItem.y + '%',
+                                  'left': textItem.x + '%',
+                                  'position': 'absolute'
+                                }">
+                              
+                                <div class="text-container" style="border: none !important; border-radius: 0 !important;">
+                                  <div [innerHTML]="sanitizeHtml(textItem.text)"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'panel' && item.getAllCMSItemViews && item.getAllCMSItemViews.length > 0" style="height: 100%; position: relative; max-height: 420px;">
+                    <div class="container" style="padding-top: 2px; border-radius: 1rem; overflow: hidden; height: 100%; min-height: 420px;;">
+                      <div id="carouselExampleCaptions" style="height: 100%; min-height: 420px;;" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators" *ngIf="item.getAllCMSItemViews.length > 1">
+                          <ng-container *ngFor="let slide of item.getAllCMSItemViews; let i = index">
+                            <button 
+                              type="button" 
+                              (click)="i !== item['selectedIndex'] ? item['selectedIndex'] = i : ''"
+                              [attr.data-bs-target]="'#carouselExampleCaptions'" 
+                              [attr.data-bs-slide-to]="i" 
+                              [class.active]="i === item['selectedIndex']"
+                              [class.inactive]="i !== item['selectedIndex']"
+                              aria-current="{{ i === item['selectedIndex'] ? 'true' : 'false' }}"
+                              aria-label="Slide {{ i + 1 }}">
+                            </button>
+                          </ng-container>
+                        </div>
+                    
+                        <div class="carousel-inner" style="height: 100%; min-height: 100%;">
+                          <div class="carousel-item" [class.active]="i === item['selectedIndex']" style="height: 100%; min-height: 100%;">
+                            <ng-container *ngIf="!item.getAllCMSItemViews[item['selectedIndex']]?.isVideo; else videoTemplate">
+                              <img 
+                                id="imageRef2"
+                                style="height: 100%; min-height: 100%; max-height: 420px;" 
+                                [src]="item.getAllCMSItemViews[item['selectedIndex']]['url']" 
+                                class="d-block w-100" 
+                                alt="Slide Image">
+                            </ng-container>
+                  
+                            <ng-template #videoTemplate>
+                              <ng-container *ngIf="item.getAllCMSItemViews[item['selectedIndex']]['Content']; else fileVideoTemplate">
+                                <iframe 
+                                  [src]="sanitizeVideoUrl(item.getAllCMSItemViews[item['selectedIndex']]['EmbeddedVideo'])" 
+                                  frameborder="0" 
+                                  allowfullscreen
+                                  class="d-block w-100" 
+                                  style="height: 100%; max-height: 420px;"></iframe>
+                              </ng-container>
+                  
+                              <ng-template #fileVideoTemplate>
+                                <video 
+                                  class="d-block w-100" 
+                                  controls 
+                                  style="height: 100%; max-height: 420px;">
+                                  <source [src]="item.getAllCMSItemViews[item['selectedIndex']]['url']" type="video/mp4">
+                                  Your browser does not support the video tag.
+                                </video>
+                              </ng-template>
+                            </ng-template>
+                            <div *ngIf="!item.getAllCMSItemViews[item['selectedIndex']].isVideo" class="carousel-caption d-block" style="cursor: pointer;">
+                              <div *ngFor="let textItem of item.getAllCMSItemViews[item['selectedIndex']].newHeadings; let textIndex = index"
+                                style="position: absolute;"
+                                [ngStyle]="{
+                                  'top': textItem.y + '%',
+                                  'left': textItem.x + '%',
+                                  'position': 'absolute'
+                                }">
+                              
+                                <div class="text-container-new">
+                                  <div [innerHTML]="sanitizeHtml(textItem.text)"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>              
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'Pie Chart'" style="min-width: auto !important;" [ngClass]="item.className" class="h-full min-h-full">
+                    <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full" [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent" style="display: flex; flex-direction: column;">
+                      <div class="w-full flex justify-between mb-4">
+                        <div class="ms-2">
+                          <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                          <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)"></div>
+                        </div>
+                        <div class="w-3/12 text-right">
+                          <div class="badgeblack"><a>See More</a></div>
+                        </div>
+                      </div>
+                      <div [ngClass]="'chart-container-'+i+'-'+j" class="w-full h-[300px] flex items-center justify-center" style="overflow: hidden; height: 100% !important;">
+                        <ngx-charts-pie-chart
+                        style="max-height: 305px;"
+                        [view]="item['chartView'] || [item.width * 0.7, 300]"
+                        [scheme]="colorScheme"
+                        [results]="pieChartData"
+                        [gradient]="false"
+                        [legend]="false"
+                        [doughnut]="isDoughnut"> 
+                          <ng-template #tooltipTemplate let-model="model">
+                            <div style="padding: 10px;">
+                              <span style="margin: 10px;">
+                                {{model.name}}
+                              </span>
+                            </div>
+                          </ng-template>
+                        </ngx-charts-pie-chart>
+                      </div>                  
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'Bar Chart'" style="min-width: auto !important;" [ngClass]="item.className" class="h-full min-h-full">
+                    <div class="w-full p-6 card cardblue bg-card rounded-2xl overflow-hidden h-full min-h-full" [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent">
+                      <div class="w-full flex justify-between mb-2">
+                        <div class="ms-2">
+                          <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                          <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)"></div>
+                        </div>
+                        <div class="w-3/12 text-right">
+                            <div class="badgeblack" style="color: white !important"><a style="color: white !important">See More</a></div>
+                        </div>
+                      </div>
+                      <div class="w-full h-[100px] mt-12">
+                        <div>
+                          <div class="d-flex justify-between">
+                            <div class="d-flex flex-row items-center">
+                              <div class="ms-2">
+                                <span>${{formatNumberWithCommas(totalSales)}}</span>
+                              </div>
+                            </div>
+                            <div class="d-flex flex-row items-center">
+                              <div class="ms-2">
+                                <span>${{ formatNumberWithCommas(targetValue) }}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="progress mt-3">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{ 'width': totalSales > 0 ? totalSales * 100 / 5000000 + '%' : 'unset' }"></div>
+                          </div>
+                        </div>
+                        <div class="mt-5 bottom1">
+                          <h3>${{formatNumberWithCommas(totalSales)}}</h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'Line Chart'" style="min-width: auto !important;" [ngClass]="item.className" class="h-full min-h-full">
+                    <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full" [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent">
+                      <div class="w-full flex mb-4 justify-between">
+                        <div class="ms-2">
+                          <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                          <!-- <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)"></div> -->
+                          <div class="mb-0" *ngIf="!isSalesSelected" [innerHTML]="sanitizeHtml(item.text)"></div>
+                          <div class="mb-0" *ngIf="isSalesSelected" [innerHTML]="sanitizeHtml(item.salesHeading)"></div>
+                        </div>
+                        <div class="flex flex-col items-end">
+                          <div class="badgeblack"><a>See More</a></div>
+                          <div class="cstRadio customSwitch">
+                            <input class="checkbox" style="padding-right: 0.65em !important" [checked]="isSalesSelected" (change)="toggleSalesGraph($event.target.checked)" type="checkbox" role="switch" id="NotifyUploadoc">
+                            <div class="knobs"></div>
+                            <div class="cstRadioLayer"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="w-full h-[300px]">
+                        <canvas id="homelinechart" style="box-sizing: border-box;"
+                          baseChart
+                          [data]="lineChartData"
+                          [type]="lineChartType"
+                          [options]="lineChartOptions"
+                          style="width: 768px !important; height: 384px !important; max-height: 305px !important;"
+                        ></canvas>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'Academy'" style="min-width: auto !important; width: 100%;" class="p-6 card cardhero bg-card rounded-2xl overflow-hidden" style="height: 100%;">
+                    <div class="inline-flex w-full" style="justify-content: space-between; border-bottom: 0.5px solid #DEE2E6;">
+                      <div>
+                        <div class="ms-2">
+                          <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                          <div style="position: relative; min-width: 200px;  border-radius: 4px; padding: 5px 4px;" class="shadow">
+                            <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)" style="cursor: pointer;"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="badgeblack" style="cursor: pointer;"><a>See More</a></div>
+                      </div>
+                    </div>
+                    <div>
+                        <div class="flex" style="padding: 10px 0px; border-bottom: 0.5px solid #DEE2E6; background-color: #fff;">
+                            <h6>Required Monthly Training Progress</h6>
+                            <div class="progress-bar2">
+                                <div *ngIf="!calculateWidth(totalCourse, totalAttempted)" class="pl-1">{{calculateWidth(totalCourse, totalAttempted)}}%</div>
+                              <div [ngStyle]="{'width': calculateWidth(totalCourse, totalAttempted) + '%'}" style="background: radial-gradient(circle at 10% 20%, rgb(7, 134, 197) 0%, rgb(42, 76, 171) 90.1%); color:#fff; text-align: center;transition: width 0.6s ease; overflow: hidden;">{{calculateWidth(totalCourse, totalAttempted)}}%</div>
+                            </div>
+                        </div>
+                        <div *ngFor="let course of curriculumData">
+                            <div *ngIf="course.totalAvailableCourse > 0">
+                              <div style="border-bottom: 0.5px solid #DEE2E6 !important; display: flex; width: 100%; justify-content: space-between; padding: 1rem 0rem;" [ngStyle]="{'background': course['open'] ? 'rgb(218 234 255)' : '#fff'}" (click)="course['open'] = !course['open']">
+                                <div>
+                                  <h3 style="font-size: 1.125rem; cursor: pointer; letter-spacing: normal; color: #212529;    margin-top: 0; margin-bottom: .5rem;font-weight: 500;line-height: 1.2;">{{course.curriculm}}</h3>
+                                  <div class="flex flex-row">
+                                    <span class="text-primary ml-2" style="font-size: 16px; font-family: HelveticaNeueBold;">{{course.totalCompleted}}/{{course.totalAvailableCourse}} Completed</span>
+                                  </div>
+                                </div>
+                                <div style="cursor: pointer;">
+                                  <mat-icon [ngStyle]="{'color': course['open'] ? '#0c63e4' : 'black'}" [svgIcon]="course['open'] ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"></mat-icon>
+                                </div>
+                              </div>
+                              <div *ngIf="course.open" style="padding: 1rem 1.25rem; background: #fff; border-bottom: solid 1px #dee2e6">
+                                <div *ngIf="course.list.length > 0; else noDataFoundBlock">
+                                  <div *ngFor="let items of course.list; index as i" style="display: flex !important; justify-content: space-between !important; margin-bottom: 1rem; border-bottom: solid 1px #dee2e6; padding: 0.5rem 0;">
+                                    <div style="display: flex;">
+                                      <div style="height: 60px; width: 60px;">
+                                        <img style="height: 60px; width: 60px;" *ngIf="items.imageUrl" [src]="items.imageUrl" alt="">
+                                      </div>
+                                      <div style="display: flex; flex-direction: column; margin: 0 1rem;" class="flex-1">
+                                        <div class="flex flex-row" style="margin-bottom: 0.5rem;">
+                                          <h6 style="cursor: pointer;color: #416fb6 !important; font-family: HelveticaNeueBold !important; font-size: 0.9375rem !important;" (click)="goToCourse(items.courseId,items.status)">{{items.course}}</h6>
+                                          <span *ngIf="items.points > 0" class="ml-6" style="font-family: HelveticaNeueBold !important; color: rgba(25,135,84, 1); font-size: 0.9375rem !important;">{{items.points}} Points</span>
+                                        </div>
+                                        <div style="color: #212529;">{{items.description}}</div>
+                                        <!-- <time style="color: #212529;">0:04</time> -->
+                                      </div>
+                                    </div>
+                                    <div class="courseStatus">
+                                      <svg style="color: rgba(25, 135, 84, 1);" *ngIf="items.progressStatus === 'Completed'" xmlns="http://www.w3.org/2000/svg" width="31" height="30" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                        <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
+                                        <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
+                                      </svg>
+                                      <svg *ngIf="items.progressStatus === 'started'" xmlns="http://www.w3.org/2000/svg" width="31" height="30" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
+                                        <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
+                                        <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
+                                        <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
+                                      </svg>
+                                      <svg  *ngIf="items.progressStatus !== 'Completed' && items.progressStatus !== 'started'" xmlns="http://www.w3.org/2000/svg" width="31" height="30" fill="currentColor" class="bi bi-dash-circle-dotted" viewBox="0 0 16 16">
+                                        <path d="M8 0q-.264 0-.523.017l.064.998a7 7 0 0 1 .918 0l.064-.998A8 8 0 0 0 8 0M6.44.152q-.52.104-1.012.27l.321.948q.43-.147.884-.237L6.44.153zm4.132.271a8 8 0 0 0-1.011-.27l-.194.98q.453.09.884.237zm1.873.925a8 8 0 0 0-.906-.524l-.443.896q.413.205.793.459zM4.46.824q-.471.233-.905.524l.556.83a7 7 0 0 1 .793-.458zM2.725 1.985q-.394.346-.74.74l.752.66q.303-.345.648-.648zm11.29.74a8 8 0 0 0-.74-.74l-.66.752q.346.303.648.648zm1.161 1.735a8 8 0 0 0-.524-.905l-.83.556q.254.38.458.793l.896-.443zM1.348 3.555q-.292.433-.524.906l.896.443q.205-.413.459-.793zM.423 5.428a8 8 0 0 0-.27 1.011l.98.194q.09-.453.237-.884zM15.848 6.44a8 8 0 0 0-.27-1.012l-.948.321q.147.43.237.884zM.017 7.477a8 8 0 0 0 0 1.046l.998-.064a7 7 0 0 1 0-.918zM16 8a8 8 0 0 0-.017-.523l-.998.064a7 7 0 0 1 0 .918l.998.064A8 8 0 0 0 16 8M.152 9.56q.104.52.27 1.012l.948-.321a7 7 0 0 1-.237-.884l-.98.194zm15.425 1.012q.168-.493.27-1.011l-.98-.194q-.09.453-.237.884zM.824 11.54a8 8 0 0 0 .524.905l.83-.556a7 7 0 0 1-.458-.793zm13.828.905q.292-.434.524-.906l-.896-.443q-.205.413-.459.793zm-12.667.83q.346.394.74.74l.66-.752a7 7 0 0 1-.648-.648zm11.29.74q.394-.346.74-.74l-.752-.66q-.302.346-.648.648zm-1.735 1.161q.471-.233.905-.524l-.556-.83a7 7 0 0 1-.793.458zm-7.985-.524q.434.292.906.524l.443-.896a7 7 0 0 1-.793-.459zm1.873.925q.493.168 1.011.27l.194-.98a7 7 0 0 1-.884-.237zm4.132.271a8 8 0 0 0 1.012-.27l-.321-.948a7 7 0 0 1-.884.237l.194.98zm-2.083.135a8 8 0 0 0 1.046 0l-.064-.998a7 7 0 0 1-.918 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z"></path>
+                                      </svg>
+                                    </div>
+                                      
+                                  </div>
+                                </div>
+                                <ng-template #noDataFoundBlock>
+                                  <div style="display: flex; justify-content: center; align-items: center; padding: 10px; background: #fff;">
+                                    <span>No course is assigned to this curriculum.</span>
+                                  </div>
+                                </ng-template>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'TrainingMonth'" class="p-6 overflow-hidden" style="height: 100%; margin-bottom: 0px !important; display: flex;">
+                    <div style="padding-right: 0 !important;" class="col-span-2 w-full overflow-hidden">
+                      <div class="inline-flex w-full" style="height: 100%;">
+                        <div style="justify-content: space-between; flex: 1" class="pr-2">
+                          <div class="ms-2">
+                            <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                            <!-- <div style="position: relative; min-width: 200px; border-radius: 4px; padding: 5px 4px;" class="shadow">
+                              <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)" style="cursor: pointer;"></div>
+                            </div> -->
+                          </div>
+                          <div>
+                            <div class="badgeblack"><a style="cursor: pointer;">See More</a></div>
+                          </div>
+                        </div>
+                        <div class="w-9/12">
+                          <div class="container"
+                            style="padding-top: 2px; border-radius: 1rem; overflow: hidden; height: 100%; min-height: 100%;">
+                            <!-- Show video if URL exists -->
+                            <!-- <iframe *ngIf="getTrainingVideoUrl(item)" [src]="getTrainingVideoUrl(item)" frameborder="0" allowfullscreen
+                              class="d-block w-100" style="height: 100%; border-radius: 1rem;"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                            </iframe> -->
+                            <!-- Show default image if no video URL -->
+                            <img [src]="item['courseImageUrl'] ? item['courseImageUrl'] : 'assets/images/course_default.png'"
+                              class="img-fluid d-block w-100" style="height: 100%; object-fit: cover; border-radius: 1rem;"
+                              alt="Training Month" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'Redemptions'" class="p-6 card cardhero bg-card rounded-2xl overflow-hidden" style="height: 100%; margin-bottom: 0px !important;">
+                    <div class="inline-flex w-full" style="justify-content: space-between;">
+                    <div>
+                        <div class="ms-2">
+                        <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                        <span>
+                            YTD List Price:
+                            <span class="bluetext1 me-4">{{ formatNumberWithCommas(ytdSales) }}</span>
+                            Current Point Balance:
+                            <span class="bluetext1">{{ formatNumberWithCommas(remainingPoints) }}</span>
+                        </span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="badgeblack">
+                        <a>See More</a>
+                        </div>
+                    </div>
+                    </div>
+                    <hr>
+                    <div>
+                    <div *ngIf="transactionData.length === 0" class="no-data-found flex items-center justify-center h-48 w-full text-xl text-center text-gray-500">
+                        <p>No data found</p>
+                    </div>
+                    <div *ngIf="transactionData.length > 0" class="overflow-auto">
+                        <table class="table tablenew w-full table-auto">
+                        <thead>
+                            <tr>
+                            <th class="th-bdr text-left" scope="col">Invoice#</th>
+                            <th class="th-bdr text-left" scope="col">Date Processed</th>
+                            <th class="th-bdr text-left" scope="col">Date of Sale</th>
+                            <th class="th-bdr text-left" scope="col">Type</th>
+                            <th class="th-bdr text-left" scope="col">Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let transaction of transactionData">
+                            <td>{{transaction.invoiceNumber}}</td>
+                            <td>{{transaction.dateProcessed}}</td>
+                            <td>{{transaction.dateOfSale}}</td>
+                            <td>
+                                <a
+                                style="cursor: default !important;"
+                                [ngClass]="{
+                                    'mt-4 text-lg btn btn-priblue mx-0 !important': transaction.transactionType === 'Redemption',
+                                    'type-stl btn btn-sm btn-secondary': transaction.transactionType !== 'Redemption'
+                                }"
+                                >{{transaction.transactionType}}</a
+                                >
+                            </td>
+                            <td>{{transaction.totalPoints}}</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'All'" class="p-6 card cardhero bg-card rounded-2xl overflow-hidden" style="height: 100%; margin-bottom: 0px !important;">
+                    <div class="inline-flex w-full" style="justify-content: space-between;">
+                      <div>
+                        <div class="ms-2">
+                          <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                          <span>
+                            YTD List Price:
+                            <span class="bluetext1 me-4">{{ formatNumberWithCommas(ytdSales) }}</span>
+                            Current Point Balance:
+                            <span class="bluetext1">{{ formatNumberWithCommas(remainingPoints) }}</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="badgeblack">
+                          <a>See More</a>
+                        </div>
+                      </div>
+                    </div>
+                    <hr>
+                    <div>
+                      <div *ngIf="transactionData.length === 0" class="no-data-found flex items-center justify-center h-48 w-full text-xl text-center text-gray-500">
+                        <p>No data found</p>
+                      </div>
+                      <div *ngIf="transactionData.length > 0" class="overflow-auto">
+                        <table class="table tablenew w-full table-auto">
+                          <thead>
+                            <tr>
+                              <th class="th-bdr text-left" scope="col">Invoice#</th>
+                              <th class="th-bdr text-left" scope="col">Date Processed</th>
+                              <th class="th-bdr text-left" scope="col">Date of Sale</th>
+                              <th class="th-bdr text-left" scope="col">Type</th>
+                              <th class="th-bdr text-left" scope="col">Points</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let transaction of transactionData">
+                              <td>{{transaction.invoiceNumber}}</td>
+                              <td>{{transaction.dateProcessed}}</td>
+                              <td>{{transaction.dateOfSale}}</td>
+                              <td>
+                                <a
+                                  style="cursor: default !important;"
+                                  [ngClass]="{
+                                    'mt-4 text-lg btn btn-priblue mx-0 !important': transaction.transactionType === 'Redemption',
+                                    'type-stl btn btn-sm btn-secondary': transaction.transactionType !== 'Redemption'
+                                  }"
+                                  >{{transaction.transactionType}}</a
+                                >
+                              </td>
+                              <td>{{transaction.totalPoints}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'Credit'" class="p-6 card cardhero bg-card rounded-2xl overflow-hidden" style="height: 100%; margin-bottom: 0px !important;">
+                    <div class="inline-flex w-full" style="justify-content: space-between;">
+                      <div>
+                        <div class="ms-2">
+                          <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                          <span>
+                            YTD List Price:
+                            <span class="bluetext1 me-4">{{ formatNumberWithCommas(ytdSales) }}</span>
+                            Current Point Balance:
+                            <span class="bluetext1">{{ formatNumberWithCommas(remainingPoints) }}</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="badgeblack">
+                          <a>See More</a>
+                        </div>
+                      </div>
+                    </div>
+                    <hr>
+                    <div>
+                      <div *ngIf="transactionData.length === 0" class="no-data-found flex items-center justify-center h-48 w-full text-xl text-center text-gray-500">
+                        <p>No data found</p>
+                      </div>
+                      <div *ngIf="transactionData.length > 0" class="overflow-auto">
+                        <table class="table tablenew w-full table-auto">
+                          <thead>
+                            <tr>
+                              <th class="th-bdr text-left" scope="col">Invoice#</th>
+                              <th class="th-bdr text-left" scope="col">Date Processed</th>
+                              <th class="th-bdr text-left" scope="col">Date of Sale</th>
+                              <th class="th-bdr text-left" scope="col">Type</th>
+                              <th class="th-bdr text-left" scope="col">Points</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let transaction of transactionData">
+                              <td>{{transaction.invoiceNumber}}</td>
+                              <td>{{transaction.dateProcessed}}</td>
+                              <td>{{transaction.dateOfSale}}</td>
+                              <td>
+                                <a
+                                  style="cursor: default !important;"
+                                  [ngClass]="{
+                                    'mt-4 text-lg btn btn-priblue mx-0 !important': transaction.transactionType === 'Redemption',
+                                    'type-stl btn btn-sm btn-secondary': transaction.transactionType !== 'Redemption'
+                                  }"
+                                  >{{transaction.transactionType}}</a
+                                >
+                              </td>
+                              <td>{{transaction.totalPoints}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'Messages'" class="p-6 card cardhero bg-card rounded-2xl overflow-hidden" style="height: 100%; margin-bottom: 0px !important;">
+                    <div class="inline-flex w-full">
+                      <div class="w-full">
+                        <div class="ms-2">
+                          <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <hr class="mt-2 mb-2">
+                    <div class="mt-2 overflow-auto">
+                      <table class="table tablenew w-full table-auto">
+                        <tbody>
+                          <tr>
+                            <td style="width: 100%;">
+                              <span class="bluetext" style="cursor: pointer;">Unread Messages ({{ notifications.customRecordCount }})</span>
+                            </td>
+                            <td></td>
+                            <td><div class="textgrey"><span>Status</span></div></td>
+                          </tr>
+                          <tr *ngFor="let notification of notifications.results">
+                            <td>
+                              <h6 class="bluetext">{{ notification.title }}</h6>
+                              <p class="pb-2" [innerHTML]="notification.message"></p>
+                              <p class="text-muted">Received on: {{ notification.createdDateTime }}</p>
+                              <p *ngIf="notification.scheduledDateTime" class="text-muted">Scheduled on: {{ notification.scheduledDateTime }}</p>
+                            </td>
+                            <td></td>
+                            <td>
+                              <mat-icon
+                                (click)="handleReadClick(notification)"
+                                [ngClass]="{'Unread': !notification.isRead || notification.ishighlithed, 'read': notification.isRead}"
+                                [svgIcon]="notification.isAlert && !notification.isRead ? 'heroicons_outline:exclamation-circle' : (notification.isRead ? 'heroicons_outline:check' : 'heroicons_outline:mail')"
+                              ></mat-icon>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="d-flex justify-between">
+                        <a class="messages-view-all">View All</a>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+  

@@ -1,0 +1,106 @@
+<!-- <div class="container h-full" style="
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;" appCopyPrevent>
+    <div class="flex-container blackcontainer quizbtn">
+        <a (click)="navigateBack()" class="cursor-pointer">
+            <img src="assets/images/arrow-left-white.png" style="height: 49px;">
+        </a>
+        <a (click)="navigateToAnotherComponent()" class="cursor-pointer">
+            <img src="assets/images/arrow-right-white.png" style="height: 49px;">
+        </a>
+    </div>
+    <div class="flex flex-wrap flex-1" style="padding: 10px">
+        <div style="width: 100%; display: flex; justify-content: center; align-items: center;">
+            <mat-spinner *ngIf="loader; else showContent"></mat-spinner>
+        </div>
+        <ng-template #showContent>
+            <div class="w-full flex flex-col justify-center items-center" style="margin-bottom: 20px;">
+                <div class="text-center" style="height: calc(100vh - 340px); align-items: center; display: flex;" *ngIf="NoDataAvailable; else dataAvailable">
+                    <span class="text-3xl font-black" style="font-family: HelveticaNeueBold !important; text-transform: capitalize;">
+                        No Content Available. Please Contact System Administrator on 
+                        <a href="mailto: tritonsupport@kohlerpreferredpartners.com">tritonsupport@kohlerpreferredpartners.com</a>
+                    </span>
+                </div>
+                <ng-template #dataAvailable>
+                    <div class="text-center">
+                        <h1 style="text-transform: capitalize; font-size: 40px !important;">{{ImageSlideData?.header}}</h1>
+                    </div>
+                    <div class="text-center">
+                        <div matInput class="view-body-message">
+                            <app-view-html [html]="ImageSlideData?.body" style="border-top: 0px !important;"></app-view-html>
+                        </div>
+                       
+                    </div>
+                    <div style="justify-content: center; display: flex; margin-top: 20px;">
+                        <img *ngIf="ImageUrl" [src]="ImageUrl" style="height: 100%; width: 100%; object-fit: contain;" controls/>
+                    </div>
+                </ng-template>
+            </div>
+        </ng-template>
+    </div>
+</div> -->
+
+
+<div class="container h-full" style="display: flex; flex-direction: column; justify-content: space-between;" appCopyPrevent>
+    <div class="flex-container blackcontainer quizbtn">
+        <a (click)="navigateBack()" class="cursor-pointer">
+            <img src="assets/images/arrow-left-white.png" style="height: 49px;">
+        </a>
+        <a (click)="navigateToAnotherComponent()" class="cursor-pointer">
+            <img src="assets/images/arrow-right-white.png" style="height: 49px;">
+        </a>
+    </div>
+    
+
+    <div class="flex flex-wrap flex-1" style="padding: 10px">
+        <div style="width: 100%; display: flex; justify-content: center; align-items: center;">
+            <mat-spinner *ngIf="loader"></mat-spinner>
+        </div>
+
+        <div *ngIf="!loader" class="w-full flex flex-col justify-center items-center">
+            <!-- Heading from textbox name -->
+            <!-- <div *ngIf="textBoxContent" class="w-full text-center mb-4">
+                <div [innerHTML]="textBoxContent | safeHtml"></div>
+            </div> -->
+
+            <!-- Text Content -->
+            <div *ngFor="let editor of editors" class="text-content mb-4">
+                <div [innerHTML]="editor.content | safeHtml"></div>
+            </div>
+                  
+
+            
+            <!-- <div *ngIf="sanitizedVideoUrl || VideoSlideData?.videoUrl" class="video-container mb-4">
+                <iframe *ngIf="isYoutubeVideo"
+                    [src]="sanitizedVideoUrl"
+                    width="640"
+                    height="360"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+
+                <video *ngIf="!isYoutubeVideo && VideoSlideData?.videoUrl" #localVideo controls class="w-full rounded"
+                    controlsList="nodownload" preload="auto">
+                    <source [src]="VideoSlideData.videoUrl" [type]="VideoSlideData.type">
+                    Your browser does not support the video tag.
+                </video>
+            </div> -->
+            <!-- Buttons -->
+            <div class="button-container">
+                <button *ngFor="let button of buttons"
+                        (click)="openButtonLink(button.link)"
+                        style="background-color: #05202E; 
+                               color: #FFFFFF; 
+                               padding: 10px 20px; 
+                               border: none; 
+                               border-radius: 4px; 
+                               cursor: pointer;
+                               margin: 0 5px;">
+                  {{button.text}}
+                </button>
+              </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,307 @@
+.bluecard {
+    background-color: #3462a3;
+    color: #fff;
+    border: 7px solid #f5f6fa;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: none !important;
+}
+.blueprogress1 {
+    height: 2px !important;
+    border: none !important;
+}
+.progress {
+    height: 2px !important;
+    border: none !important;
+    --bs-progress-height: 1rem;
+    --bs-progress-font-size: 0.75rem;
+    --bs-progress-bg: #b5b5b5 !important;
+    --bs-progress-border-radius: 0.375rem;
+    --bs-progress-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+    --bs-progress-bar-color: #fff;
+    --bs-progress-bar-bg: #0d6efd;
+    --bs-progress-bar-transition: width 0.6s ease;
+    display: flex;
+    height: var(--bs-progress-height);
+    overflow: hidden;
+    font-size: var(--bs-progress-font-size);
+    background-color: var(--bs-progress-bg);
+    border-radius: var(--bs-progress-border-radius);
+}
+h5 {
+    font-size: 1.15rem;
+    font-family: HelveticaNeue !important;
+}
+.acedemyInfo {
+    border: solid 1px black;
+    padding: 0.4rem 1rem;
+    vertical-align: middle;
+    margin-left: 1rem;
+    font-weight: bold;
+}
+
+.blue-spinner {
+    stroke: blue; /* Blue color for the spinner */
+    width: 50px;  /* Width of the spinner */
+    height: 50px; /* Height of the spinner */
+  }
+  
+  .mat-progress-spinner circle, .mat-spinner circle {
+    stroke-width: 5px; /* Adjust the thickness of the spinner stroke */
+  }
+
+  .acedemyInfo {
+    color: #212529 !important;
+}
+
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1* 0);
+    margin-right: calc(-.5* 1.5rem);
+    margin-left: calc(-.5* 1.5rem);
+}
+.items-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: inherit;
+    justify-content: space-between;
+    @media only screen and (max-width: 850px) {
+    justify-content: center;
+    gap: 10px;
+    }
+}
+.items-space {
+    width: 33%;
+    @media only screen and (max-width: 1350px) and (min-width: 851px) {
+        width: 40%;
+    }
+    @media only screen and (max-width: 850px) {
+        width: 100%;
+    }
+
+}
+.academy-blocks-container .academy-block {
+    background: #3864a0;
+    padding: 17px 28px;
+    color: #fff;
+    text-align: left;
+    min-height: 363px;
+    border-radius: 8px;
+}
+
+.academy-blocks-container .academy-block h2 {
+    color: #fff;
+    font-size: 18px;
+    margin: 0;
+    font-weight: normal;
+    font-family: HelveticaNeueLight;
+    text-transform: uppercase;
+}
+
+.courseContainer {
+    height: 292px;
+    display: block;
+}
+
+.academy-blocks-container .academy-block .view-all {
+    color: #a0a0a0 !important;
+    font-size: 17px !important;
+    font-style: italic !important;
+}
+
+.academy-blocks-container .academy-block .divCourse {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    font-size: 14px;
+    border-bottom: 1px solid #fff;
+    padding: 11px 0;
+    margin-bottom: 0;
+}
+
+.academy-blocks-container .academy-block .divCourse a, .academy-blocks-container .academy-block .divCourse a:hover {
+    color: #fff !important;
+    width: 100%;
+}
+
+.text-success {
+    opacity: 1;
+    color: #5bbc07 !important;
+}
+
+.divCourse .courseTitle {
+    white-space: nowrap;
+    width: fit-content;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    margin-left: .5rem;
+}
+
+.divCourse .text-danger {
+    color: #ff0000 !important;
+}
+
+.divCourse sup {
+    width: 12px !important;
+    display: inline-block;
+}
+
+.academy-blocks-container .academy-block .status-number {
+    width: 13%;
+    text-align: right;
+}
+
+.academy-blocks-container .academy-block .progress {
+    height: 3px !important;
+    width: 85%;
+    background-color: #cecece;
+    border-radius: 0;
+}
+
+.progress {
+    border: none !important;
+}
+
+.progress {
+    --bs-progress-height: 1rem;
+    --bs-progress-font-size: 0.75rem;
+    --bs-progress-bg: #b5b5b5 !important;
+    --bs-progress-border-radius: 0.375rem;
+    --bs-progress-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+    --bs-progress-bar-color: #fff;
+    --bs-progress-bar-bg: #0d6efd;
+    --bs-progress-bar-transition: width 0.6s ease;
+    display: flex;
+    height: var(--bs-progress-height);
+    overflow: hidden;
+    font-size: var(--bs-progress-font-size);
+    background-color: var(--bs-progress-bg);
+    border-radius: var(--bs-progress-border-radius);
+}
+
+.academy-blocks-container .academy-block .progress div {
+    background-color: #5bbc07;
+}
+
+.progress-bar {
+    --bs-progress-height: 1rem;
+    --bs-progress-font-size: 0.75rem;
+    --bs-progress-bg: #d7d7d7 !important;
+    --bs-progress-border-radius: 0.375rem;
+    --bs-progress-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+    --bs-progress-bar-color: #fff;
+    --bs-progress-bar-bg: #0d6efd;
+    --bs-progress-bar-transition: width 0.6s ease;
+    display: flex;
+    height: var(--bs-progress-height);
+    overflow: hidden;
+    font-size: var(--bs-progress-font-size);
+    background-color: var(--bs-progress-bg);
+    border-radius: var(--bs-progress-border-radius);
+    width: 200px !important;
+    margin-left: 1.5rem !important;
+    overflow: hidden;
+}
+.card-container {
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px !important;
+    box-shadow: 6px 6px 20px #00000029;
+}
+
+.circle-progress-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.circle-progress-circle {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.circle-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    stroke-width: 15;
+    fill: none;
+    stroke-dasharray: 440;
+}
+
+.circle-progress-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 22px;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 22px;
+    border-radius: 50%;
+    background: white;
+}
+
+.circle-progress-text {
+    font-size: 24px;
+    font-weight: bold;
+}
+.text-primary {
+    --bs-text-opacity: 1;
+    color: rgba(13, 110, 253, 1) !important;
+}
+.bottom-corners-radius {
+    border-bottom-left-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+}
+
+.border-bottom-conditional {
+    border-bottom: solid 1px #dee2e6;
+}
+
+.courseImg img {
+    max-height: 280px;
+    max-width: 280px;
+}
+.language-selector {
+    min-width: 150px;
+  }
+  
+  .form-select {
+    padding: 6px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    width: 100%;
+    outline: none;
+  }
+  
+  .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+  .training-info {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #f5f5f5;
+    border-left: 4px solid #1976d2; 
+    color: #333;
+    font-size: 14px;
+    border-radius: 4px;
+    font-weight: bolder;
+  }
+
+  .courseImg { width: 250px;height: 180px; }
+ 
+.courseImg img { max-width: 100%; height: auto }

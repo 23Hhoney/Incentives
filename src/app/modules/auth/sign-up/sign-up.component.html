@@ -1,0 +1,101 @@
+<div class="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0" style="background-image: url('assets/images/login_bg.jpg');
+background-size: cover;
+background-position: center;">
+    <div class="relative hidden md:flex md:w-4/12 flex-auto items-center h-full p-12 overflow-hidden dark:border-r" >
+        
+        
+    </div>
+    <div class="md:flex md:justify-end md:w-4/12 w-full sm:w-auto md:h-full py-8 px-4 sm:p-12 md:p-12 sm:rounded-2xl sm:pt-24 md:rounded-none sm:shadow md:shadow-none sm:bg-card" style="background: #00000000 !important; ">
+        
+        <div class="sm:w-auto md:w-full md:mc-auto ">
+            <div class="loginContainer">
+                
+                <!-- Logo -->
+                <div class="app-brand mb-4">
+                    
+            <img src="assets/images/kohler_logo.png" class="img-fluid" />
+                    <div class="app-brand-link">
+                        Sign up
+                    </div>
+                    <div class="flex items-baseline mt-0.5 font-medium">
+                        <div>Already have an account?</div>
+                        <a
+                            class="ml-1 text-white hover:underline"
+                            [routerLink]="['/sign-in']">Sign in
+                        </a>
+                    </div>
+                </div>
+                <!-- /Logo -->
+                <fuse-alert
+                    class="mt-8 -mb-4"
+                    *ngIf="showAlert"
+                    [appearance]="'outline'"
+                    [showIcon]="false"
+                    [type]="alert.type"
+                    [@shake]="alert.type === 'error'">
+                    {{alert.message}}
+                </fuse-alert>
+                <form id="formLogin" class="mb-0 needs-validation" [formGroup]="signUpForm"
+                #signUpNgForm="ngForm">
+                    <div class=" mb-4">
+                        <div class="mb-3">
+                            <label for="userID">Email</label>
+                            <input matInput type="email" [formControlName]="'email'" class="form-control mt-1" id="email" placeholder="username@gmail.com">
+
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class=" mb-4">
+                        <div class="mb-3">
+                            <label for="firstName">FirstName</label>
+                            <input matInput type="text" [formControlName]="'firstName'" class="form-control mt-1" id="firstName" placeholder="FirstName">
+
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class=" mb-4">
+                        <div class="mb-3">
+                            <label for="lastName">LastName</label>
+                            <input matInput type="text" [formControlName]="'lastName'" class="form-control mt-1" id="lastName" placeholder="LastName">
+
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class=" mb-4">
+                        <div class="mb-3">
+                            <label for="phone">Phone</label>
+                            <input matInput type="text" [formControlName]="'phone'" class="form-control mt-1" id="phone" placeholder="7894561230">
+
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="mb-2 form-password-toggle">
+                        <label for="password">Password</label>
+
+                        <input matInput type="password" required="" class="form-control mt-1" type="password"
+                        [formControlName]="'password'" #password placeholder="Enter your Password" aria-describedby="password">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-2 form-password-toggle">
+                        <label for="confirmPassword">Confirm Password</label>
+
+                        <input matInput type="password" required="" class="form-control mt-1" type="password"
+                        [formControlName]="'confirmPassword'" #confirmPassword placeholder="Enter your Password" aria-describedby="password">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mt-6 pt-6">
+                        <button class=" btn btn-large btn-primary d-grid w-full" [ngClass]="{'cursor-def disabled': signUpForm.invalid}" (click)="signUpForm.invalid?'':signUp()" [disabled]="signUpForm.invalid">Sign up</button>
+                    </div>
+                    
+                    
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="relative hidden md:flex md:w-4/12 flex-auto items-center h-full p-12 overflow-hidden dark:border-r" >
+        
+        
+    </div>
+</div>
+

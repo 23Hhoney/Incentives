@@ -1,0 +1,667 @@
+<div *ngIf="showActions" style="position: absolute; inset: 0; z-index: 10;" (click)="toggleActionClose()"></div>
+<div>
+
+    <div>
+        <div style="overflow-x: auto;">
+            <table mat-table  [dataSource]="dataSource" matSort class="table table-bordered" [matSortActive]="sortBy"
+                matSortDisableClear [matSortDirection]="sortDirection" (matSortChange)="sortChangeClick.emit($event)">
+            
+                <span *ngFor="let item of gridSettings; index as i;">
+
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="(!item.type || item.type==='' || item.type===columnType.TEXT) && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell mat-sort-header disableClear *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell (click)="enableRowClick? handleRowClick(element) :''" [matTooltip]="element[item.columnValue]" *matCellDef="let element">
+                            <a class="d-flex underline justify-between anc-cls" *ngIf="item.columnTitleKey === 'Transaction ID'; else elseTextBlock" href="#">
+                                {{element[item.columnValue]}}
+                                <!-- <mat-icon [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon> -->
+                            </a>
+                            <ng-template #elseTextBlock>
+                                <ng-container *ngIf="element[item.showIconParameter]">
+                                    <!-- <mat-icon [svgIcon]="item?.icon" ></mat-icon> -->
+                                </ng-container>
+                                {{element[item.columnValue]}}
+                            </ng-template>
+                        </td>
+                    </ng-container>
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="(!item.type || item.type==='' || item.type===columnType.COMMANUMBER) && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell mat-sort-header disableClear *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell (click)="enableRowClick? handleRowClick(element) :''" [matTooltip]="element[item.columnValue]" *matCellDef="let element">
+                            <!-- <a class="d-flex underline justify-between anc-cls" *ngIf="item.columnTitleKey === 'Transaction ID'; else elseTextBlock" href="#">
+                                {{element[item.columnValue]}} -->
+                                <!-- <mat-icon [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon> -->
+                            <!-- </a> -->
+                            <!-- <ng-template #elseTextBlock> -->
+                                <ng-container *ngIf="element[item.showIconParameter]">
+                                    <!-- <mat-icon [svgIcon]="item?.icon" ></mat-icon> -->
+                                </ng-container>
+                                {{formatNumberWithCommas(element[item.columnValue])}}
+                            <!-- </ng-template> -->
+                        </td>
+                    </ng-container>
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="(!item.type || item.type==='' || item.type===columnType.TEXT_W_BOLD) && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell mat-sort-header disableClear *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; font-weight: bold;" class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-family: HelveticaNeueBold;" mat-cell (click)="enableRowClick? handleRowClick(element) :''" [matTooltip]="element[item.columnValue]" *matCellDef="let element">
+                            <a class="d-flex underline justify-between anc-cls" *ngIf="item.columnTitleKey === 'Transaction ID'; else elseTextBlock" href="#">
+                                {{element[item.columnValue]}}
+                                <!-- <mat-icon [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon> -->
+                            </a>
+                            <ng-template #elseTextBlock>
+                                <ng-container *ngIf="element[item.showIconParameter]">
+                                    <!-- <mat-icon [svgIcon]="item?.icon" ></mat-icon> -->
+                                </ng-container>
+                                {{element[item.columnValue]}}
+                            </ng-template>
+                        </td>
+                    </ng-container>
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="(item.type===columnType.Status) && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell mat-sort-header disableClear *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell (click)="enableRowClick? handleRowClick(element) :''" [matTooltip]="element[item.columnValue]" *matCellDef="let element">
+                            <div style="display: flex; justify-content: center;">
+                                <div class="status-container" [ngStyle]="{'color': element[item.columnValue] === 'Active' ? '#0C642A' : element[item.columnValue] === 'Suspended' ? '#F27D81' : '', 'background': element[item.columnValue] === 'Active' ? '#EFFDF3' : element[item.columnValue] === 'Suspended' ? '#FEF1F1' : '#F3F4F6'}">   
+                                    {{element[item.columnValue]}}
+                                </div>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="(item.type===columnType.TEXTWITHBACKGROUD) && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell mat-sort-header disableClear *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell mat-sort-header disableClear style="vertical-align: middle; color: #5c646a; font-size: 14px; justify-content: center; display: flex; height: inherit;" class="th-bdr text-left" *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; justify-content: center; display: flex; height: inherit;" class="th-bdr text-left" *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td class="text-align: center; text-center" style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell (click)="enableRowClick? handleRowClick(element) :''" [matTooltip]="element[item.columnValue]" *matCellDef="let element" >
+                            <ng-container *ngIf="element[item.showIconParameter]">
+                                <mat-icon [svgIcon]="item?.icon" ></mat-icon>
+                            </ng-container>
+                            
+                            <span *ngIf="element[item.columnValue] == 'Redemption'" class="btn mx-2.5 px-2 py-1.5 rounded-lg btn-sm btn-primary-outline " style="margin-left: 0 !important; cursor: text !important">{{element[item.columnValue]}}</span>
+                            <span *ngIf="element[item.columnValue] != 'Redemption'" class="btn mx-2.5 px-2 py-1.5 btn-primary btn-sm" style="margin-left: 0 !important;cursor: text !important">{{element[item.columnValue]}}</span>
+                           
+                        </td>
+                    </ng-container>
+
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="(item.type===columnType.TEXTWITHBACKGROUNDBUTTON) && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell mat-sort-header disableClear *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell *matHeaderCellDef style="vertical-align: middle; color: #5c646a; font-size: 14px; " class="th-bdr text-left" [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell mat-sort-header disableClear style="vertical-align: middle; color: #5c646a; font-size: 14px; justify-content: center; display: flex; height: inherit;" class="th-bdr text-left" *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; justify-content: center; display: flex; height: inherit;" class="th-bdr text-left" *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td class="text-align: center; text-center" style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell (click)="enableRowClick ? handleRowClick(element) : ''" [matTooltip]="element[item.columnValue]" *matCellDef="let element">
+                            <ng-container *ngIf="element[item.showIconParameter]">
+                              <mat-icon [svgIcon]="item?.icon"></mat-icon>
+                            </ng-container>
+                          
+                            <!-- For 'points' -->
+                            <span *ngIf="element[item.columnValue] === 'points'" [ngStyle]="{ 'background-color': '#4271E2' }" class="custom-button">
+                              <!-- <mat-icon svgIcon="Star-cus"></mat-icon>  -->
+                              {{element[item.columnValue]}}
+                            </span>
+                          
+                            <!-- For 'salePrice' -->
+                            <span *ngIf="element[item.columnValue] === 'salePrice'" [ngStyle]="{ 'background-color': '#0C642A' }" class="custom-buttonforSales">
+                              <!-- <mat-icon svgIcon="Star-cus"></mat-icon>  -->
+                              {{element[item.columnValue]}}
+                            </span>
+                          </td>
+                    </ng-container>
+                   
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="item.type === columnType.TEXT_W_ELLIP && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px;" mat-sort-header
+                                disableClear *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey : item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px;" *matHeaderCellDef
+                                [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey : item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell
+                            (click)="enableRowClick ? handleRowClick(element) : ''" *matCellDef="let element"
+                            [matTooltip]="element[item.columnValue]?.length > 25 ? element[item.columnValue] : ''">
+                            <ng-container *ngIf="element[item.showIconParameter]">
+                                <mat-icon class="pr-1" [svgIcon]="item?.icon"></mat-icon>
+                            </ng-container>
+                            <span class="text-ellipsis"
+                                style="display: inline-block; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ element[item.columnValue]?.length > 25 ? (element[item.columnValue] | slice:0:25) + '...' :
+                                element[item.columnValue] }}
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="item.type===columnType.TEXT_W_ELLIP_L && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " mat-sort-header disableClear *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td style="vertical-align: middle; padding: 0.2rem 0.3rem !important; font-size: 14px; font-weight: 300;" mat-cell
+                            (click)="enableRowClick ? handleRowClick(element) : ''" *matCellDef="let element"
+                            [matTooltip]="element[item.columnValue]?.length > 30 ? element[item.columnValue] : ''">
+                            <span class="text-ellipsis-l"
+                                style="display: inline-block; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ element[item.columnValue]?.length > 30 ? (element[item.columnValue] | slice:0:30) + '...' :
+                                element[item.columnValue] }}
+                            </span>
+                        </td>
+
+                    </ng-container>
+
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="item.type === columnType.LINK && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px;" mat-sort-header
+                                disableClear *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey : item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px;" *matHeaderCellDef
+                                [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey : item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell
+                            *matCellDef="let element" [matTooltip]="element[item.columnValue]">
+                            <span class="cursor-pointer" (click)="handleLinkClick(element)"
+                                style="color: blue; text-decoration: underline;">
+                                {{element[item.columnValue] | slice:0:40}}{{element[item.columnValue]?.length > 40 ? '...' : ''}}
+                            </span>
+                        </td>
+                    </ng-container>
+                        
+                        
+
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="item.type===columnType.CHECKBOX && item.show">
+                        <ng-container *ngIf="item.sort"> 
+                          <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px;" mat-sort-header disableClear *matHeaderCellDef [class]="item?.headerClass">
+                            <div *ngIf="isSelectAll(item.columnTitleKey); else elseCheckboxBlock" style="display: flex; flex-direction: column; align-items: center;">
+                                <span>{{ splitColumnTitle(item.columnTitleKey)[0] }}</span>
+                                <span>{{ splitColumnTitle(item.columnTitleKey)[1] }}</span>
+                                <mat-checkbox (change)="toggleAllRows($event, 'checked')" [checked]="allSelected" [indeterminate]="someSelected"></mat-checkbox>
+                            </div>
+                            <ng-template #elseCheckboxBlock>
+                                <div style="width: 100%; display: flex; justify-content: center">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                                <mat-checkbox (change)="toggleAllRows($event, 'checked')" [checked]="allSelected" [indeterminate]="someSelected"></mat-checkbox>
+                            </ng-template>
+                          </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                          <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px;" *matHeaderCellDef [class]="item?.headerClass">
+                            <div *ngIf="isSelectAll(item.columnTitleKey); else elseCheckboxBlock" style="display: flex; flex-direction: column; align-items: center;">
+                                <span>{{ splitColumnTitle(item.columnTitleKey)[0] }}</span>
+                                <span>{{ splitColumnTitle(item.columnTitleKey)[1] }}</span>
+                                <mat-checkbox (change)="toggleAllRows($event, 'checked')" [checked]="allSelected" [indeterminate]="someSelected"></mat-checkbox>
+                            </div>
+                            <ng-template #elseCheckboxBlock>
+                                <div style="width: 100%; display: flex; justify-content: center">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                                <mat-checkbox (change)="toggleAllRows($event, 'checked')" [checked]="allSelected" [indeterminate]="someSelected"></mat-checkbox>
+                            </ng-template>
+                          </th>
+                        </ng-container>
+                        <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell *matCellDef="let element">
+                            <div style="width: 100%; display: flex; justify-content: center">
+                                <mat-checkbox [disabled]="element.disableCheckbox" [(ngModel)]="element['checked']" (ngModelChange)="handleCheckBoxClick(element, 'checked')"></mat-checkbox>
+                            </div>
+                        </td>
+                      </ng-container>
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="item.type===columnType.DOC && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " mat-sort-header disableClear *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell *matCellDef="let element" >
+                            <input type="file">
+                            <!-- <mat-checkbox [disabled]="element.disableCheckbox" [(ngModel)]="element['checked']" (ngModelChange)="handleCheckBoxClick(element, 'checked')"></mat-checkbox> -->
+                        </td>
+                    </ng-container>
+                    
+
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="item.type===columnType.EMAIL && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " mat-sort-header disableClear *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell (click)="enableRowClick? handleRowClick(element) :''" *matCellDef="let element" [matTooltip]="element[item.columnValue]">
+                            <span class="mail-ellipsis">{{element[item.columnValue]}}</span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="item.type===columnType.DATE && item.show">
+                        <ng-container *ngIf="item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " mat-sort-header disableClear *matHeaderCellDef [class]="item?.headerClass">
+                                <div style="width: 100%; display: flex;">
+                                    {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                </div>
+                            </th>
+                        </ng-container>
+                        <ng-container *ngIf="!item.sort">
+                            <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " *matHeaderCellDef [class]="item?.headerClass">{{item.columnTitleKey ? t(item.columnTitleKey): item.columnTitle}} </th>
+                        </ng-container>
+                        <td style="min-width: 114px; vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px;font-family: HelveticaNeueLight;"
+                            mat-cell (click)="enableRowClick? handleRowClick(element) :''" *matCellDef="let element"
+                            [matTooltip]="element[item.columnValue] === 'N/A' ? 'N/A' : element[item.columnValue]| date:'MM-dd-yyyy'">
+                            {{element[item.columnValue] === 'N/A' ? 'N/A' : element[item.columnValue] | date:'MM-dd-yyyy'}}</td>
+                    </ng-container>
+
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="item.type===columnType.BUTTON && item.show">
+                        <ng-container *ngIf="item.buttonArray">
+                            <ng-container *ngIf="item.sort">
+                                <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " mat-sort-header disableClear [class]="item?.headerClass" *matHeaderCellDef>
+                                    <div style="width: 100%; display: flex;">
+                                        {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                    </div>
+                                </th>
+                            </ng-container>
+                            <ng-container *ngIf="!item.sort">
+                                <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " *matHeaderCellDef [class]="item?.headerClass">
+                                    <div style="width: 100%; display: flex;">
+                                        {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                    </div>
+                                </th>
+                            </ng-container>
+                            <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell *matCellDef="let element; let i = index" [class]="item?.headerClass">
+                                <ng-container *ngIf="item.buttons&&item.buttons.length>0">
+                                    <ng-container *ngFor="let btn of item.buttons">
+                                        <button mat-icon-button [disabled]="element[btn.disableBtnParam]" [matTooltip]="btn?.tooltipKey" mat-icon-button data-placement="bottom" (click)="element[btn.disableBtnParam]? '' : handleButtonClickArray(element, btn, i)">
+                                            {{btn?.buttonName}}
+                                            <ng-container *ngIf="btn?.icon&&btn?.isIconSvg">
+                                                <mat-icon [class]="btn?.buttonClass"  [svgIcon]="btn?.icon" [style.color]="iconStyle"></mat-icon>
+                                            </ng-container>
+                                            <ng-container *ngIf="btn?.icon&&!btn?.isIconSvg">
+                                                <mat-icon [class]="btn?.buttonClass" [style.color]="iconStyle">{{btn?.icon}}</mat-icon>
+                                            </ng-container>
+                                        </button>
+                                    </ng-container>
+                                </ng-container>
+                                
+                            </td>
+                        </ng-container>
+                        <ng-container *ngIf="!item.buttonArray">
+                            <ng-container *ngIf="item.sort">
+                                <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " mat-sort-header disableClear *matHeaderCellDef [class]="item?.headerClass">
+                                    <div style="width: 100%; display: flex;">
+                                        {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                    </div>
+                                </th>
+                            </ng-container>
+                            <ng-container *ngIf="!item.sort">
+                                <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " *matHeaderCellDef [class]="item?.headerClass">
+                                    <div style="width: 100%; display: flex;">
+                                        {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                    </div>
+                                </th>
+                            </ng-container>
+                            <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell *matCellDef="let element" [class]="item?.headerClass">
+                                <button mat-icon-button [disabled]="element[item.button.disableBtnParam]" [matTooltip]="item?.button?.tooltipKey" mat-icon-button data-placement="bottom" (click)="element[item.button.disableBtnParam]? '' : handleButtonClick(element, item)">
+                                    {{item?.button?.buttonName}}
+                                    <ng-container *ngIf="item?.button?.icon&&item?.button?.isIconSvg">
+                                        <mat-icon [class]="item?.button?.buttonClass" [svgIcon]="item?.button?.icon" [style.color]="element[item?.button?.colorParameter]"></mat-icon>
+                                    </ng-container>
+                                    <ng-container *ngIf="item?.button?.icon&&!item?.button?.isIconSvg">
+                                        <mat-icon [class]="item?.button?.buttonClass">{{item?.button?.icon}}</mat-icon>
+                                    </ng-container>
+                                </button>
+                            </td>
+                        </ng-container>
+                        
+                    </ng-container>
+                    <ng-container [matColumnDef]="item.columnName" *ngIf="item.type===columnType.POPOVER && item.show">
+                        <ng-container *ngIf="item.buttonArray">
+                            <ng-container *ngIf="item.sort">
+                                <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " mat-sort-header disableClear [class]="item?.headerClass" *matHeaderCellDef>
+                                    <div style="width: 100%; display: flex;">
+                                        {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                    </div>
+                                </th>
+                            </ng-container>
+                            <ng-container *ngIf="!item.sort">
+                                <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " *matHeaderCellDef [class]="item?.headerClass">
+                                    <div style="width: 100%; display: flex;">
+                                        {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                    </div>
+                                </th>
+                            </ng-container>
+                            <td style="position: relative; z-index: 11; text-align: center; vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell *matCellDef="let element" [class]="item?.headerClass">
+                                <ng-container *ngIf="item.buttons&&item.buttons.length>0">
+                                    <div *ngIf="element.open" class="custom-scrollbar">
+                                        <ng-container *ngFor="let btn of item.buttons">
+                                            <button *ngIf="!btn.hideButton" style="
+                                                width: 100%;
+                                                border: 1px solid #7E7E7E;
+                                                padding: 5px 10px;
+                                                align-items: center;
+                                                justify-content: start;
+                                                border-radius: 4px;" mat-icon-button [disabled]="element[btn.disableBtnParam]" [matTooltip]="btn?.tooltipKey" mat-icon-button data-placement="bottom" (click)="element[btn.disableBtnParam]? element.open = false : handleButtonClickArray(element, btn)">
+                                                <ng-container style="width: 100%;" *ngIf="btn?.icon&&btn?.isIconSvg">
+                                                    <div style="cursor: pointer; width: 100%; gap: 5px; display: flex; justify-content: space-between; align-items: center;">
+                                                        <span style="font-weight: 300;">
+                                                            {{btn?.tooltipKey}}
+                                                        </span>
+                                                        <mat-icon [class]="btn?.buttonClass" [svgIcon]="btn?.icon"></mat-icon>
+                                                    </div>
+                                                </ng-container>
+                                                <ng-container style="width: 100%;" *ngIf="btn?.icon&&!btn?.isIconSvg">
+                                                    <div style="cursor: pointer; width: 100%; gap: 5px; display: flex; justify-content: space-between; align-items: center;">
+                                                        <span style="font-weight: 300;">
+                                                            {{btn?.tooltipKey}}
+                                                        </span>
+                                                        <mat-icon [class]="btn?.buttonClass" [svgIcon]="btn?.icon"></mat-icon>
+                                                    </div>
+                                                </ng-container>
+                                            </button>
+                                        </ng-container>
+                                    </div>
+                                    <div style="display: flex; justify-content: center; width: 100%;">
+                                        <div style="display: flex;
+                                            gap: 5px;
+                                            border: 1px solid #7E7E7E;
+                                            padding: 5px 10px;
+                                            align-items: center;
+                                            border-radius: 4px;
+                                            cursor: pointer;
+                                            width: inherit;" (click)="element.open = true; showActions = true;">
+                                            <mat-icon [class]="'btn-color-600'" [svgIcon]="'data-grid-user'"></mat-icon>Actions
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                
+                            </td>
+                        </ng-container>
+                        <ng-container *ngIf="!item.buttonArray">
+                            <ng-container *ngIf="item.sort">
+                                <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " mat-sort-header disableClear *matHeaderCellDef [class]="item?.headerClass">
+                                    <div style="width: 100%; display: flex;">
+                                        {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                    </div>
+                                </th>
+                            </ng-container>
+                            <ng-container *ngIf="!item.sort">
+                                <th mat-header-cell style="vertical-align: middle; color: #5c646a; font-size: 14px; " *matHeaderCellDef [class]="item?.headerClass">
+                                    <div style="width: 100%; display: flex;">
+                                        {{item.columnTitleKey ? item.columnTitleKey: item.columnTitle}}
+                                    </div>
+                                </th>
+                            </ng-container>
+                            <td style="vertical-align: middle; padding: 0.4rem 0.5rem !important; font-size: 14px; font-weight: 300;" mat-cell *matCellDef="let element" [class]="item?.headerClass">
+                                <button mat-icon-button [disabled]="element[item.button.disableBtnParam]" [matTooltip]="item?.button?.tooltipKey" mat-icon-button data-placement="bottom" (click)="element[item.button.disableBtnParam]? '' : handleButtonClick(element, item)">
+                                    {{item?.button?.buttonName}}
+                                    <ng-container *ngIf="item?.button?.icon&&item?.button?.isIconSvg">
+                                        <mat-icon [class]="item?.button?.buttonClass" [svgIcon]="item?.button?.icon" [style.color]="element[item?.button?.colorParameter]"></mat-icon>
+                                    </ng-container>
+                                    <ng-container *ngIf="item?.button?.icon&&!item?.button?.isIconSvg">
+                                        <mat-icon [class]="item?.button?.buttonClass">{{item?.button?.icon}}</mat-icon>
+                                    </ng-container>
+                                </button>
+                            </td>
+                        </ng-container>
+                        
+                    </ng-container>
+                </span>
+                
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" style="border-bottom: 2px solid #212529;font-family: HelveticaNeueLight;"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" style="border-bottom: 2px solid #212529;font-family: HelveticaNeueLight;"></tr>
+
+                
+            </table>
+           
+            <div class="text-center" *ngIf="loading">
+                <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+            </div> 
+    
+            <div class="no-data-found text-center text-gray-500" *ngIf="!loading && dataSource?.length === 0">
+                {{nodataMessage}}
+            </div>
+    
+            <!-- <div class="text-center" *ngIf="loading">
+                <mat-spinner class="grid-loading orange-spinner"></mat-spinner>
+            </div>  -->
+            <ng-container *ngIf="showPagination && usertype === 'normaluser'">
+                <nav aria-label="Page navigation example" class="text-center">
+                    <ul class="pagination justify-center inline-flex pt-4 pb-4">
+                        <li class="page-item" (click)="getPageData(pageIndex - 1)" [class.disabled]="pageIndex === 1">
+                            <a class="page-link" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <div style="display: flex;">
+                            <li *ngIf="pages.length > 3 && pageIndex > 2" class="page-item" (click)="getPageData(1)" [class.active]="pageIndex === page">
+                                <a class="page-link page-number">{{ 1 }}</a>
+                            </li>
+                            <li *ngIf="pages.length > 3 && pageIndex > 2" class="page-item">
+                                <a class="page-link page-number">.</a>
+                            </li>
+                            <li *ngIf="pages.length > 3 && pageIndex > 2" class="page-item">
+                                <a class="page-link page-number">.</a>
+                            </li>
+                            <li class="page-item" (click)="getPageData(pageIndex === 1 ? pageIndex : pageIndex === pages.length && pages.length >=3 ? pageIndex -2 : pageIndex -1)" [class.active]="pageIndex === 1">
+                                <a class="page-link page-number">{{ pageIndex === 1 ? pageIndex : pageIndex === pages.length && pages.length >=3 ? pageIndex -2 : pageIndex -1 }}</a>
+                            </li>
+                            <li class="page-item" *ngIf="pages.length >= 2" (click)="getPageData(pageIndex === 1 ? pageIndex + 1 : pageIndex === pages.length && pages.length >=3 ? pageIndex -1 : pageIndex)" [class.active]="(pageIndex !== 1 && pages.length > pageIndex) || (pageIndex !== 1 && pages.length === 2)">
+                                <a class="page-link page-number">{{ pageIndex === 1 ? pageIndex + 1 : pageIndex === pages.length && pages.length >=3 ? pageIndex -1 : pageIndex }}</a>
+                            </li>
+                            <li class="page-item" *ngIf="pages.length >= 3" (click)="getPageData(pageIndex === 1 ? pageIndex + 2 : pageIndex === pages.length && pages.length >=3 ? pageIndex : pageIndex + 1)" [class.active]="pageIndex > 2 && pages.length === pageIndex">
+                                <a class="page-link page-number">{{ pageIndex === 1 ? pageIndex + 2 : pageIndex === pages.length && pages.length >=3 ? pageIndex : pageIndex + 1}}</a>
+                            </li>
+                            <li class="page-item" *ngIf="pages.length > 4 && pages.length - 2 >= pageIndex">
+                                <a class="page-link page-number">.</a>
+                            </li>
+                            <li class="page-item" *ngIf="pages.length > 4 && pages.length - 2 >= pageIndex">
+                                <a class="page-link page-number">.</a>
+                            </li>
+                            <li *ngIf="pages.length > 3 && pages.length - 2 >= pageIndex" class="page-item" (click)="getPageData(pages.length)" [class.active]="pageIndex === page">
+                                <a class="page-link page-number">{{ pages.length }}</a>
+                            </li>
+                        </div>
+                        <li class="page-item" (click)="getPageData(pageIndex + 1)" [class.disabled]="pageIndex === pages.length">
+                            <a class="page-link" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </ng-container>
+            <ng-container *ngIf="showPagination && usertype === 'admin'">
+                <nav aria-label="Page navigation example" class="text-center">
+                    <div style="width: 70%; display: flex; justify-content: space-between;">
+                        <div style="width: 36.3%;"></div>
+                        <div style="width: 33.3%; align-items: center; display: flex; justify-content: center; gap: 17px; position: relative;">
+                            <span style="font-size: 14px; font-weight: 400; color: #171A1F;">
+                                Show
+                            </span>
+                            <div (click)="showAllRecords = !showAllRecords;" style="border: 1px solid #9095A1; border-radius: 4px; align-items: center; display: flex; padding: 0px 4px; cursor: pointer;">
+                                <span>{{ totalRecordCount }}</span>
+                                <span style="cursor: pointer;">
+                                    <mat-icon [class]="'btn-color-500'" [svgIcon]="'heroicons_solid:caret-down'"></mat-icon>
+                                </span>
+                            </div>
+                            <div class="all-records-container" *ngIf="showAllRecords">
+                                <span class="record-count" (click)="selectAllRecords(records, $event)" *ngFor="let records of allRecords">{{ records }}</span>
+                            </div>
+                            <span style="font-size: 13px; font-weight: 400; color: #171A1F;">Records Per Page</span>
+                        </div>
+                        <div style="width: 18.3%;">
+                            <ul class="justify-center inline-flex pt-4 pb-4">
+                                <li class="page-item" (click)="getPageData(pageIndex - 1)" [class.disabled]="pageIndex === 1">
+                                    <span style="cursor: pointer; position: relative; top: 6px;">
+                                        <mat-icon [class]="'btn-color-500'" [svgIcon]="'arrow_left'"></mat-icon>
+                                    </span>
+                                </li>
+                                <div style="display: flex;cursor: pointer;">
+                                    <li *ngIf="pages.length > 3 && pageIndex > 2" class="admin-pagination-item" (click)="getPageData(1)" [ngClass]="{'admin-pagination-selected-item': pageIndex === page}">
+                                        <span>{{ 1 }}</span>
+                                    </li>
+                                    <li *ngIf="pages.length > 4 && pageIndex > 2" class="admin-pagination-item">
+                                        <span style="margin-bottom: 6px;">..</span>
+                                    </li>
+                                    <li class="admin-pagination-item" (click)="getPageData(pageIndex === 1 ? pageIndex : pageIndex === pages.length && pages.length >=3 ? pageIndex -2 : pageIndex -1)" [ngClass]="{'admin-pagination-selected-item': pageIndex === 1}">
+                                        <span>{{ pageIndex === 1 ? pageIndex : pageIndex === pages.length && pages.length >=3 ? pageIndex -2 : pageIndex -1 }}</span>
+                                    </li>
+                                    <li class="admin-pagination-item" *ngIf="pages.length >= 2" (click)="getPageData(pageIndex === 1 ? pageIndex + 1 : pageIndex === pages.length && pages.length >=3 ? pageIndex -1 : pageIndex)" [ngClass]="{'admin-pagination-selected-item': (pageIndex !== 1 && pages.length > pageIndex) || (pageIndex !== 1 && pages.length === 2)}">
+                                        <span>{{ pageIndex === 1 ? pageIndex + 1 : pageIndex === pages.length && pages.length >=3 ? pageIndex -1 : pageIndex }}</span>
+                                    </li>
+                                    <li class="admin-pagination-item" *ngIf="pages.length >= 3" (click)="getPageData(pageIndex === 1 ? pageIndex + 2 : pageIndex === pages.length && pages.length >=3 ? pageIndex : pageIndex + 1)" [ngClass]="{'admin-pagination-selected-item': pageIndex > 2 && pages.length === pageIndex}">
+                                        <span>{{ pageIndex === 1 ? pageIndex + 2 : pageIndex === pages.length && pages.length >=3 ? pageIndex : pageIndex + 1}}</span>
+                                    </li>
+                                    <li class="admin-pagination-item" *ngIf="pages.length > 4 && pages.length - 2 >= pageIndex">
+                                        <span style="margin-bottom: 6px;">..</span>
+                                    </li>
+                                    <li *ngIf="pages.length > 3 && pages.length - 2 >= pageIndex" class="admin-pagination-item" (click)="getPageData(pages.length)" [ngClass]="{'admin-pagination-selected-item': pageIndex === page}">
+                                        <span>{{ pages.length }}</span>
+                                    </li>
+                                </div>
+                                <li class="page-item" (click)="getPageData(pageIndex + 1)" [class.disabled]="pageIndex === pages.length">
+                                    <span style="cursor: pointer; position: relative; top: 6px;">
+                                        <mat-icon [class]="'btn-color-500'" [svgIcon]="'arrow_right'"></mat-icon>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </ng-container>
+        </div>
+    </div>
+</div>
+

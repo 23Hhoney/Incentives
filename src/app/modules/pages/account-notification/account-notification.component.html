@@ -1,0 +1,226 @@
+<ng-template #NotificationDetails>
+    <div>
+        <div style="padding: 0.4rem 0.8rem !important; border-bottom: 1px solid #dee2e6;" class="flex flex-row justify-between">
+            <h5 class="font-normal leading-normal mb-0	">Notifications Details</h5>
+            <span class="close-model" (click)="notiModal.close();">x</span>
+        </div>
+        <div style="padding: 0.8rem 0.8rem !important; max-height: 266px; overflow-y: auto;">
+            <h4>{{msgObj.head || 'NA'}}</h4>
+            <app-view-html [html]="msgObj.body" style="border-top: 0px !important;"></app-view-html>
+        </div>
+        <div style="justify-content: end; padding: 10px; display: flex; border-top: 1px solid #dee2e6;">
+            <button class="close-button" (click)="notiModal.close();">Close</button>
+        </div>
+    </div>
+</ng-template>
+<div class="w-full mt-6">
+    <!-- <nav aria-label="breadcrumb mt-2">
+        <ol class="breadcrumb">
+            <li class="text-black mt-3 mb-4">My Account</li>
+        </ol>
+    </nav> -->
+    <p (click)="navigateToAccount()" style="color: #565e6e !important; font-size: 12px; cursor: pointer;">My Account</p>
+    <div class="flex flex-row justify-between flex-wrap mt-3 mb-4">
+        <div *ngIf="sectionsArray[0]?.items[0]?.text && publishedPage && showPublishedPage; else defaultHeading" style="width: 100%;" [innerHTML]="sanitizeHtml(sectionsArray[0]?.items[0]?.text)"></div>
+        <ng-template #defaultHeading>
+            <h4 class="text-black">Notifications</h4>
+        </ng-template>
+        <div class="flex flex-row flex-wrap mr-1" style="gap: 25px !important; width: 100%; justify-content: end;">
+            <!-- alert -->
+            <div class="flex flex-wrap gap-2 items-center">
+                <mat-icon [ngClass]="{'Unread': true}" [svgIcon]="'heroicons_outline:exclamation-circle'"></mat-icon> 
+                <h6 style="margin-top: 3px;" class="text-black">Alert</h6>
+            </div>
+            <!-- read -->
+            <div class="flex flex-wrap gap-2 items-center">
+                <mat-icon [ngClass]="{'read': true}" [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                <h6 style="margin-top: 3px;" class="text-black">Read</h6>
+            </div>
+            <!-- unread -->
+            <div class="flex flex-wrap gap-2 items-center">
+                <mat-icon [ngClass]="{'Unread': true}" [svgIcon]="'heroicons_outline:mail'"></mat-icon>
+                <h6 style="margin-top: 3px;" class="text-black">Unread</h6>
+            </div>
+
+        </div>
+    </div>
+    
+    
+    <div class="w-full">
+
+        <div style="padding-left: 20px; padding-top: 15px;" class="w-full card-body card cardhero bg-card  rounded-2xl overflow-hidden">
+            <div class="inline-flex w-full">
+                <div class="w-9/12">
+                    <div style="display: flex; gap: 20px;">
+                        <h5 style="width: fit-content; display: flex; align-items: center;"> You have messages!</h5>
+                        <div style="display: flex; gap: 10px;">
+                            <mat-form-field style="border: 1px solid #f2f2f2; width: 250px;" class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded">
+                                <input
+                                  #NotificationSearchBar
+                                  matInput
+                                  [placeholder]="'Search Notification'"
+                                  class="custom-placeholder">
+                                <mat-icon
+                                  class="icon-size-5"
+                                  matSuffix
+                                  [svgIcon]="'heroicons_solid:search'">
+                                </mat-icon>
+                            </mat-form-field>
+                            <button class="btn-primary" (click)="ApplySearch(NotificationSearchBar.value, NotificationSearchBar.value.length ? false : true, 'search', NotificationSearchBar)" *ngIf="!searchBarFlag" style="padding: 6px 6px 5px 6px; border-radius: 6px; width: 100px; color: white;">Search</button>
+                            <button class="btn-primary-outline" (click)="ApplySearch(NotificationSearchBar.value, NotificationSearchBar.value.length ? false : true, 'clear', NotificationSearchBar)" *ngIf="searchBarFlag" style="padding: 6px 6px 5px 6px; border-radius: 6px; width: 100px; color: white;">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div >
+                <table class="table-block w-full">
+                    <thead>
+                        <tr class="table-head-block">
+                            <th class="th-bdr text-left" style="padding: 10px 0;" scope="col">
+                                <span class="bluetext">
+                                    Unread Messages({{unReadRecords}})
+                                </span>
+                            </th>
+                            <th class="th-bdr text-left" style="padding: 10px 0;" scope="col">Date</th>
+                            <th class="th-bdr text-left" style="padding: 10px 0;" scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <ng-container *ngFor="let noti of notifications; let i = index">
+                            <tr class="Unread" [ngClass]="{'Unread': !noti.isRead, 'read': noti.isRead}">
+                                <td style="width: 75%; padding-top: 5px;">
+                                    <div class="d-flex justify-between items-center">
+                                        <div>
+                                            <h5 *ngIf="!noti.isRead"><a style="cursor: pointer;" (click)="showMessageDialog(NotificationDetails, noti)">{{noti.title}} </a></h5>
+                                            <h5 *ngIf="noti.isRead"><a style="cursor: pointer;font-family: 'HelveticaNeueLight';" (click)="showMessageDialog(NotificationDetails, noti)">{{noti.title}} </a></h5>
+                                            <p class="pb-4" [innerHTML]="expanded[i] ? noti.message : (noti.message | truncate: 40)">
+                                                <ng-container *ngIf="noti.message.split(' ').length > 40">
+                                                    <a href="#" (click)="toggleMessage(i); $event.preventDefault()">
+                                                      {{ expanded[i] ? 'Show less' : 'Show more' }}
+                                                    </a>
+                                                </ng-container>
+                                            </p>
+                                        </div>
+                                        <!-- <a>
+                                            <h3 class="text-100p">
+                                                <mat-icon [ngClass]="{'Unread': !noti.isRead, 'read': noti.isRead}" style="cursor: pointer;" (click)="showMessageDialog(NotificationDetails, noti)" [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon>
+                                            </h3>
+                                        </a> -->
+                                    </div>
+                                </td>
+                                <td style="padding-top: 5px;"><a >{{noti.createdDateTime | date : 'MM/dd/yyyy'}}</a></td>
+                                <td style="padding-top: 5px;">
+                                    <button *ngIf="noti.isAlert && !noti.isRead" (click)="handleReadClick(noti)" mat-icon-button [matTooltip]="'Alert'" mat-icon-button data-placement="bottom">
+                                        <mat-icon [ngClass]="{'Unread': !noti.isRead||noti.ishighlithed, 'read': noti.isRead}" [svgIcon]="noti.isAlert && !noti.isRead  ? 'heroicons_outline:exclamation-circle' : (noti.isRead ? 'heroicons_outline:check' : 'heroicons_outline:mail')"></mat-icon>
+                                    </button>
+                                    <button *ngIf="!noti.isAlert && noti.isRead" (click)="handleReadClick(noti)" mat-icon-button [matTooltip]="'Viewed'" mat-icon-button data-placement="bottom">
+                                        <mat-icon [ngClass]="{'read': noti.isRead}" [svgIcon]="noti.isAlert && !noti.isRead  ? 'heroicons_outline:exclamation-circle' : (noti.isRead ? 'heroicons_outline:check' : 'heroicons_outline:mail')"></mat-icon>
+                                    </button>
+                                    <button *ngIf="!(noti.isAlert && !noti.isRead) && !noti.isRead" (click)="handleReadClick(noti)" mat-icon-button mat-icon-button data-placement="bottom">
+                                        <mat-icon [ngClass]="{'Unread': !noti.isRead||noti.ishighlithed, 'read': noti.isRead}" [matTooltip]="'Mark As Read'" [svgIcon]="noti.isAlert && !noti.isRead  ? 'heroicons_outline:exclamation-circle' : (noti.isRead ? 'heroicons_outline:check' : 'heroicons_outline:mail')"></mat-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        
+                        <!-- <tr class="Unread">
+                            <td>
+                                <div class="d-flex justify-between items-center">
+                                    <div>
+                                        <h5><a class="text-under" href="#">Announcement from Corporate #1</a></h5>
+                                        <p class="pb-4">Additional preview coyp goes here....</p>
+                                    </div>
+                                    <a href="#">
+                                        <h3 class="text-100p">
+                                            <mat-icon [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon>
+                                        </h3>
+                                    </a>
+                                </div>
+                            </td>
+                            <td><a class="text-under" href="#">03/31/2020</a></td>
+                            <td><mat-icon [svgIcon]="'heroicons_outline:mail'"></mat-icon></td>
+                        </tr>
+                        <tr class="read">
+                            <td>
+                                <div class="d-flex justify-between items-center">
+                                    <div>
+                                        <h5><a class="text-under" href="#">Announcement from Corporate #2</a></h5>
+                                        <p class="pb-4">Additional preview coyp goes here....</p>
+                                    </div>
+                                    <a href="#">
+                                        <h3 class="text-100p">
+                                            <mat-icon [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon>
+                                        </h3>
+                                    </a>
+                                </div>
+                            </td>
+                            <td><a class="text-under" href="#">03/31/2020</a></td>
+                            <td><mat-icon [svgIcon]="'heroicons_outline:check'"></mat-icon></td>
+                        </tr>
+                        <tr class="read">
+                            <td>
+                                <div class="d-flex justify-between items-center">
+                                    <div>
+                                        <h5><a class="text-under" href="#">Content</a></h5>
+                                        <p class="pb-4">Content preview coyp goes here....</p>
+                                    </div>
+                                    <a href="#">
+                                        <h3 class="text-100p">
+                                            <mat-icon [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon>
+                                        </h3>
+                                    </a>
+                                </div>
+                            </td>
+                            <td><a class="text-under" href="#">03/31/2020</a></td>
+                            <td><mat-icon [svgIcon]="'heroicons_outline:check'"></mat-icon></td>
+                        </tr>
+                        <tr class="read">
+                            <td>
+                                <div class="d-flex justify-between items-center">
+                                    <div>
+                                        <h5><a class="text-under" href="#">Content</a></h5>
+                                        <p class="pb-4">Content preview coyp goes here....</p>
+                                    </div>
+                                    <a href="#">
+                                        <h3 class="text-100p">
+                                            <mat-icon [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon>
+                                        </h3>
+                                    </a>
+                                </div>
+                            </td>
+                            <td >03/31/2020</td>
+                            <td><mat-icon [svgIcon]="'heroicons_outline:check'"></mat-icon></td>
+                        </tr> -->
+                    </tbody>
+                </table>
+                <app-pagination
+                    [pageIndex]="currentPage"
+                    [pages]="pages"
+                    [pageSize]="apiRequest.itemCount"
+                    (pageChange)="handlePageChange($event)"
+                ></app-pagination>
+                <!-- <nav aria-label="Page navigation example" class="text-center">
+                    <ul class="pagination justif-center inline-flex pt-4 pb-4">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link active" style="z-index: 3;
+                            position: absolute;" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">.</a></li>
+                        <li class="page-item"><a class="page-link" href="#">.</a></li>
+                        <li class="page-item"><a class="page-link" href="#">8</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav> -->
+            </div>
+        </div>
+    </div>
+</div>

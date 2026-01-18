@@ -1,0 +1,30 @@
+ <div class="page-layout simple">
+    <div fxLayout="column">
+        <div class="course-content" fxLayout="column" fxFlex="1 1 auto">
+            <div class="header" fxLayout="row" >
+                <div class="length" fxLayout="row">
+                    <div>
+                        hello 
+                    </div>
+                    <div style="align-items: right;">
+                        <mat-slide-toggle (toggleChange)="showAll()"></mat-slide-toggle>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div> 
+
+           <!-- <mat-slide-toggle > {{headerName}}</mat-slide-toggle> -->
+                <!-- <div class="step"
+                        *ngFor="let step of course.steps; let i = index; let last = last; let first = first"
+                        (click)="gotoStep(i)"
+                        [ngClass]="{'current': currentStep === i, 'completed': currentStep > i, 'last': last, 'first': first}">
+                    <div class="index">
+                        <span>{{i + 1}}</span>
+                    </div>
+                    <div class="title">{{step.title}}</div>
+                     <div fxLayout="row" fxLayoutAlign="center" class="mb-16">
+            </div>
+                </div>-->
+  

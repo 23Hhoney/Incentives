@@ -1,0 +1,123 @@
+<!-- Notifications toggle -->
+<button
+    mat-icon-button
+    (click)="editMode ? '' : openPanel()"
+    #notificationsOrigin>
+    <ng-container *ngIf="totalUnreadCount > 0">
+        <span style="margin-left: 7px; margin-top: 2px;" class="absolute top-0 right-0 left-0 flex items-center justify-center h-3">
+            <span class="flex items-center justify-center shrink-0 min-w-4 h-4 px-1 ml-4 mt-2.5 rounded-full bg-teal-600 text-indigo-50 text-xs font-medium" style="
+                background: #0D6EFD !important;
+                border-radius: 5px !important;
+                padding: 3px 6px !important;">
+                {{totalUnreadCount}}
+            </span>
+        </span>
+    </ng-container>
+    <!-- <i class="fa-regular fa-bell fa-xl" style="color: #2A4CAB;" aria-hidden="true"></i> -->
+    <img src="assets/images/bellIcon.png" style="max-height: 23.8px; max-width: 19.83px;">
+</button>
+
+<!-- Notifications panel -->
+<ng-template #notificationsPanel>
+    <div class="fixed inset-0 sm:static sm:inset-auto flex flex-col sm:min-w-90 sm:w-90 sm:rounded-2xl overflow-hidden shadow-lg">
+        <!-- Header -->
+        <div class="flex shrink-0 items-center py-1 pr-4 pl-6 text-on-primary" style="background-color: #0073ff !important;">
+            <div class="sm:hidden -ml-1 mr-3">
+                <button mat-icon-button (click)="closePanel()">
+                    <mat-icon class="icon-size-5 text-current" [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                </button>
+            </div>
+            <div class="text-lg font-medium leading-10 cursor-pointer" (click)="handleNotification(); closePanel()">Notifications</div>
+        </div>
+
+        <!-- Content -->
+        <div class="relative flex flex-col flex-auto sm:max-h-120 divide-y overflow-y-hidden bg-card">
+            <!-- Notifications -->
+            <div style="overflow-y: auto; height: auto;overflow-x: hidden;">
+                <ng-container *ngFor="let notification of notifications; trackBy: trackByFn">
+                    <div class="flex group hover:bg-gray-50 dark:hover:bg-black dark:hover:bg-opacity-5"
+                        [ngClass]="{'unread': !notification.read}" style="border-bottom: solid 1px rgba(0, 0, 0, 0.075);">
+                        <!-- Notification with a link -->
+                        <ng-container *ngIf="notification.link">
+                            <ng-container *ngIf="!notification.useRouter">
+                                <a class="flex flex-auto py-3 pl-4 cursor-pointer" [href]="notification.link">
+                                    <ng-container *ngTemplateOutlet="notificationContent; context: {$implicit: notification}"></ng-container>
+                                </a>
+                            </ng-container>
+                            <ng-container *ngIf="notification.useRouter">
+                                <a class="flex flex-auto py-3 pl-4 cursor-pointer" [routerLink]="notification.link">
+                                    <ng-container *ngTemplateOutlet="notificationContent; context: {$implicit: notification}"></ng-container>
+                                </a>
+                            </ng-container>
+                        </ng-container>
+                        <!-- Notification without a link -->
+                        <ng-container *ngIf="!notification.link">
+                            <div class="flex flex-auto py-3 pl-4 cursor-pointer" style="padding: 8px;">
+                                <ng-container *ngTemplateOutlet="notificationContent; context: {$implicit: notification}"></ng-container>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                    <!-- Notification content template -->
+                    <ng-template #notificationContent let-notification>
+                        <div class="flex items-start">
+                            <!-- Icon -->
+                            <mat-icon class="w-6 h-6 mr-2 flex-shrink-0" 
+                                [svgIcon]="notification.isAlert ? 'heroicons_solid:exclamation-circle' : 'heroicons_solid:mail'"
+                                [style.color]="notification.isAlert ? '#FF0008' : '#0d6efd'">
+                            </mat-icon>
+                    
+                            <!-- Title and Message Container -->
+                            <div class="flex flex-col w-full">
+                                <!-- Title -->
+                                <div *ngIf="notification.title" 
+                                    class="font-bold text-lg truncate" 
+                                    style="display: block;
+                                       max-width: 300px;
+                                       white-space: nowrap;
+                                       overflow: hidden;
+                                       text-overflow: ellipsis;"
+                                    matTooltip="{{notification.title}}" 
+                                    matTooltipPosition="above">
+                                    {{ notification.title }}
+                                </div>
+                    
+                                <!-- Message with improved styling -->
+                                <div *ngIf="notification.message" 
+                                class="text-sm text-gray-600 mt-1 w-full"
+                                style="display: block;
+                                       max-width: 300px;
+                                       white-space: nowrap;
+                                       overflow: hidden;
+                                       text-overflow: ellipsis;"
+                                matTooltip="{{notification.message}}" 
+                                matTooltipPosition="below">
+                                {{ notification.message }}
+                            </div>
+                    
+                                <!-- Timestamp -->
+                                <div class="mt-2 text-xs text-gray-500">
+                                    {{ notification.createdDateTime | date:'MMM dd, h:mm a' }}
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ng-container>
+            </div>
+
+            <!-- Show all notifications -->
+            <div class="flex flex-col flex-auto" style="padding: 10px; background-color: #fff !important; border-radius: 0 0 8px 8px !important; text-align: right;">
+                <a style="color: #416fb6 !important; outline: none; text-decoration: none; font-size: 1rem; cursor: pointer;" (click)="handleNotification()">Show all notifications</a>
+            </div>
+
+            <!-- No notifications -->
+            <div *ngIf="notifications.length === 0" class="flex flex-col flex-auto items-center justify-center sm:justify-start py-12 px-8">
+                <div class="flex flex-0 items-center justify-center w-14 h-14 rounded-full bg-primary-100">
+                    <mat-icon class="text-primary-500-700" [svgIcon]="'heroicons_outline:bell'"></mat-icon>
+                </div>
+                <div class="mt-5 text-2xl font-semibold tracking-tight">No notifications</div>
+                <div class="w-full max-w-60 mt-1 text-md text-center text-secondary">When you have notifications, they will appear here.</div>
+            </div>
+        </div>
+    </div>
+</ng-template>

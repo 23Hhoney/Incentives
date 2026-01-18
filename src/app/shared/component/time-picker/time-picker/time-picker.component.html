@@ -1,0 +1,11 @@
+<div [ngClass]="viewClass" >
+    <mat-form-field [ngClass]="fieldClass" appearance="outline">
+        <mat-label *ngIf="showLabelName"> {{labelName}}</mat-label>
+        <input matInput [ngxTimepicker]="picker" [disabled]="disabled" #timehere="ngModel" [placeholder]="placeholder" [ngModelOptions]="{standalone: true}" (ngModelChange)="updateTime($event)" [(ngModel)]="time" [value]="time" [required]="isRequired">
+        <mat-icon *ngIf="showClear" matSuffix  (click)="clearTime()" class="cursor-pointer">clear_all</mat-icon>
+       
+    </mat-form-field>
+    <mat-error class="time-error" *ngIf="showError && !timehere.valid">{{errorMessage}}</mat-error>
+    <ngx-material-timepicker #picker></ngx-material-timepicker>
+</div>
+

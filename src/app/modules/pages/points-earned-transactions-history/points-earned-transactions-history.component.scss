@@ -1,0 +1,63 @@
+.containheight {
+    min-height: 75vh;
+}
+
+.btn-primary-outline {
+    background-color: #fff !important;
+    border: 1px solid #8bbaf2 !important;
+    color: #8bbaf2 !important;
+    border-radius: 10px;
+    box-shadow: 0px 2px 20px rgb(1 41 112 / 10%);
+    text-align: center;
+    text-decoration: none;
+    letter-spacing: .5px;
+    padding: 7px;
+    font-size: 16px;
+    font-family: 'HelveticaNeueLight';
+}
+
+::ng-deep .points-tab-group {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: none;
+
+    .mat-tab-header {
+        border-radius: 0;
+        padding: 0px 0px;
+
+        .mat-tab-label-container {
+            .mat-tab-list {
+                .mat-tab-labels {
+                    .mat-tab-label {
+                        color: #000 !important;
+                        font-size: 21px !important;
+                        font-family: 'HelveticaNeueLight';
+                        font-weight: 400;
+                        text-align: center;
+                        flex: 1;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        padding: 16px 0;
+                        border: 1px solid #ddd;
+                        margin: 0 4px;
+                        border-radius: 6px !important;
+                        background: #E8EEF2 !important;
+                        transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+
+                        &.mat-tab-label-active {
+                            color: #fff !important;
+                            background-color: #04202e !important;
+                            box-shadow: 0 0.125rem 0.25rem rgba(105, 108, 255, 0.4) !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .mat-tab-body-content {
+        padding: 16px;
+    }
+}
+

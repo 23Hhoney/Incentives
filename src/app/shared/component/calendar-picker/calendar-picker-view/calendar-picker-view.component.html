@@ -1,0 +1,304 @@
+
+        
+                            
+            
+               <!--  <div class="content " fusePerfectScrollbar [@animate]="{value:'*',params:{delay:'200ms',y:'50px'}}"> -->
+                    
+                    <div [ngSwitch]="view" class="back-color">
+                            <!-- <div class="" > -->
+                                <div class="" fxLayout="row" fxLayoutAlign="center"
+                                [@animate]="{value:'*',params:{delay:'150ms'}}">
+                                    <div class="control-style">
+                                            <button mat-icon-button class="arrow"
+                                                    mwlCalendarPreviousView
+                                                    [view]="view"
+                                                    [(viewDate)]="viewDate"
+                                                    (viewDateChange)="selectedDay = {date:$event}; getDateChangeEvent($event)"
+                                                    aria-label="Previous">
+                                                <mat-icon>chevron_left</mat-icon>
+                                            </button>
+                            
+                                            <div class="title pt-8">
+                                                {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}
+                                            </div>
+                            
+                                            <button mat-icon-button class="arrow"
+                                                    mwlCalendarNextView
+                                                    [view]="view"
+                                                    [(viewDate)]="viewDate"
+                                                    (viewDateChange)="selectedDay = {date:$event}; getDateChangeEvent($event)"
+                                                    aria-label="Next">
+                                                <mat-icon>chevron_right</mat-icon>
+                                            </button>
+                                    </div>
+                                   
+                               </div>
+                            <!-- </div> -->
+                        <mwl-calendar-month-view
+                            *ngSwitchCase="'month'"
+                            [viewDate]="viewDate"
+                            [events]="events"
+                            [refresh]="refresh"
+                            [activeDayIsOpen]="!isViewOnly?activeDayIsOpen:false"
+                            [cellTemplate]="customCellTemplate"
+                            (dayClicked)="dayClicked($event.day)"
+                            (eventTimesChanged)="eventTimesChanged($event)"
+                            (eventClicked)="editEvent('Edit', $event.event); sidenav.toggle()"
+                            (beforeViewRender)="beforeMonthViewRender($event)">
+                        </mwl-calendar-month-view>
+                        <!-- [dayStartHour]="dayStartHour" 
+                            [cellTemplate]="customCellTemplate"
+                            [dayStartMinute]="dayStartMinute"
+                            [dayEndHour]="dayEndHour"
+                            [dayEndMinute]="dayEndMinute" -->
+                        <mwl-calendar-week-view
+                            *ngSwitchCase="'week'"
+                            [viewDate]="viewDate"
+                            [dayStartHour]="dayStartHour"
+                            [dayEndHour]="dayEndHour"
+                            (viewDateChange)="selectedDay = {date:$event}"
+                            [events]="events"
+                            [refresh]="refresh"
+                            (dayClicked)="dayClicked($event.day)"
+                            (eventClicked)="editEvent('Edit', $event.event);sidenav.toggle()"
+                            (eventTimesChanged)="eventTimesChanged($event)">
+                        </mwl-calendar-week-view>
+                        <mwl-calendar-day-view
+                            *ngSwitchCase="'day'"
+                            [viewDate]="viewDate"
+                            [dayStartHour]="dayStartHour"
+                            [dayEndHour]="dayEndHour"
+                            (viewDateChange)="selectedDay = {date:$event}"
+                            [events]="events"
+                            [refresh]="refresh"
+                            (dayClicked)="dayClicked($event.day)"
+                            (eventClicked)="editEvent('Edit', $event.event);sidenav.toggle()"
+                            (eventTimesChanged)="eventTimesChanged($event)">
+                        </mwl-calendar-day-view>
+                    </div>
+                <!-- </div> -->
+            
+            
+            <ng-template #customCellTemplate let-day="day" let-locale="locale">
+                <div>
+                    <div class="cal-cell-top">
+                        <span class="cal-day-badge ">{{day.badgeTotal}}</span>
+                        <span class="cal-day-number ">
+                            {{ day.date | calendarDate:'monthViewDayNumber':locale }}
+                        </span>
+                    </div>
+                    <div *ngIf="day.events.length>0" >
+                        <div class="" style="width: 96%; margin-left: 3px;" *ngFor="let ev of day.events; let i= index;">
+                            <div class="month-title" *ngIf="i<1" [style.background-color]="'#fff2f2'"
+                            [style.border-color]="ev.color.primary" >
+                                <div class="style-cell-2">
+                                    <div class="style-font-2"> {{ev.checkIn}} - {{ev.checkOut}} </div>
+                                    <div> Duration : {{ev.totalHours}} </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="month-title" *ngIf="i<1" [style.background-color]="'#fff2f2'"
+                            [style.border-color]="ev.color.primary" >
+                                <strong class="text-title" >
+                                    {{ev.title}}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>               
+               
+            </ng-template>
+        
+        
+            <!-- slider -->
+           <!--  <mat-sidenav #sidenav mode= "over" class="example-sidenav" backdrop="false" [ngStyle]="{ 'width.em': sidenavWidth }" opened="false" position="end">
+        
+                <mat-toolbar class="mat-accent m-0">
+                    <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+                        <span class="title dialog-title">{{sliderTitle}}</span>
+                        <button mat-icon-button  aria-label="Close dialog" (click)="sidenav.toggle();">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-toolbar-row>
+                </mat-toolbar>
+                
+        
+                
+                    <mat-dialog-content class="pl-24 pr-24 pt-24 m-0 form formGroup content-scroll" fusePerfectScrollbar>
+                    
+                    <form name="eventForm" [formGroup]="eventForm" class="event-form w-100-p" fxLayout="column" fxFlex>
+        
+                            <mat-form-field appearance="outline" class="w-100-p">
+                                <mat-label>Title</mat-label>
+                                <input matInput [disabled]="true"
+                                        name="title"
+                                        formControlName="title"
+                                        required>
+                            </mat-form-field>
+                            
+                            <div class="w-100-p"  fxFlex="1 0 auto" fxLayout="column" fxLayout.gt-xs="row">
+                                <div fxFlex="100">
+                                    <app-date-range-picker
+                                        [startDate]="eventForm.get('start').value"
+                                        [endDate]="eventForm.get('end').value"
+                                        [withTimePicker]="page === pageType.EVENT?true:false"
+                                        (emitStartEndDate)="updateDateTime($event)"></app-date-range-picker>
+                                </div>
+                                    
+                            </div>
+                            <div class="w-100-p"  fxFlex="1 0 auto" fxLayout="column" fxLayout.gt-xs="row">
+                                <div fxFlex="100">
+                                    <app-applicable-select
+                                        [label]="'Applicable For'"
+                                        [data]="applicableFor"
+                                        (emitData)="updatedApplicable=$event"></app-applicable-select>
+                                </div>
+                            </div>
+        
+                            <div class="pb-12" fxFlex="1 0 auto" fxLayout="column" fxLayout.gt-xs="row">
+                                <div appearance="outline" class="" fxFlex="50">
+                                    <mat-checkbox name="allDay" [disabled]="isViewOnly" formControlName="notifyEmp" class="mr-24" aria-label="Notify Employee">
+                                        Notify Employee
+                                    </mat-checkbox>
+                                </div>
+                                <div appearance="outline"  *ngIf="page === pageType.HOLIDAY" class="pr-sm-8" fxFlex="50">
+                                    <mat-checkbox name="allDay" [disabled]="isViewOnly" formControlName="restricted" class="mr-24" aria-label="Restricted">
+                                        Restricted
+                                    </mat-checkbox>
+                                </div>
+                
+                            </div>
+                
+                            <div fxFlex="1 0 auto" *ngIf="page === pageType.HOLIDAY || page === pageType.EVENT" fxLayout="row">
+        
+                                <mat-form-field appearance="outline" *ngIf="page === pageType.HOLIDAY || page === pageType.EVENT"  class="w-100-p">
+                                    <mat-label>No of day(s) before which the reminder should be sent</mat-label>
+                                    <input matInput [disabled]="isViewOnly" type="number"
+                                            name="noOfDayNotification"
+                                            formControlName="noOfDayNotification">
+                                </mat-form-field>
+                            </div>
+                
+                            <mat-form-field appearance="outline" formGroupName="meta" class="w-100-p">
+                                <mat-label>Location</mat-label>
+                                <mat-select [disabled]="isViewOnly" name="location" formControlName="location">
+                                    <mat-option *ngFor="let obj of locationList" [value]="obj.locationId">
+                                        {{obj.locationName}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                
+                            <mat-form-field appearance="outline" formGroupName="meta" class="w-100-p">
+                                <mat-label>Description</mat-label>
+                                <textarea matInput [disabled]="isViewOnly"
+                                            formControlName="notes"
+                                            mat-maxlength="250"
+                                            max-rows="4">
+                                </textarea>
+                            </mat-form-field>
+        
+                            <div class="pb-12 font-weight-700" *ngIf="page === pageType.EVENT" fxFlex="1 0 auto" fxLayout="column" fxLayout.gt-xs="row">
+                                Requirements
+                            </div>
+                            <div class="pl-2 pb-12" *ngIf="page === pageType.EVENT" fxFlex="1 0 auto" fxLayout="column" fxLayout.gt-xs="row">
+                                <div appearance="outline" class="" fxFlex="50">
+                                    <mat-checkbox name="infra_require" [disabled]="isViewOnly" formControlName="infraRequire" class="mr-24" aria-label="Infra Require">
+                                        Infra Require
+                                    </mat-checkbox>
+                                </div>
+                                <div appearance="outline" class="pr-sm-8" fxFlex="50">
+                                    <mat-checkbox name="manpower_require" [disabled]="isViewOnly" formControlName="manpowerRequire" class="mr-24" aria-label="Manpower Require">
+                                        Manpower Require
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="pl-2 pb-12" *ngIf="page === pageType.EVENT" fxFlex="1 0 auto" fxLayout="column" fxLayout.gt-xs="row">
+                                <div appearance="outline" class="" fxFlex="50">
+                                    <mat-checkbox name="venue_require" [disabled]="isViewOnly" formControlName="venueRequire" class="mr-24" aria-label="Venue Require">
+                                        Venue Require
+                                    </mat-checkbox>
+                                </div>
+                                <div appearance="outline" class="pr-sm-8" fxFlex="50">
+                                    <mat-checkbox name="refreshment_require" [disabled]="isViewOnly" formControlName="refreshmentRequire" class="mr-24" aria-label="Refreshment Require">
+                                        Refreshment Require
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="pl-2 pb-12" *ngIf="page === pageType.EVENT" fxFlex="1 0 auto" fxLayout="column" fxLayout.gt-xs="row">
+                                <div appearance="outline" class="" fxFlex="50">
+                                    <mat-checkbox name="banner_require" [disabled]="isViewOnly" formControlName="bannerRequire" class="mr-24" aria-label="Banner Require">
+                                        Banner Require
+                                    </mat-checkbox>
+                                </div>
+                                <div appearance="outline" class="pr-sm-8" fxFlex="50">
+                                    <mat-checkbox name="pamplets_require" [disabled]="isViewOnly" formControlName="pampletsRequire" class="mr-24" aria-label="Pamplets Require">
+                                        Pamplets Require
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="pl-2 pb-12" *ngIf="page === pageType.EVENT" fxFlex="1 0 auto" fxLayout="column" fxLayout.gt-xs="row">
+                                <div appearance="outline" class="" fxFlex="50">
+                                    <mat-checkbox name="gift_require" [disabled]="isViewOnly" formControlName="giftRequire" class="mr-24" aria-label="Gift Require">
+                                        Gift Require
+                                    </mat-checkbox>
+                                </div>
+                                <div appearance="outline" class="" fxFlex="50">
+                                    <mat-checkbox style="width: 10%" name="other_require" [disabled]="isViewOnly" formControlName="otherRequire" class="mr-12" aria-label="Other Require">
+                                        
+                                    </mat-checkbox>
+                                    <mat-form-field style="width: 90%" appearance="outline">
+                                        <mat-label>Others</mat-label>
+                                        <input matInput [disabled]="isViewOnly|| !eventForm.get('otherRequire').value"
+                                                name="other_requirement"
+                                                formControlName="otherRequirement">
+                                    </mat-form-field>
+                                </div>
+                
+                            </div>
+        
+                        </form>
+                    
+                    </mat-dialog-content>
+                    <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="end center">
+        
+                            <button *ngIf="(action ==='Edit')&&!isViewOnly"
+                                    mat-button color="primary"
+                                    class="mr-8"
+                                    (click)="deleteEvent(selectedEvent); sidenav.toggle();"
+                                    aria-label="Delete"
+                                    matTooltip="Delete">
+                                DELETE
+                            </button>
+                    
+                            <button *ngIf="(action === 'Add')&&!isViewOnly"
+                                    mat-button color="primary"
+                                    class="save-button"
+                                    (click)="saveCalendarEvent()"
+                                    [disabled]="eventForm.invalid"
+                                    aria-label="ADD">
+                                ADD
+                            </button>
+                    
+                            <button *ngIf="isViewOnly"
+                                    mat-button color="primary"
+                                    class="save-button"
+                                    (click)="sidenav.toggle()"
+                                    [disabled]="eventForm.invalid"
+                                    aria-label="Close">
+                                Close
+                            </button>
+                    
+                            <button *ngIf="(action === 'Edit')&&!isViewOnly"
+                                    mat-button color="primary"
+                                    class="save-button"
+                                    (click)="updateCalendarEvent()"
+                                    [disabled]="eventForm.invalid"
+                                    aria-label="SAVE">
+                                SAVE
+                            </button>
+                    
+                        </div>
+        
+               
+              </mat-sidenav> -->
+        

@@ -1,0 +1,240 @@
+<div class="containheight">
+    <div class="flex flex-col flex-auto min-w-0">
+        <div class="max-w-7xl">
+            <!-- Edit/Preview Buttons -->
+            <div *ngIf="isEditMode && !showLanguage" class="mt-2 ml-2 gap-2 p-4">
+                <button class="edit-button" style="background: #37649F; color: white;" (click)="routeToEditor()">Manage Course</button> &nbsp;&nbsp;
+                <button class="preview-button" style="background: #37649F; color: white;" (click)="GoToPreview()">Preview</button> 
+            </div>
+
+            <form [formGroup]="CourseForm">
+                <div class="flex flex-col p-4 pb-2 bg-card rounded-2xl shadow overflow-hidden">
+                    <div class="flex-row">
+                        <!-- Language Selection -->
+                        <div style="margin-bottom: 20px;" class="button-group">
+                            <mat-form-field *ngIf="isEditMode && showLanguage" style="width: 25% !important">
+                                <mat-label>Language *</mat-label>
+                                <mat-select formControlName="language" placeholder="Select Language" (selectionChange)="onLanguageChange($event)">
+                                    <mat-option *ngFor="let language of languages" [value]="language">{{ language }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Language Version Management -->
+                        <div *ngIf="!showLanguage && isEditMode">
+                            <div class="course-version-row mb-6">
+                                <div class="course-version-item" *ngIf="selectedLanguage !== 'English'">
+                                    <span class="course-version-label">Manage English Course Version:</span>
+                                    <button class="edit-buttonslang ml-3" (click)="onLanguageVersionEdit('English')">Edit</button>
+                                </div>
+                        
+                                <div class="course-version-item" *ngIf="showSpanishVersion && selectedLanguage !== 'Spanish'">
+                                    <span class="course-version-label">Manage Spanish Course Version:</span>
+                                    <button class="edit-buttonslang" (click)="onLanguageVersionEdit('Spanish')">Edit</button>
+                                    <div class="toggle-container">
+                                        <span>Inactive</span>
+                                        <mat-slide-toggle formControlName="isSpanishActive"></mat-slide-toggle>
+                                        <span>Active</span>
+                                    </div>
+                                </div>
+                        
+                                <div class="course-version-item" *ngIf="showFrenchVersion && selectedLanguage !== 'French'">
+                                    <span class="course-version-label">Manage French Course Version:</span>
+                                    <button class="edit-buttonslang" (click)="onLanguageVersionEdit('French')">Edit</button>
+                                    <div class="toggle-container">
+                                        <span>Inactive</span>
+                                        <mat-slide-toggle formControlName="isFrenchActive"></mat-slide-toggle>
+                                        <span>Active</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <!-- Course Name -->
+                        <div *ngIf="!showLanguage && isEditMode" class="selected-version-indicator mb-4">
+                            <span class="font-medium text-primary font-bold">You are editing the {{selectedLanguage}} version</span>
+                        </div>
+                        <mat-form-field class="w-full">
+                            <mat-label>Course Name *</mat-label>
+                            <input matInput [formControlName]="'courseName'" maxlength="300" (input)="checkCourseNameLength()">
+                            <mat-hint align="end">{{CourseForm.get('courseName').value?.length || 0}}/300</mat-hint>
+                            <mat-error *ngIf="courseNameExceedsLength">Course name exceeded its maximum length of 300 characters.</mat-error>
+                        </mat-form-field>
+
+                        <!-- Course ID and Curriculum -->
+                        <div class="flex flex-row gap-4">
+                            <mat-form-field class="w-1/2">
+                                <mat-label>Course ID *</mat-label>
+                                <input matInput [formControlName]="'courseId'" [readonly]="buttonAction === 'for_language'">
+                            </mat-form-field>
+                            <mat-form-field class="w-1/2">
+                                <mat-label>Curriculum *</mat-label>
+                                <mat-select [formControl]="CourseForm.controls['curriculums']"
+                                            multiple
+                                            (selectionChange)="handleSelectionChange($event)"
+                                            [disabled]="buttonAction === 'for_language' || isCurriculumReadonly"
+                                            [class.readonly-select]="buttonAction === 'for_language'">
+                                  <div class="search-box" style="padding: 0 15px;" *ngIf="!isCurriculumReadonly && buttonAction !== 'for_language'">
+                                    <input matInput placeholder="Search Curriculums"
+                                           #searchCurriculumBox
+                                           (keyup)="filterCurriculumList(searchCurriculumBox.value)"
+                                           style="padding: 10px; width: calc(100% - 20px); margin: 10px 0; border: 0.4px solid #707070; border-radius: 6px;">
+                                  </div>
+                                  <div style="padding: 15px;" *ngIf="!isCurriculumReadonly && buttonAction !== 'for_language'">
+                                    <mat-checkbox [disabled]="searchTextCurriculum !== ''"
+                                                 [checked]="allCurriculumSelected"
+                                                 (change)="selectAllCurriculum($event)">
+                                      <span [ngClass]="{'label-color': allCurriculumSelected}">
+                                        {{allCurriculumSelected ? 'Deselect All' : 'Select All'}}
+                                      </span>
+                                    </mat-checkbox>
+                                  </div>
+                                  <mat-option *ngFor="let item of filteredCurriculumList"
+                                             [value]="item.id">
+                                    {{item.value}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                        </div>
+
+                        <!-- Users and Points -->
+                        <div class="flex flex-row gap-4">
+                            <mat-form-field class="w-1/2">
+                                <mat-label>User *</mat-label>
+                                <mat-select formControlName="userId" [(ngModel)]="selectedUsers" multiple 
+                                            [disabled]="buttonAction === 'for_language'"
+                                            [panelClass]="panelClass">
+                                    <div class="search-box sticky-search">
+                                        <input matInput 
+                                               placeholder="Search users" 
+                                               #searchUserBox 
+                                               (keyup)="filterUserList(searchUserBox.value)"
+                                               style="padding: 10px; width: calc(100% - 20px); margin: 10px 0; border: 0.4px solid #707070; border-radius: 6px;">
+                                    </div>
+                                    <div class="select-all-container">
+                                        <mat-checkbox 
+                                            [disabled]="searchText !== ''" 
+                                            [checked]="allSelected"
+                                            (change)="selectAll($event)">
+                                            <span [ngClass]="{'label-color': allSelected}">
+                                                {{allSelected ? 'Deselect All' : 'Select All'}}
+                                            </span>
+                                        </mat-checkbox>
+                                    </div>
+                                    <mat-option *ngFor="let item of filteredUserList" 
+                                                [value]="item.id"
+                                                [selected]="selectedUsers.includes(item.id)">
+                                        {{item.value}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            
+
+                            <mat-form-field class="w-1/2">
+                                <mat-label>Points *</mat-label>
+                                <input matInput
+                                       [formControlName]="'points'"
+                                       type="number"
+                                       min="0"
+                                       max="9999999"
+                                       step="1"
+                                       onkeydown="return event.keyCode !== 190 && event.keyCode !== 110"
+                                       (input)="enforceIntegerPoints($event)"
+                                       [readonly]="buttonAction === 'for_language'">
+                            </mat-form-field>
+                                                        
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="flex flex-row gap-4">
+                            <mat-form-field class="w-1/2">
+                                <mat-label>Start Date *</mat-label>
+                                <input matInput [matDatepicker]="date1" [min]="todayDate" formControlName="startDate" [readonly]="buttonAction === 'for_language'">
+                                <mat-datepicker-toggle matSuffix [for]="date1" [disabled]="buttonAction === 'for_language'"></mat-datepicker-toggle>
+                                <mat-datepicker #date1></mat-datepicker>
+                            </mat-form-field>
+
+                            <mat-form-field class="w-1/2">
+                                <mat-label>End Date *</mat-label>
+                                <input matInput [matDatepicker]="date2" [min]="todayDate" formControlName="endDate" [readonly]="buttonAction === 'for_language'">
+                                <mat-datepicker-toggle matSuffix [for]="date2" [disabled]="buttonAction === 'for_language'"></mat-datepicker-toggle>
+                                <mat-datepicker #date2></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="flex flex-row gap-4">
+                            <mat-form-field class="w-1/2">
+                              <mat-label>Upload Course Image</mat-label>
+                              <input type="file" (change)="onFileSelected($event)" #fileInput style="display: none" accept="image/*">
+                              <input matInput
+                                [value]="selectedImage"
+                                placeholder="No file chosen" 
+                                readonly 
+                                (click)="fileInput.click()">
+                              <mat-icon matSuffix (click)="fileInput.click()">attach_file</mat-icon>
+                              
+                              <!-- Remove button -->
+                              <button *ngIf="selectedImage" mat-icon-button matSuffix (click)="removeFile()">
+                                <mat-icon>close</mat-icon>
+                              </button>
+                            </mat-form-field>
+                          </div>
+                                                
+
+                        <!-- Description -->
+                        <mat-form-field class="w-full">
+                            <mat-label>Description</mat-label>
+                            <textarea id="training-desc-text-area" matInput rows="4" formControlName="description" maxlength="1000"></textarea>
+                            <mat-hint align="end">{{CourseForm.get('description').value?.length || 0}}/1000</mat-hint>
+                        </mat-form-field>
+
+                        <!-- Checkboxes -->
+                        <div class="flex flex-row gap-4 flex-wrap" *ngIf="selectedLanguage === 'English'">
+                            <mat-checkbox formControlName="required" 
+                                        [disabled]="buttonAction === 'for_language'">
+                                <mat-label style="font-weight: 500;">Required</mat-label>
+                            </mat-checkbox>
+
+                            <mat-checkbox formControlName="active" [disabled]="checkActiveState() || buttonAction === 'for_language'"
+                                        [checked]="checkSelectedCheckbox() === 'active'"
+                                        (change)="onCheckboxChange('Active')">
+                                <mat-label style="font-weight: 500;">Active</mat-label>
+                            </mat-checkbox>
+
+                            <mat-checkbox formControlName="inactive" [disabled]="buttonAction === 'for_language'"
+                                        [checked]="checkSelectedCheckbox() === 'inactive'"
+                                        (change)="onCheckboxChange('Inactive')">
+                                <mat-label style="font-weight: 500;">Inactive</mat-label>
+                            </mat-checkbox>
+
+                            <mat-checkbox formControlName="archive" [disabled]="buttonAction === 'for_language'"
+                                        [checked]="checkSelectedCheckbox() === 'archive'"
+                                        (change)="onCheckboxChange('Archive')">
+                                <mat-label style="font-weight: 500;">Archive</mat-label>
+                            </mat-checkbox>
+                            <mat-checkbox formControlName="AutoNewUserCourseAssign">
+                                <mat-label style="font-weight: 500;">Auto-assigned to new users </mat-label>
+                            </mat-checkbox>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex items-center justify-end py-2">
+                            <button (click)="cancel()" class="bulk-update-btn-cus" type="button">Cancel</button> &nbsp;
+                            <button (click)="SaveOrupdateCourse()" 
+                                    class="bulk-update-btn-cus" 
+                                    type="button"
+                                    [disabled]="isSavingCourse">
+                                <div *ngIf="isSavingCourse" class="flex items-center justify-center w-full">
+                                    <mat-progress-spinner [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
+                                </div>
+                                <span *ngIf="!isSavingCourse">Save</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

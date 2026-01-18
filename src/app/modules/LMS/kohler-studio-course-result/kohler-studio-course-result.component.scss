@@ -1,0 +1,146 @@
+.containheight {
+    min-height: 75vh;
+}
+
+.question-container {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.question-content {
+    display: flex;
+    width: 100%;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.question-number {
+    flex-shrink: 0;
+    margin-right: 5px;
+}
+
+.question-text {
+    flex-grow: 1;
+}
+
+h5 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.options-container {
+    margin-left: 28px;
+}
+
+.option-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2px;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+}
+
+.option-label {
+    flex-grow: 1;
+}
+
+.erroranswer {
+    background-color: #FFE8E5;
+    font-weight: bold;
+}
+
+.trueanswer {
+    background-color: #E8FAD3;
+    font-weight: bold;
+}
+
+.option {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.text-primary {
+    --bs-text-opacity: 1;
+    color: rgba(13, 110, 253, 1)
+}
+
+.bottom-navigation {
+    background: white;
+    height: 68px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    width: calc(100% + 168px);
+    right: 84px;
+    position: relative;
+    
+    @media only screen and (max-width: 510px) {
+        flex-direction: column;
+        height: fit-content;
+        align-items: start;
+        width: calc(100% + 168px);
+        right: 32px;
+        position: relative;
+    }
+}
+
+.button-body {
+    background-color: #fff;
+    color: #000;
+    margin: 10px;
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    height: 48px;
+    font-size: 16px;
+    border: 1.5px solid black;
+}
+
+.fa-xl {
+    font-size: 1.5em;
+    line-height: 1.04167em;
+    vertical-align: -.125em;
+}
+
+.answer-feedback-inline {
+  display: flex;
+  gap: 16px;
+  margin: 8px 0;
+  flex-wrap: wrap;
+}
+
+.answer-item {
+  display: flex;
+  align-items: center;
+}
+
+.feedback-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-icon {
+  border: 1.5px solid #ff0000;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.correct-icon {
+  color: rgb(25, 135, 84);
+  font-size: 1.4rem;
+}
+
+.feedback-label {
+  font-size: 0.9rem;
+}
+
+.correct-text {
+  color: rgb(25, 135, 84);
+}

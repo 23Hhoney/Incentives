@@ -1,0 +1,102 @@
+/* MODAL STYLES
+-------------------------------*/
+// app-jw-modal {
+//     /* modals are hidden by default */
+//     display: none;
+
+    .app-jw-modal {
+        /* modal container fixed across whole screen */
+        position: absolute;
+        top: 172px;
+        right: 0;
+        bottom: 0;
+        left: 40%;
+        
+
+        /* z-index must be higher than .jw-modal-background */
+        z-index: 1000;
+        width: 100%;
+        /* enables scrolling for tall modals */
+        overflow: auto;
+
+        .app-jw-modal-body {
+            padding: 20px;
+            background: #fff;
+
+            /* margin exposes part of the modal background */
+            margin: 40px;
+        }
+    }
+
+    .app-jw-modal-background {
+        /* modal background fixed across whole screen */
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        /* semi-transparent black  */
+        background-color: #000;
+        opacity: 0.75;
+        
+        /* z-index must be below .jw-modal and above everything else  */
+        z-index: 900;
+    }
+// }
+
+body.app-jw-modal-open {
+    /* body overflow is hidden to hide main scrollbar when modal window is open */
+    overflow: hidden;
+}
+.dis{
+    display: none !important;
+}
+.input-hide{
+    display: none;
+}
+
+
+
+.hide_file {
+    z-index: 1000;
+    opacity: 0;
+    cursor: pointer;
+    right: 0;
+    top: 0;
+    height: 100%;
+    font-size: 24px;
+    width: 100%;
+    
+}
+.file{
+    color: #3ce6ad;   
+ 
+  }
+.mxwidth{
+    max-width: 41% !important;
+}
+.input-hiden{
+    display: none;
+}
+::ng-deep .mat-dialog-container{
+    padding: 0px !important;
+    width: 75% !important;
+    border-radius: 0px !important;
+}
+.lbl-top {
+    margin-top: 14px;
+}
+.mt-top{
+    margin-top: -82px !important;
+}
+::ng-deep .mat-toolbar-multiple-rows{
+    width: 113.6%;
+    margin-left: -20.5px !important;
+}
+
+@media screen and (max-width: 1224px){
+    .class{
+        width: 109%;
+    }
+}

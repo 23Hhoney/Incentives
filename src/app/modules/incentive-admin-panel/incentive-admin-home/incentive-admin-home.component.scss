@@ -1,0 +1,129 @@
+.sections-container {
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  padding: 0 10px; /* Add padding for better spacing */
+}
+
+.parent-container {
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.element-container {
+  max-width: 100%;
+  box-sizing: border-box;
+  width: 100%; /* Default to full width to prevent overflow */
+  overflow: visible; /* Allow text content to be visible */
+}
+
+/* Allow text elements to expand and be visible */
+.element-container .text-element {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: inherit;
+}
+
+.table-responsive {
+  max-width: 100%;
+  overflow-x: auto; /* Keep for tables, but ensure content wraps */
+}
+
+.table.tablenew {
+  width: 100%;
+  table-layout: auto; /* Allow flexible column widths */
+  border-collapse: collapse; /* Cleaner table appearance */
+}
+
+.table.tablenew th,
+.table.tablenew td {
+  padding: 8px;
+  min-width: 0; /* Remove min-width to allow shrinking */
+  white-space: normal; /* Allow text wrapping */
+  word-break: break-word; /* Break long words */
+  max-width: 200px; /* Cap column width to prevent overflow */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Truncate overflowing text */
+}
+
+.table.tablenew td p {
+  word-wrap: break-word;
+  max-width: 100%;
+  margin: 0;
+}
+
+.chart-container {
+  max-width: 100%;
+  overflow: hidden;
+  width: 100%; /* Ensure charts don't exceed container */
+}
+
+.container img,
+.container video,
+.container iframe {
+  max-width: 100%;
+  height: auto;
+  width: 100%; /* Ensure media scales to container */
+  object-fit: contain; /* Maintain aspect ratio */
+}
+
+/* Ensure charts scale properly */
+.chart-container canvas,
+.chart-container ngx-charts-pie-chart {
+  max-width: 100%;
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* Mobile view adjustments */
+@media (max-width: 768px) {
+  .sections-container {
+    padding: 0 5px; /* Tighter padding for mobile */
+  }
+
+  .element-container {
+    width: 100% !important;
+    position: relative !important;
+    left: 0 !important;
+    top: auto !important;
+    margin-bottom: 10px; /* Add spacing between stacked elements */
+  }
+
+  .table.tablenew th,
+  .table.tablenew td {
+    font-size: 12px; /* Smaller font for mobile */
+    padding: 4px; /* Reduced padding */
+    max-width: 150px; /* Tighter max-width for mobile */
+  }
+
+  .chart-container {
+    height: 200px !important; /* Reduce chart height for mobile */
+  }
+}
+
+/* Ensure editor dialogs don't cause overflow */
+.editor-dialog,
+.editor-overlay {
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+.custom-homepage-container {
+    height: 100%;
+    width: 100vw;
+    left: 0rem !important;
+    position: relative;
+    padding: 20px;
+    overflow-y: auto;
+    padding-top: 0 !important;
+    @media only screen and (max-width: 1100px) and (min-width: 701px) {
+     //   left: -5rem !important; 
+    }
+    @media only screen and (max-width: 700px) and (min-width: 401px) {
+       // left: -2.5rem !important;
+    }
+    @media only screen and (max-width: 400px) {
+        left: -1rem !important;
+    }
+}

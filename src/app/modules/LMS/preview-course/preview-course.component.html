@@ -1,0 +1,218 @@
+<div class="container" 
+     [class.desktop-layout]="isDesktopView" 
+     [class.mobile-layout]="!isDesktopView"
+     [attr.data-breakpoint]="currentBreakpoint"
+     style="display: flex; flex-direction: column; position: relative; padding: 0; margin: 0;" 
+     appCopyPrevent>
+  
+  <!-- Navigation header -->
+  <div class="flex-container blackcontainer quizbtn">
+    <a (click)="navigateBack()" style="cursor: pointer;">
+      <img src="assets/images/arrow-left-white.png" alt="Back" style="height: 49px;">
+    </a>
+  </div>
+
+  <!-- Content container -->
+  <div class="content-container">
+    <!-- Loader -->
+    <div *ngIf="loader" class="loader-container">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <!-- Content -->
+    <div *ngIf="!loader" class="slide-content">
+      
+      <!-- Desktop View: Absolute positioned elements -->
+      <ng-container *ngIf="isDesktopView">
+        <!-- Text Content -->
+        <div *ngFor="let textBox of textBoxPositions" class="slide-element text-element" [ngStyle]="{
+                 'position': 'absolute',
+                 'left.%': validateDimension(textBox.xPercent, 0),
+                 'top.%': validateDimension(textBox.yPercent, 0),
+                 'width.%': validateDimension(textBox.widthPercent, 20),
+                 'height.%': validateDimension(textBox.heightPercent, 10),
+                 'z-index': textBox.zIndex || 10,
+                 'display': 'flex',
+                 'flex-direction': 'column',
+                 'justify-content': mapVerticalAlign(textBox.style?.verticalAlign),
+                 'align-items': mapHorizontalAlignItems(textBox.style?.textAlign),
+                 'box-sizing': 'border-box',
+                 'padding': '8px'
+               }">
+        
+          <div class="ck-content" [innerHTML]="getSafeHtml(textBox.content)" [ngStyle]="{
+                   'font-size.px': textBox.style?.fontSize || 14,
+                   'font-weight': textBox.style?.fontWeight || 'normal',
+                   'font-style': textBox.style?.fontStyle || 'normal',
+                   'text-decoration': textBox.style?.textDecoration || 'none',
+                   'text-align': textBox.style?.textAlign || 'left',
+                   'color': textBox.style?.color || '#000',
+                   'width': '100%',
+                   'word-break': 'break-word',
+                   'line-height': 1.3
+                 }">
+          </div>
+        </div>
+
+        <!-- Image Content -->
+        <div *ngFor="let image of imageElements" 
+             class="slide-element image-element"
+             [style.position]="'absolute'" 
+             [style.left.%]="image.xPercent"
+             [style.top.%]="image.yPercent" 
+             [style.width.%]="image.widthPercent" 
+             [style.height.%]="image.heightPercent"
+             [style.z-index]="image.zIndex">
+          <a *ngIf="image.hyperlink" [href]="formatHyperlink(image.hyperlink)" target="_blank"
+             style="display: block; width: 100%; height: 100%;" [title]="'Click to open: ' + image.hyperlink">
+            <img [src]="image.url" [alt]="image.fileName || 'Slide Image'"
+                 style="width: 100%; height: 100%; object-fit: contain;">
+          </a>
+          <img *ngIf="!image.hyperlink" [src]="image.url" [alt]="image.fileName || 'Slide Image'"
+               style="width: 100%; height: 100%; object-fit: contain;">
+        </div>
+
+        <!-- Button Content -->
+        <div *ngFor="let button of buttonPositions"
+             class="slide-element button-element"
+             [style.position]="'absolute'"
+             [style.left.%]="button.xPercent"
+             [style.top.%]="button.yPercent"
+             [style.min-width]="'fit-content'"
+             [style.min-height]="'fit-content'"
+             [style.width.%]="button.widthPercent"
+             [style.height.%]="button.heightPercent"
+             [style.z-index]="button.zIndex || 20">
+          <button (click)="openButtonLink(button.link)"
+                  [style.min-width]="'fit-content'"
+                  [style.min-height]="'fit-content'"
+                  [style.background-color]="button.style.backgroundColor || '#36a9e2'"
+                  [style.color]="button.style.textColor || '#ffffff'"
+                  [style.font-weight]="button.style.isBold ? 'bold' : 'normal'"
+                  [style.font-style]="button.style.isItalic ? 'italic' : 'normal'"
+                  [style.text-decoration]="button.style.isUnderline ? 'underline' : 'none'"
+                  style="padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; width: 100%; height: 100%;">
+            {{ button.text }}
+          </button>
+        </div>
+
+        <!-- Audio Content -->
+        <div *ngIf="audioUrl"
+             class="slide-element audio-element"
+             [style.position]="'absolute'"
+             [style.left.%]="elementPositions['audio']?.xPercent || 0"
+             [style.top.%]="elementPositions['audio']?.yPercent || 0"
+             [style.width.%]="elementPositions['audio']?.widthPercent || 40"
+             [style.height.%]="elementPositions['audio']?.heightPercent || 10"
+             [style.z-index]="25">
+          <audio #audioPlayer
+                 [src]="audioUrl"
+                 style="width: 100%; height: 100%;"
+                 controls
+                 [autoplay]="audioAutoplay"
+                 controlsList="nodownload noplaybackrate"
+                 preload="metadata">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+
+        <!-- Video Content -->
+        <div *ngIf="sanitizedVideoUrl || VideoSlideData?.videoUrl" class="video-wrapper"
+             [style.position]="'absolute'"
+             [style.left.%]="videoPosition?.xPercent || 0"
+             [style.top.%]="videoPosition?.yPercent || 0"
+             [style.width.%]="videoDimensions?.widthPercent || 60"
+             [style.height.%]="videoDimensions?.heightPercent || 60"
+             [style.z-index]="1"
+             style="overflow: hidden; box-sizing: border-box;">
+          <div style="width: 100%; height: 100%; aspect-ratio: 16 / 9;">
+            <!-- YouTube or Vimeo Video -->
+            <iframe *ngIf="(isYoutubeVideo || isVimeoVideo) && sanitizedVideoUrl" [src]="sanitizedVideoUrl"
+              style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" allowfullscreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+            </iframe>
+        
+            <!-- Local/MP4 Video -->
+            <video *ngIf="!isYoutubeVideo && !isVimeoVideo && VideoSlideData?.videoUrl"
+              style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; object-fit: cover;" controls controlsList="nodownload"
+              preload="auto">
+              <source [src]="VideoSlideData.videoUrl" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Mobile/Tablet View: Linear flow (unchanged) -->
+      <ng-container *ngIf="!isDesktopView">
+        <div *ngFor="let element of elements; let i = index" class="mobile-element" 
+            [ngClass]="element.type + '-element'" [id]="'element-' + i">
+          <div *ngIf="element.type === 'text'" class="mobile-text-content">
+            <div [innerHTML]="getSafeHtml(element.content)"
+                [style.fontSize.px]="getResponsiveFontSize(element.style?.fontSize)"
+                [style.textAlign]="element.style?.textAlign || 'left'"
+                [style.fontWeight]="element.style?.bold ? 'bold' : 'normal'"
+                [style.fontStyle]="element.style?.italic ? 'italic' : 'normal'"
+                [style.textDecoration]="element.style?.underline ? 'underline' : 'none'">
+            </div>
+          </div>
+          <div *ngIf="element.type === 'image'" class="mobile-image-content">
+            <a *ngIf="element.hyperlink" [href]="formatHyperlink(element.hyperlink)" target="_blank"
+              style="display: block; width: 100%; height: 100%;" [title]="'Click to open: ' + element.hyperlink">
+              <img [src]="element.content" 
+                  [alt]="element.fileName || 'Slide Image'"
+                  style="width: 100%; max-height: 300px; object-fit: contain;">
+            </a>
+            <img *ngIf="!element.hyperlink" [src]="element.content" 
+                [alt]="element.fileName || 'Slide Image'"
+                style="width: 100%; max-height: 300px; object-fit: contain;">
+          </div>
+          <div *ngIf="element.type === 'button'" class="mobile-button-content">
+            <button (click)="openButtonLink(element.link || '#')"
+                    [style.background-color]="element.style?.backgroundColor || '#36a9e2'"
+                    [style.color]="element.style?.textColor || '#ffffff'"
+                    [style.fontWeight]="element.style?.isBold ? 'bold' : 'normal'"
+                    [style.fontStyle]="element.style?.isItalic ? 'italic' : 'normal'"
+                    [style.textDecoration]="element.style?.isUnderline ? 'underline' : 'none'"
+                    style="padding: 12px 24px; margin: 8px 0; width: 100%; border-radius: 4px; border: none;">
+              {{ element.content }}
+            </button>
+          </div>
+          <div *ngIf="element.type === 'audio'" class="mobile-audio-element" style="margin: 16px 0;">
+            <audio #audioPlayer
+                  [src]="getSafeAudioUrl(element.content)"
+                  style="width: 100%;"
+                  controls
+                  [autoplay]="audioAutoplay"
+                  controlsList="nodownload noplaybackrate"
+                  preload="metadata">
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+          <div *ngIf="element.type === 'video'" class="mobile-video-element" style="margin: 16px 0;">
+            <div style="position: relative; width: 100%; padding-top: 56.25%;">
+              <iframe *ngIf="(isYoutubeVideo || isVimeoVideo) && sanitizedVideoUrl" [src]="sanitizedVideoUrl"
+                      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
+                      allowfullscreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+              </iframe>
+              <video *ngIf="!isYoutubeVideo && !isVimeoVideo && element.content"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+                    controls 
+                    controlsList="nodownload"
+                    preload="auto">
+                <source [src]="element.content" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- No Data Message -->
+      <div *ngIf="noDataFound" class="no-data-message">
+        No slide data found.
+      </div>
+    </div>
+  </div>
+</div>

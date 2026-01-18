@@ -1,0 +1,166 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.content-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  padding-bottom: 25px;
+}
+
+/* Desktop View - Absolute positioning */
+.desktop-layout {
+  .slide-element {
+    position: absolute;
+    transition: all 0.3s ease;
+  }
+}
+
+/* Mobile/Tablet View - Linear flow */
+.mobile-layout {
+  .content-container {
+    position: static;
+    overflow: visible;
+    padding: 20px;
+  }
+  
+  .slide-element {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    left: 0 !important;
+    top: auto !important;
+    margin-bottom: 20px;
+    display: block;
+  }
+  
+  .text-element {
+    width: 100% !important;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+  
+  .image-element {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100%;
+    margin-bottom: 15px;
+    
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+  
+  .button-element {
+    width: 100% !important;
+    max-width: 300px;
+    height: auto !important;
+    margin: 15px auto;
+    display: block;
+    
+    button {
+      width: 100%;
+      padding: 12px 20px;
+      min-height: 44px; /* Touch-friendly */
+    }
+  }
+  
+  .video-element {
+    width: 100% !important;
+    height: auto !important;
+    margin-bottom: 20px;
+  }
+  
+  .audio-element {
+    width: 100% !important;
+    margin-bottom: 15px;
+  }
+}
+
+/* Responsive breakpoints */
+@media (max-width: 1024px) {
+  .text-element {
+    font-size: 16px !important;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 768px) {
+  .text-element {
+    font-size: 14px !important;
+    padding: 12px !important;
+  }
+  
+  .button-element button {
+    font-size: 16px;
+    padding: 14px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-layout {
+    .content-container {
+      padding: 15px;
+    }
+  }
+  
+  .text-element {
+    font-size: 13px !important;
+    padding: 10px !important;
+  }
+  
+  .button-element button {
+    font-size: 15px;
+    padding: 12px 16px;
+  }
+}
+
+/* Smooth transitions for resizing */
+* {
+  box-sizing: border-box;
+}
+
+.slide-element {
+  transition: all 0.3s ease;
+}
+
+.mobile-image-content {
+  width: 100%;
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mobile-image-content img {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  display: block;
+}
+
+.video-wrapper {
+  z-index: 1 !important;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.video-wrapper > div {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  height: 100%;
+}
+
+.text-element, .button-element {
+  position: relative;
+  z-index: 10; 
+}

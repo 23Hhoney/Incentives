@@ -1,0 +1,45 @@
+:host ::ng-deep .custom-editor .cke_top {
+    border-bottom: 1px solid #d1d1d1;
+    background: #f8f8f8;
+    padding: 6px 8px 2px;
+    white-space: normal;
+    display: none !important;
+}
+:host ::ng-deep .cke_bottom {
+    padding: 6px 8px 2px;
+    position: relative;
+    border-top: 1px solid #d1d1d1;
+    background: #f8f8f8;
+    display: none !important;
+}
+:host ::ng-deep .cke_chrome {
+    display: block;
+    border: none !important;
+    padding: 0;
+}
+:host ::ng-deep .cke_reset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    height: fit-content !important;
+    text-decoration: none;
+    width: auto;
+    height: auto;
+    vertical-align: baseline;
+    box-sizing: content-box;
+    position: static;
+    transition: none;
+}
+:host ::ng-deep .cke_editable {
+    font-size: 13px;
+    line-height: 1.6;
+    word-wrap: break-word;
+    background: transparent !important;
+}
+.custom-editorbody {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+

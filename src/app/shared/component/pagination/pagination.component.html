@@ -1,0 +1,43 @@
+<nav aria-label="Page navigation example" class="text-center">
+    <ul class="pagination justify-center inline-flex pt-4 pb-4">
+        <li class="page-item" (click)="getPageData(pageIndex - 1)" [class.disabled]="pageIndex === 1">
+            <a class="page-link" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <div style="display: flex;">
+            <li *ngIf="pages.length > 3 && pageIndex > 2" class="page-item" (click)="getPageData(1)" [class.active]="pageIndex === page">
+                <a class="page-link page-number">{{ 1 }}</a>
+            </li>
+            <li *ngIf="pages.length > 3 && pageIndex > 2" class="page-item">
+                <a class="page-link page-number">.</a>
+            </li>
+            <li *ngIf="pages.length > 3 && pageIndex > 2" class="page-item">
+                <a class="page-link page-number">.</a>
+            </li>
+            <li class="page-item" (click)="getPageData(pageIndex === 1 ? pageIndex : pageIndex === pages.length && pages.length >=3 ? pageIndex -2 : pageIndex -1)" [class.active]="pageIndex === 1">
+                <a class="page-link page-number">{{ pageIndex === 1 ? pageIndex : pageIndex === pages.length && pages.length >=3 ? pageIndex -2 : pageIndex -1 }}</a>
+            </li>
+            <li class="page-item" *ngIf="pages.length >= 2" (click)="getPageData(pageIndex === 1 ? pageIndex + 1 : pageIndex === pages.length && pages.length >=3 ? pageIndex -1 : pageIndex)" [class.active]="(pageIndex !== 1 && pages.length > pageIndex) || (pageIndex !== 1 && pages.length === 2)">
+                <a class="page-link page-number">{{ pageIndex === 1 ? pageIndex + 1 : pageIndex === pages.length && pages.length >=3 ? pageIndex -1 : pageIndex }}</a>
+            </li>
+            <li class="page-item" *ngIf="pages.length >= 3" (click)="getPageData(pageIndex === 1 ? pageIndex + 2 : pageIndex === pages.length && pages.length >=3 ? pageIndex : pageIndex + 1)" [class.active]="pageIndex > 2 && pages.length === pageIndex">
+                <a class="page-link page-number">{{ pageIndex === 1 ? pageIndex + 2 : pageIndex === pages.length && pages.length >=3 ? pageIndex : pageIndex + 1}}</a>
+            </li>
+            <li class="page-item" *ngIf="pages.length > 4 && pages.length - 2 >= pageIndex">
+                <a class="page-link page-number">.</a>
+            </li>
+            <li class="page-item" *ngIf="pages.length > 4 && pages.length - 2 >= pageIndex">
+                <a class="page-link page-number">.</a>
+            </li>
+            <li *ngIf="pages.length > 3 && pages.length - 2 >= pageIndex" class="page-item" (click)="getPageData(pages.length)" [class.active]="pageIndex === page">
+                <a class="page-link page-number">{{ pages.length }}</a>
+            </li>
+        </div>
+        <li class="page-item" (click)="getPageData(pageIndex + 1)" [class.disabled]="pageIndex === pages.length">
+            <a class="page-link" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>

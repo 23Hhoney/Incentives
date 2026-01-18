@@ -1,0 +1,54 @@
+<!-- Confirmation Dialog -->
+<!-- Form Title -->
+
+    <!-- <mat-toolbar class="mat-accent m-0 mail-compose-dialog">
+        <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+          <span class="title dialog-title">{{confirmDialogData?.title}}</span>
+          <button mat-icon-button (click)="onClose()" aria-label="Close dialog">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-toolbar-row>
+      </mat-toolbar> -->
+      <mat-toolbar class="mat-accent m-0 mail-compose-dialog">
+          <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+            <span class="title dialog-title">
+              <h3>{{confirmDialogData?.title}}</h3>
+            </span>
+            <button mat-icon-button (click)="onClose()" aria-label="Close dialog">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-toolbar-row>
+        </mat-toolbar>
+      <!-- Form Title -->
+    <!--  Form -->
+    
+    <form class="example-form">
+    
+      <!-- fxLayout Column -->
+         <mat-dialog-content class="pl-24 pr-24 pt-24 m-0 form formGroup" >
+            <p>{{confirmDialogData.message}}</p>
+        </mat-dialog-content>
+        <mat-dialog-actions fxLayout="row" class="m-0 p-16 " fxLayoutAlign="end center">
+    
+            <button matTooltip="Click to Close" (click)="onClose()" aria-label="Close" mat-raised-button class="mr-4">
+                <span >{{confirmDialogData.closeBtnLabel}}</span>
+            </button>
+            <button type="submit" (click)="onConfirm()" mat-raised-button color="accent" aria-label="Submit" matTooltip="Click to Confirm">
+              <span >{{confirmDialogData.confirmBtnLabel}}</span>
+            </button>
+          
+      
+      </mat-dialog-actions>
+       
+    
+      </form>
+      
+      
+      <!-- FxLayout Column -->
+    
+      <!-- FxLayout Row -->
+    
+      <!-- FxLayout Row-->
+    
+    
+    <!-- Form -->

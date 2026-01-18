@@ -1,0 +1,60 @@
+.wid-100 {
+    width: 100%;
+}
+.wid-50 {
+    width: 50%;
+}
+
+.dis-inline-block {
+    display: inline-block;
+}
+
+.c_form_group {
+    border: 0px solid #e2e8f0;//var(--border-color);
+    text-align: left;
+    padding: 2px;
+    border-bottom-width: 1px;
+    width: 100% !important;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.scroll-cus {
+    height: 210px !important;
+    min-height: 210px !important;
+    scroll-behavior: auto;
+    overflow: auto;
+}
+
+.apply-btn {
+    background: #04202E;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+
+.clr-btn {
+    // background: #04202E;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+
+.close-btn {
+    background: #98A2A9;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+::ng-deep .mat-form-field[order-redemption-mat-fieldsss].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+    height: 34px !important;
+    min-height: 34px !important;
+    
+}
+.mat-checkbox-label {
+    color: #00274b !important;
+    font-weight: 400 !important;
+}
+
+

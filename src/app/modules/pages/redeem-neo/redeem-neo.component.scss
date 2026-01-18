@@ -1,0 +1,227 @@
+.container-fluid {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    width: 100%;
+    max-width: 100% !important;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.giftcard-banner {
+    background: url('../../../../assets/images/card-banner-2.png') no-repeat center center !important;
+    flex: calc(50% - 19px);
+    min-height: 515px;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important; 
+}
+
+.clearfix::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+
+.card-blocks-container {
+    padding: 0;
+    font-family: HelveticaNeueMedium;
+}
+
+.card-blocks-container .card-header-container {
+    padding: 50px 20px 0 70px;
+    text-align: left;
+    color: #fff;
+    line-height: 25px;
+    max-width: 660px;
+}
+
+.card-blocks-container .card-header-title {
+    text-transform: none;
+    font-weight: bold;
+    font-size: 35pt;
+    line-height: 45pt;
+    padding-bottom: 20px;
+    font-family: HelveticaNeueMedium;
+}
+
+.card-blocks-container .card-header-description {
+    padding-bottom: 20px;
+    font-size: 18px;
+}
+
+.card-blocks-container .card-header-numbers {
+    font: 20pt "HelveticaNeueMedium", sans-serif;
+    color: #00264c;
+}
+
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1* var(--bs-gutter-y));
+    // margin-right: calc(-.5* var(--bs-gutter-x));
+    // margin-left: calc(-.5* var(--bs-gutter-x));
+}
+
+.card-blocks-container .card-header-points {
+    padding-bottom: 20px;
+    text-align: left;
+    font-size: 12pt;
+    line-height: 14pt;
+}
+
+.card-blocks-container .card-header-points {
+    padding-bottom: 20px;
+    text-align: left;
+    font-size: 12pt;
+    line-height: 14pt;
+}
+
+@media (min-width: 576px) {
+    .col-sm-4 {
+        flex: 0 0 auto;
+        width: 33.33333333%;
+    }
+}
+
+.card-blocks-container .card-header-fine-print {
+    padding-left: 70px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    font-size: 10pt;
+    font-style: italic;
+    max-width: 660px;
+    text-align: left;
+    color: #fff;
+    line-height: 11pt;
+}
+
+h1.title {
+    font: 35pt "HelveticaNeueBold", sans-serif !important;
+    color: #00264c !important;
+    text-transform: none !important;
+    margin: 40px 0 40px 0 !important;
+}
+
+#card-main {
+    padding: 30px 0 60px 0;
+}
+
+.row>* {
+    margin-bottom: .5rem;
+}
+
+#card-main .giftcard-instructions {
+    border: 1px solid #bbb;
+    max-width: 850px;
+    border-radius: 15px;
+    margin: auto;
+}
+
+#card-main .card-instructions-top {
+    padding: 15px 0;
+    border-bottom: 1px solid #bbb;
+}
+
+#card-main .card-instructions-top .step-lb {
+    padding: 15px 0 20px;
+    font-size: 12px;
+    color: #4091ff;
+}
+
+#card-main .card-instructions-top .image-style {
+    height: 67px;
+}
+
+.image-style img {
+    height: 100% !important;
+    object-fit: contain;  
+}
+
+#card-main .card-instructions-top .description {
+    padding: 10px;
+    line-height: 16px;
+    font-size: 12px;
+    color: #707070;
+}
+#card-main .giftcard-instructions-bottom {
+    padding: 10px 10px 0 20px;
+    display: flex;
+    height: 50px;
+    gap: 10px;
+    flex-direction: column;
+}
+#card-main .card-video {
+    max-width: 850px;
+    margin: 50px auto 0;
+}
+
+.custom-alert {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s, visibility 0.5s;
+    position: fixed;
+    color: white;
+    display: flex;
+    border-radius: 4px;
+    right: -22px;
+    background: #BD362F;
+    width: 0;
+    flex-direction: column;
+    margin: 10px;
+}
+
+.custom-alert.show {
+    width: 302px;
+    right: 0;
+    opacity: 1;
+    visibility: visible;
+}
+
+#card-main-form {
+    background: #f4f4f4;
+    padding: 30px 0;
+}
+
+#card-main-form .points-redeem-tb {
+    max-width: 500px;
+    width: 100%;
+    height: 65px;
+    min-width: 200px;
+    text-align: center;
+    border-radius: 5px;
+    border: solid 1px #bcbcbc;
+    font: 20px "HelveticaNeueBold", sans-serif !important;
+    background-color: white;
+}
+
+#spnDollarToRedeem {
+    color: #00264c !important;
+    padding: 25px 0 30px 0 !important;
+    font-size: 30pt !important;
+}
+
+.button-redeem {
+    max-width: 450px !important;
+    min-width: 200px;
+    width: 100%;
+    height: 70px !important;
+    background: #00264c !important;
+    text-transform: uppercase !important;
+    font-weight: bold !important;
+    color: #fff !important;
+}
+.button-redeem.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    }
+
+
+.form-text {
+    margin-top: .25rem;
+    font-size: .875em;
+    color: #6c757d !important;
+}

@@ -1,0 +1,1193 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:host ::ng-deep .parent-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.main-content-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+::ng-deep .mat-dialog-container {
+  max-height: calc(100vh - 64px); 
+  overflow: auto; 
+}
+::ng-deep {
+  .custom-dialog-container {
+    .mat-dialog-container {
+      padding: 0;
+      border-radius: 8px;
+      width: 100% !important; // Ensure dialog fits screen width
+      max-width: 95vw; // Prevent overflow
+    }
+  }
+}
+
+.custom-expansion-panel ::ng-deep .mat-expansion-indicator::after {
+  color: #000 !important; 
+}
+::ng-deep .mat-expansion-indicator {
+  &::after {
+    // Hide the default arrow
+    display: none !important;
+  }
+  
+  // Add your custom icon using a pseudo-element
+  &::before {
+    font-family: 'Material Icons';
+    content: 'keyboard_arrow_down'; // Use any Material icon name
+    display: inline-block;
+    width: 32px;
+    height: 32px; 
+    font-size: 32px; 
+    line-height: 32px; 
+    text-align: center;
+    transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+// Rotate the icon when expanded
+::ng-deep .mat-expanded .mat-expansion-indicator::before {
+  transform: rotate(360deg);
+}
+.training-course-manager {
+  overflow: hidden; /* Prevent scrolling on the entire page */
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.content-area {
+  flex: 1; /* Take up remaining space */
+  overflow: auto; /* Enable scrolling within the content area */
+  max-height: calc(100vh - 64px); /* Adjust height based on the header height */
+}
+body {
+  overflow: hidden; /* Prevent scrolling on the body */
+}
+
+.mat-list {
+  max-height: calc(100vh - 310px);
+ }
+  
+// List item hover effects
+.mat-list-item {
+  &:hover {
+    .mat-icon-button {
+      opacity: 1 !important;
+    }
+  }
+}
+
+// Toolbar height
+.mat-toolbar {
+  height: 64px;
+  @media (max-width: 768px) {
+    height: 56px; // Smaller height on mobile
+  }
+}
+
+// Card header styles
+.mat-card {
+  .mat-card-header {
+    margin: 0;
+    padding: 0px;
+    border-bottom: 1px solid rgba(0,0,0,0.12);
+  }
+}
+
+// Checkbox styles
+::ng-deep .mat-checkbox .mat-checkbox-layout {
+  white-space: normal;
+  font-weight: normal !important;
+  color: #242c39;
+  gap: 5px;
+}
+
+// Screen height constraint
+.max-h-screen {
+  max-height: 100vh !important;
+}
+
+// Text area styles
+#training-desc-text-area {
+  border: none;
+  &:focus {
+    border: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .editor-container {
+    height: auto !important;
+    min-height: 50px;
+    overflow: visible !important;
+  }
+  
+  .formatted-content {
+    overflow: visible !important;
+    height: auto !important;
+  }
+}
+.text-element {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+// Quiz manager styles with responsive modifications
+.quiz-manager {
+  padding: 20px;
+  @media (max-width: 768px) {
+    padding: 10px; // Smaller padding on mobile
+  }
+  
+  .questions-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%; // Ensure full width
+    
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap; // Allow wrapping on small screens
+      gap: 10px;
+      
+      @media (max-width: 576px) {
+        flex-direction: column; // Stack vertically on very small screens
+        align-items: flex-start;
+      }
+    }
+    
+    .questions-list {
+      display: grid;
+      gap: 20px;
+      
+      .mat-expansion-panel {
+        .question-number {
+          font-weight: 500;
+          color: #666;
+          min-width: 25px;
+        }
+        
+        .mat-expansion-panel-header {
+          padding: 1rem;
+          @media (max-width: 576px) {
+            padding: 0.75rem; // Smaller padding on mobile
+          }
+        }
+        
+        .question-details {
+          margin: 16px 0;
+          padding: 8px;
+          background: #f5f5f5;
+          border-radius: 4px;
+        }
+        
+        .options-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 12px;
+          margin-top: 16px;
+          
+          @media (max-width: 576px) {
+            grid-template-columns: 1fr; // Single column on mobile
+          }
+          
+          .option-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            &.correct-option {
+              background: #e8f5e9;
+            }
+          }
+        }
+        
+        &.cdk-drag-preview {
+          box-shadow: 0 5px 5px -3px rgba(0,0,0,0.2),
+                      0 8px 10px 1px rgba(0,0,0,0.14),
+                      0 3px 14px 2px rgba(0,0,0,0.12);
+        }
+      }
+    }
+  }
+}
+
+// Expansion indicator styles
+.mat-expansion-indicator::after {
+  border-color: #000 !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-width: 2px 2px 0 0 !important;
+}
+
+// Question form styles with responsive modifications
+.question-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  
+  @media (max-width: 768px) {
+    padding: 15px;
+    gap: 15px;
+  }
+  
+  .editor-container {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+  }
+  
+  .question-type {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    mat-radio-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      
+      @media (max-width: 576px) {
+        grid-template-columns: 1fr; // Single column on mobile
+      }
+    }
+  }
+  
+  .options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      @media (max-width: 576px) {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      mat-form-field {
+        flex: 1;
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Action row styles
+.mat-action-row {
+  border-top-style: solid;
+  border-top-width: 1px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 8px 8px 8px 22px;
+  
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+}
+
+// Dialog content styles
+.mat-dialog-content {
+  display: block;
+  margin: -14px -24px;
+  
+  @media (max-width: 768px) {
+    margin: -10px -16px; // Smaller margins on mobile
+  }
+}
+
+// Option item styles
+.option-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  
+  @media (max-width: 576px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+.correct-option {
+  background-color: #e8f5e9;
+}
+
+// Dialog header styles
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: #000000;
+  color: white;
+  padding: 0 16px;
+  
+  @media (max-width: 576px) {
+    padding: 0 10px;
+  }
+}
+
+// Close button styles
+.close-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+// Button styles with responsive modifications
+.bulk-update-btn-cus, .upload-buttons, .add-question {
+  height: 36px;
+  padding: 7px 11px;
+  border-radius: 6px;
+  background: #04202E;
+  color: #FFFFFF;
+  white-space: nowrap;
+  
+  @media (max-width: 576px) {
+    width: 100%; // Full width on mobile
+    margin-bottom: 8px;
+  }
+}
+
+.bulk-update-btn-cus, .upload-buttons {
+  width: 134px;
+  
+  @media (max-width: 576px) {
+    width: 100%;
+  }
+}
+
+.add-question {
+  width: 144px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 14px;
+  
+  @media (max-width: 576px) {
+    width: 100%;
+  }
+}
+
+.bulk-update-btn-cus mat-icon {
+  color: #FFFFFF;
+}
+
+// Button positioning
+.buttons-position {
+  width: fit-content !important;
+  transform: none !important;
+  
+  @media (max-width: 576px) {
+    width: 100% !important;
+  }
+}
+
+// Grid area styles with responsive modifications
+.grid-area {
+  width: 100%;
+  transition: background 0.3s ease;
+  padding: 20px;
+  
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+  
+  &.editing-mode {
+    background-color: white;
+    background-image:
+      linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  &.preview-mode {
+    background-color: white;
+    background-image: none;
+    transition: all 0.3s ease;
+    
+    .video-container,
+    .audio-container,
+    .image-container {
+      transition: all 0.3s ease;
+    }
+  }
+}
+
+// Container position indicators
+.editor-container,
+.button-wrapper,
+.video-container,
+.audio-container,
+.image-container {
+  position: relative;
+  
+  &::after {
+    content: attr(data-position);
+    position: absolute;
+    top: -20px;
+    right: 0;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    
+    @media (max-width: 576px) {
+      font-size: 10px;
+      top: -18px;
+    }
+  }
+}
+
+// Draggable elements
+.button-wrapper,
+.image-container {
+  cursor: move;
+  user-select: none;
+  z-index: 1;
+  
+  &.cdk-drag-dragging {
+    z-index: 999;
+    opacity: 0.8;
+  }
+}
+
+// Content area responsive styles
+.content-area {
+  &.max-w-md {
+    .video-container,
+    .audio-container {
+      width: 100% !important;
+      max-width: 100% !important;
+      left: 0 !important;
+      transform: none !important;
+      
+      iframe, video, audio {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+      }
+    }
+    
+    .image-container {
+      max-width: 100% !important;
+      
+      img {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+    }
+    
+    .editor-container {
+      width: 100% !important;
+    }
+  }
+}
+
+// Container wrapper styles
+.container-wrapper {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+  
+  &.editing-mode, &.preview-mode {
+    background: white;
+  }
+}
+
+// Grid containers
+.grid-area-container, .content-grid-container {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+// Editor and media containers with responsive modifications
+.editor-container, .video-container, .image-editor-container {
+  position: absolute;
+  background: #DEE1E6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: move;
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    position: relative !important; // Remove absolute positioning on mobile
+    width: 100% !important; // Full width
+    left: 0 !important;
+    transform: none !important;
+  }
+  
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.editor-container {
+  width: 500px;
+  
+  @media (max-width: 768px) {
+    width: 100% !important;
+    min-width: unset !important;
+    max-width: 100% !important;
+  }
+}
+
+.video-container {
+  width: 650px;
+  left: 10%;
+  transform: translateX(-50%);
+  
+  @media (max-width: 768px) {
+    width: 100% !important;
+    left: 0 !important;
+    transform: none !important;
+  }
+}
+
+.audio-container {
+  width: 650px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  
+  @media (max-width: 768px) {
+    width: 100% !important;
+  }
+}
+
+.image-editor-container {
+  width: 600px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  
+  @media (max-width: 768px) {
+    width: 100% !important;
+  }
+}
+
+// Container headers
+.editor-header, .video-header, .image-header, .audio-header {
+  border-bottom: 1px solid #e5e7eb;
+  cursor: move;
+  user-select: none;
+}
+
+// Image content and toolbar
+.image-content {
+  background: white;
+}
+
+.image-toolbar {
+  background: rgba(222, 225, 230, 0.95);
+  transition: opacity 0.2s;
+}
+
+// Dialog headers
+.dialog-headers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+  
+  @media (max-width: 576px) {
+    padding: 0.75rem;
+  }
+  
+  h3 {
+    margin: 0;
+    font-size: 18px;
+    
+    @media (max-width: 576px) {
+      font-size: 16px;
+    }
+  }
+}
+
+.close-buttons {
+  color: #000000;
+  margin-left: auto;
+  justify-content: flex-start;
+}
+
+.checkbox-container {
+  border-top: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.cancel-button {
+  background: #37649F !important;
+  color: white !important;
+  margin-right: 20px;
+}
+.no-button {
+  background: #000000 !important;
+  color: white !important;
+  margin-right: 20px;
+}
+.delete-button {
+  background: #000000 !important;
+  color: white !important;
+}
+
+.empty-container {
+  width: 100%;
+  height: 100%;
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #f8f9fa;
+  transition: all 0.2s;
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #6c757d;
+    margin-bottom: 8px;
+  }
+  span {
+    color: #6c757d;
+    font-size: 14px;
+  }
+  &:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+  }
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .mat-list-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.fullscreen-content {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999;
+  background: white;
+  overflow-x: hidden;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.hide-in-fullscreen {
+  display: none !important;
+}
+
+// Button editing styles
+.button-wrapper {
+  .button-edit-form {
+    min-width: 400px;
+    max-width: 450px;
+    width: fit-content;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    .formatting-tools {
+      button.active {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+    .mat-form-field {
+      width: 100%;
+    }
+    input[type="color"] {
+      height: 32px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+  }
+}
+
+.editor-container {
+  min-width: 400px;
+  max-width: 450px;
+}
+
+.add-element-button {
+  margin-bottom: 20px;
+}
+
+.fullscreen-btn {
+  // position: absolute;
+  // top: 10px;
+  // right: 10px;
+  z-index: 1000;
+}
+
+::ng-deep .ck.ck-editor__editable_inline>:last-child {
+  margin-bottom: 0px !important;
+}
+
+::ng-deep .ck.ck-editor__editable_inline>:first-child {
+  margin-top: 0px !important;
+  margin-top: var(--ck-spacing-large);
+}
+
+::ng-deep .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+  border: solid var(--ck-color-base-border);
+  border-width: 1px 1px 0;
+  border: none !important;
+}
+
+.editor-container {
+  position: relative;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+  max-width: 100%;
+}
+
+.content-wrapper {
+  width: 50%;
+  max-width: 100%;
+  white-space: normal;
+  word-break: keep-all;
+  overflow: visible;
+  
+  /* Reset inherited properties */
+  * {
+    max-width: 100%;
+    white-space: normal;
+    word-break: keep-all;
+    overflow: visible;
+  }
+}
+
+.formatted-content {
+  width: 100%;
+  display: block;
+  white-space: normal;
+  word-break: keep-all;
+}
+
+/* For view mode specifically */
+.editor-content .content-wrapper {
+  width: 100%;
+  min-width: fit-content;
+  white-space: normal;
+  word-break: keep-all;
+}
+
+
+.image-container {
+  position: absolute;
+  transition: z-index 0.2s;
+  min-height: 50px; /* Minimum height to ensure controls visibility */
+}
+
+.image-container:hover {
+  outline: 2px solid #007bff;
+}
+
+
+.image-container .image-controls button {
+  padding: 2px;
+  min-width: 24px;
+  min-height: 24px;
+  font-size: 12px;
+}
+
+.image-container:hover .image-controls {
+  display: flex;
+  gap: 2px; /* Reduced from 4px */
+}
+
+.image-container img {
+  pointer-events: none;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.editor-container.has-content:not(.editing) {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.editor-container.has-content:not(.editing):hover .hover-header {
+  opacity: 1;
+}
+
+.editor-container:not(.has-content) {
+  min-width: 400px;
+  min-height: 100px;
+}
+
+.editor-container.has-content:not(.editing) .formatted-content {
+  padding: 0;
+  background: transparent;
+}
+
+.allButtons {
+  width: 124px;
+  height: 38px;
+  padding: 7px 8px; 
+  gap: 0px;
+  border-radius: 6px;
+  opacity: 1.4;
+  background: #04202E;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  &[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+    @media (max-width: 576px) {
+      white-space: normal;
+    }
+  }
+  .mat-icon {
+    margin-right: 4px;
+    font-size: 18px;
+  }
+}
+.flex-1.p-4 {
+  // Make padding responsive
+  padding: 1rem;
+  
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+  }
+
+  // Main container
+  .flex.justify-between.items-center {
+    flex-direction: column;
+    gap: 1rem;
+    
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+
+    // Top section with slide name and buttons
+    .flex.items-center.space-x-4 {
+      width: 100%;
+      flex-direction: column;
+      gap: 0.75rem;
+      
+      @media (max-width: 768px) {
+        margin-right: 0 !important; 
+      }
+
+      // Slide name section
+      .flex.items-center.space-x-2.py-2 {
+        width: 100%;
+        
+        @media (max-width: 768px) {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+        
+        // Input container
+        .flex.items-center.flex-1.px-3.bg-gray-50.rounded {
+          width: 100%;
+        }
+      }
+
+      // Buttons container
+      .flex.items-center.space-x-2 {
+        width: 100%;
+        
+        @media (max-width: 768px) {
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          justify-content: center;
+        }
+        
+        // Make buttons more responsive
+        .allButtons {
+          @media (max-width: 576px) {
+            width: 100%;
+            margin: 0.25rem 0;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+    }
+
+    // View toggle section
+    .flex.space-x-2.bg-gray-100.p-1.rounded {
+      margin-left: auto;
+      
+      @media (max-width: 768px) {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+
+.image-container {
+  border: 1px solid #ccc;
+  background: #fff;
+  position: relative;
+
+  &:hover .image-actions {
+    opacity: 1;
+  }
+}
+
+.image-container:hover .drag-handle {
+  opacity: 1;
+}
+
+
+
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+.content-area.max-w-md {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+// Button hover effects
+button:hover {
+  opacity: 0.9;
+}
+
+// Dropdown menu hover effects
+[ngStyle] button:hover {
+  background-color: #f5f5f5;
+}
+
+// Prevent text selection during drag operations
+.editor-container {
+  user-select: none;
+}
+
+// Ensure canvas takes full height
+.canvas {
+  min-height: calc(100vh - 60px);
+}
+
+
+
+/* Toggle Slider */
+.toggle-slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #ccc;
+transition: 0.4s;
+border-radius: 20px;
+}
+
+/* Toggle Slider Circle */
+.toggle-slider::before {
+position: absolute;
+content: "";
+height: 16px;
+width: 16px;
+left: 2px;
+bottom: 2px;
+background-color: white;
+transition: 0.4s;
+border-radius: 50%;
+}
+
+
+.dialog-headers {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.close-button {
+color: #000000;
+}
+
+.modal-footer {
+float: right;
+}
+.delete-button {
+background: #000000 !important;;
+color: white !important;;
+}
+.cancel-button {
+background: #37649F !important;;
+color: white !important;;
+margin-right: 20px; /* Adds gap between Cancel and Delete buttons */
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px; /* Adjust as needed */
+  display: inline-block;
+}
+.truncate-input {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.readonly-input {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+:host ::ng-deep iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none;
+}
+
+.help-overlay {
+  position: fixed;
+  top: 30px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.help-box {
+  background: #DDDDE0;
+  max-width: 851px;
+  padding: 16px;
+  border-radius: 4px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  color: #000;
+  position: relative;
+  max-height: 45vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.QuestionHelp {
+  padding: 6px 5px 0;
+  overflow-y: auto; 
+  max-height: 60vh;
+  margin-bottom: 16px;
+}
+
+.QuestionHelp ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+.QuestionHelp li {
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+
+/* Make headings bold */
+.font-bolder {
+  font-weight: 700;
+  color: #04202E;
+}
+
+/* Close button styling */
+.overlay-close-button {
+  background-color: #04202E;
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  font-size: 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+/* Custom scrollbar styling */
+.QuestionHelp::-webkit-scrollbar {
+  width: 8px;
+  display: block !important;
+}
+
+.QuestionHelp::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.QuestionHelp::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.QuestionHelp::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px; /* spacing between buttons */
+  justify-content: center; /* or start/space-between */
+  margin-top: 16px;
+}
+.button-container div:hover {
+  opacity: 0.9;
+  transition: all 0.2s ease-in-out;
+}

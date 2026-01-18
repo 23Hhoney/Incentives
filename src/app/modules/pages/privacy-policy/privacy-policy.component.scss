@@ -1,0 +1,52 @@
+/* This rule applies the white background, box shadow, and padding */
+.card{
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 6px 6px 20px #00000029;
+    background: white; /* <-- This is the white background */
+}
+.m-4 p{
+    margin-bottom: 1rem;
+}
+
+/* Retaining the full-width styles for the inner content to ensure iframes stretch */
+.full-width-cms-content {
+    width: 100%;
+    margin: 0; 
+    padding: 0; 
+    color: #585858;
+    font-size: 20px;
+    line-height: 1.8;
+}
+
+/* ... (Remaining header, text, and iframe-wrapper styles) ... */
+.cms-header1{
+    font-size: 24px !important;
+    letter-spacing: 0px;
+    color: #344E41 !important;
+    font-weight: 600 !important;
+    margin-bottom: 20px;
+    padding-top: 3px;
+    margin-right: 1.5rem !important;
+}
+
+.text-black {
+    --bs-text-opacity: 1;
+    font-size: 24px;
+    font-family: HelveticaNeueBold;
+    font-size: 1.5rem;
+    font-weight: bolder;
+
+}
+.iframe-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.iframe-wrapper iframe {
+  display: block;
+  width: 100%; 
+  max-width: 100%; 
+  overflow: hidden; 
+}

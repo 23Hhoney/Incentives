@@ -1,0 +1,32 @@
+::ng-deep .mat-form-field[push-report-mat-label].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+  min-height: 35px;
+  height: 35px;
+}
+::ng-deep .mat-form-field[push-report-mat-label].mat-form-field-appearance-fill .mat-form-field-wrapper {
+  margin-bottom: 0 !important;
+  padding-bottom: 0;
+}
+::ng-deep .mat-form-field[push-report-mat-label].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix .mat-input-element {
+  padding: 0 0 !important;
+  height: 35px;
+  margin-top: 0;
+  width: 100%;
+}
+::ng-deep .mat-radio-group[push-report-mat-label] .mat-radio-label-content {
+  -webkit-user-select: auto;
+  user-select: auto;
+  color: #171A1F;
+  font-weight: 400 !important;
+  font-size: 14px;
+  display: inline-block;
+  order: 0;
+  line-height: inherit;
+  padding-left: 8px;
+  padding-right: 0;
+}
+::ng-deep .mat-checkbox .mat-checkbox-layout {
+  white-space: normal;
+  font-weight: 400 !important;
+  color: #242c39;
+  gap: 5px;
+}

@@ -1,0 +1,122 @@
+.title {
+    font-size: 15px;
+    font-weight: 600;
+    padding-bottom: 4px;
+    text-decoration: underline;
+}
+div.scroll { 
+    margin:4px, 4px; 
+    padding:4px;  
+    width: 500px; 
+    height: 110px; 
+    overflow-x: hidden; 
+    overflow-x: auto; 
+    text-align:justify; 
+} 
+
+.leftSide {
+    border-right: 1px solid #ECECEE;
+    background-color: #f1f1f1;
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        background-color: #f1f1f1;
+      }
+      
+      li a {
+        display: block;
+        color: #000;
+        padding: 8px 16px;
+        border-radius: 0 20px 20px 0;
+        margin-right: 16px;
+        cursor: pointer;
+        text-decoration: none !important;  
+      }
+      
+      li a.active {
+        background-color: #3ce6ad;
+        color: white;
+      }
+      
+      li a:hover:not(.active) {
+        background-color: #dee4e2;
+        color: black;
+      }
+}
+
+.rightSide {
+    .search {
+        height: 40px;
+        border-bottom: 1px solid #ECECEE;
+        padding-top: 5px;
+        display: inline-flex;
+        .checkBox {
+            padding-top: 2px;
+            padding-left: 14px; 
+            align-content: center;
+        }
+        .smallBox {
+            .mat-icon {
+                margin-left: 10px;
+                margin-top: 3px;
+            }
+            height: 30px;
+            margin-right: 10px; 
+            border: 1px solid #ECECEE;
+            border-radius: 12px; 
+        }
+    }
+    .searchResult {
+        overflow: hidden;
+        overflow-y: scroll;
+        margin:4px, 4px; 
+        padding:4px; 
+        height: 208px; 
+        overflow-x: auto; 
+        text-align:justify;
+        .searchText {
+            margin-top: 5px;
+            padding-left: 10px; 
+            align-content: center;
+        }
+    }
+}
+
+.fullSide {
+    border: 1px solid #ECECEE;
+    margin: 8px;
+    margin-bottom: 24px;
+    height: 250px;
+    border-radius: 4px;
+    display: flex;
+}
+
+.new {
+    mat-label {
+        margin-left: 10px;
+    }
+}
+
+.search-area {
+    display: inline-flex;
+    width: 100%;
+    border: 1px solid #ECECEE;
+    border-radius: 12px;
+    padding: 4px 0px 0px 6px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0px;
+    /* margin: 0px 10px 0px 0px; */
+    margin-right: 10px;
+}
+
+.mat-icon-custom {
+    font-size: 16px !important;
+    min-width: 16px !important;
+    min-height: 16px !important;
+    height: 16px !important;
+    width: 16px !important;
+}

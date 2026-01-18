@@ -1,0 +1,291 @@
+<div>
+  <div [ngClass]="{ 'dialog-transition': true, 'modal-backdrop': showMsgDialog, 'closed-dialog': !showMsgDialog }" (click)="showMsgDialog = false"></div>
+  <div style="position: fixed; width: 100vw; height: 100vh; top:0px; left:0px; display: flex; justify-content: center;" [ngStyle]="{'z-index': showMsgDialog ? 1001 : -1}"  (click)="showMsgDialog = false">
+    <div [ngClass]="{ 'dialog-transition': true, 'model-content': showMsgDialog, 'closed-dialog': !showMsgDialog }" [ngStyle]="{'z-index': showMsgDialog ? 1002 : -1}"  (click)="$event.stopPropagation()">
+      <div style="overflow: auto;">
+          <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #dee2e6;">
+              <h5>Message Details</h5>
+              <span class="close-model" (click)="showMsgDialog = false;">x</span>
+          </div>
+          <div style="padding: 10px; display: flex; flex-direction: column; gap: 10px; overflow: auto;" class="w-full">
+              <h4 style="overflow-wrap: break-word;">{{messageForm.value.subject || 'NA'}}</h4>
+              <app-view-html [html]="messageForm.value.body"></app-view-html>
+          </div>
+      </div>
+      <div style="justify-content: end; padding: 10px; display: flex; border-top: 1px solid #dee2e6;" *ngIf="showMsgDialog">
+          <button class="close-button" (click)="showMsgDialog = false">Close</button>
+      </div>
+  </div>
+  </div>
+  
+</div>
+<div class="container mx-auto px-4">
+    <!-- File Upload Section -->
+    <div class="w-full space-y-6 mt-8">
+      <div class="flex flex-col lg:flex-row items-center justify-start w-full space-x-4 space-y-4 lg:space-y-0" *ngIf="!updateMessage">
+        <div *ngIf="showDropBox" class="flex flex-col items-center" style="width: 17% !important;">
+          <button (click)="fileInput.click()" class="bg-[#03202E] text-white px-4 py-2 rounded-lg flex items-center">
+            <svg class="h-6 w-6 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293l2.414 2.414A1 1 0 0012.414 8H21a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z"></path>
+            </svg>
+            Choose Upload File
+          </button>
+          <input type="file" accept=".csv" (change)="onFileSelect($event)" class="hidden" #fileInput />
+        </div>
+  
+        <div *ngIf="showDropBox" class="text-gray-500 font-semibold" style="width: 3% !important;">OR</div>
+  
+        <div *ngIf="showDropBox" class="flex items-center justify-start w-full space-x-4">
+          <div 
+            (drop)="onFileDrop($event)" 
+            (dragover)="onDragOver($event)" 
+            (dragleave)="onDragLeave($event)" 
+            class="border-2 border-dashed border-gray-300 rounded-lg p-2 flex flex-col items-center cursor-pointer bg-[#FAFAFB] w-full max-w-xs h-36"
+          >
+            <div class="flex items-center justify-center h-16 w-16 rounded-full mb-2">
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M32 50.8718L32 32V35.2821" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                <path d="M22.9746 41.0256L32.0003 32L41.0259 41.0256" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+                <path d="M38.565 50.8045C42.2744 50.495 45.8202 49.1406 48.7913 46.8981C51.7623 44.6557 54.0369 41.6171 55.3515 38.1346C56.666 34.6521 56.9665 30.8683 56.2183 27.222C55.4701 23.5756 53.7037 20.216 51.1239 17.5326C48.5442 14.8492 45.2567 12.9519 41.6426 12.0608C38.0285 11.1696 34.2359 11.321 30.7043 12.4974C27.1728 13.6738 24.047 15.827 21.6893 18.7075C19.3317 21.588 17.8387 25.0777 17.3835 28.7721C14.5556 29.0527 11.9439 30.4094 10.0882 32.5615C8.23256 34.7137 7.27501 37.4967 7.41358 40.335C7.55216 43.1733 8.77626 45.8498 10.8327 47.811C12.8892 49.7721 15.6207 50.868 18.4624 50.8718L25.4368 50.8718" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+              </svg>
+            </div>
+            <span class="text-gray-500 text-2xl">Drop files here</span>
+            <span class="text-gray-400 text-lg">Supported format: .csv</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-container-body" *ngIf="uploadResult || updateMessage">
+        <div style="width: 50%;" class="flex flex-col items-start justify-start space-y-4">
+          <div *ngIf="!updateMessage" class="text-left  text-[#171A1F] font-normal mt-4 ml-4 content">
+            File Name:
+            <p>
+              <!-- <strong>File Name:</strong>  -->
+              {{ fileName }}</p>
+          </div>
+    
+          <div *ngIf="!updateMessage" class="ml-4 grid gap-4 text-[#171A1F] font-normal" style="gap: 3.5rem !important;">
+            <div class="resultContent">
+              <p>File Validation</p>
+              <br>
+              <p>{{ uploadResult?.totalRecordCount === 1 ? uploadResult.totalRecordCount + ' User Record Matched' : uploadResult?.totalRecordCount + ' User Records Matched' }}</p>
+              <p>{{ uploadResult?.duplicateRecordCount === 1 ? uploadResult.duplicateRecordCount + ' Duplicate Record (Duplicate skipped)' : uploadResult?.duplicateRecordCount + ' Duplicate Records (Duplicates skipped)' }}</p>
+              <p>{{ uploadResult?.unmatchedRecordCount === 1 ? uploadResult.unmatchedRecordCount + ' Record could not be matched (skipped)' : uploadResult?.unmatchedRecordCount + ' Records could not be matched (skipped)' }}</p>
+            </div>
+          </div>
+          <div class="flex space-x-4 mt-4 ml-4 resultContent" *ngIf="!updateMessage && (uploadResult.recordswithError && uploadResult.recordswithError > 0)" (click)="viewUploadedReport()"><p style="border-bottom: 1px solid #0D78C9 !important; color: #0D78C9 !important; cursor: pointer;">View Report</p></div>
+          <div class="flex space-x-4 mt-4 ml-4">
+            <button class="bg-[#04202E] text-white px-4 py-2 rounded-lg" (click)="SendMessage('Quick Send')"
+              [disabled]="uploadResult?.totalRecordCount === 0"
+              [ngStyle]="{'opacity': uploadResult?.totalRecordCount === 0 ? 0.5 : 1}">
+              Send Message Now
+            </button>
+            <button *ngIf="!(updateMessage && SelectedMessageStatus !== 'Scheduled')"
+              class="bg-[#04202E] text-white px-4 py-2 rounded-lg" (click)="openSchedulDialog(ScheduleMessageDialog)"
+              [disabled]="uploadResult?.totalRecordCount === 0"
+              [ngStyle]="{'opacity': uploadResult?.totalRecordCount === 0 ? 0.5 : 1}">
+              Schedule Message
+            </button>
+            <button class="bg-white text-black border border-gray-300 px-4 py-2 rounded-lg" (click)="cancelUpload()">
+              Cancel Message
+            </button>
+          </div>
+        </div>
+        <form style="width: 50%; padding-right: 20px;" [formGroup]="messageForm">
+          <div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <span style="color: #04202E; font-size: 18px;">Subject</span>
+              <input
+                style="padding: 0 10px; width: 100%; height: 58px; border-radius: 4px; border: 1px solid #04202E; box-sizing: border-box;"
+                [formControlName]="'subject'"
+                matInput
+                type="text">
+            </div>
+        
+            <div style="margin-top: 1rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 10px;">
+              <span style="color: #04202E; font-size: 18px;">Body</span>
+              <div style="border-radius: 4px; border: 1px solid #04202E; padding: 0; box-sizing: border-box;">
+                <ckeditor
+                  [config]="editorConfig"
+                  formControlName="body"
+                  id="editor1"
+                  [editor]="editor"
+                  (ready)="onReady($event)"
+                  #input2
+                  style="width: 100%;"
+                ></ckeditor>
+              </div>
+            </div>
+        
+            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+              <button
+                class="bg-[#04202E] text-white px-4 py-2 rounded-lg"
+                (click)="showMsgDialog = true">
+                Preview Message
+              </button>
+            </div>
+          </div>
+        </form>
+        
+      </div>
+    </div>
+  
+    <div class="w-full mt-10 space-y-6 overflow-x-auto">
+      <div class="w-full space-y-6">
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <div class="font-poppins font-normal text-3xl leading-12 text-left">
+            Message Manager
+          </div>
+          <div style="align-items: center; display: flex;">
+            <button style="
+              width: 100%;
+              padding: 5px 10px;
+              align-items: center;
+              justify-content: start;
+              border-radius: 4px;" mat-icon-button [matTooltip]="'Refresh Page'" mat-icon-button data-placement="bottom" (click)="ImportHistoryPaginated()">
+              <mat-icon [class]="'btn-color-600 refresh-icon'" [svgIcon]="'refresh'"></mat-icon>
+            </button>
+          </div>
+         
+          <div>
+            <mat-form-field style="width: 191px;" class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded">
+                <mat-icon
+                  class="icon-size-5"
+                  matPrefix
+                  [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                <input
+                style="width: 100%;"
+                  #MessageSearchBar
+                  matInput
+                  (keyup)="ApplySearch($event.target.value)"
+                  [placeholder]="'Search'">
+            </mat-form-field>
+        </div>
+        <button (click)="downloadTemplate()" style="
+                display: flex;
+                align-items: center;
+                border: 1px solid black;
+                border-radius: 4px;
+                padding: 0 10px;
+                cursor: pointer;
+                height: 41px;
+                width: fit-content;">
+          <mat-icon [svgIcon]="'download'"></mat-icon>
+          Message Template
+        </button>
+        </div>
+  
+        <div class="my-2"></div>
+        <app-data-grid
+          [gridSettings]="gridColumnsTab1"
+          [dataSource]="filteredDataList"
+          [loading]="loading"
+          [searchKey]="'subject'"
+          [searchMessageKeyword]="searchMessageKeyword"
+          [pages]="pages"
+          [pageIndex]="currentPage"
+          [totalRecordCount]="apiRequest.itemCount"
+          (emitRecordCount)="changePageCount($event)"
+          (fetchPageData)="onPageChange($event)"
+          (buttonClick)="handleButtonClick($event,deletepopup,viewPopUp,usersListModal)"
+          (sortChangeClick)="applySort($event)"
+        ></app-data-grid>
+      </div>
+    </div>
+  </div>
+  <ng-template #ScheduleMessageDialog>
+    <form>
+      <div style="display: flex; min-width: 300px;" mat-dialog-title class="dialog-header">
+        <h3 mat-dialog-title>Schedule Message</h3>
+        <button mat-icon-button (click)="closeMessageDialog()" class="close-button">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <mat-dialog-content>
+        <div>
+          <mat-form-field style="width: 100%;">
+            <input matInput [ngxMatDatetimePicker]="picker" 
+              placeholder="Schedule Message" 
+              [value]="originalDate"
+              [min]="minDate"
+              [disabled]="disabled"
+              (dateChange)="onDateTimeChange($event)">
+            <mat-datepicker-toggle matSuffix [for]="picker">
+            </mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #picker 
+              [showSpinners]="showSpinners" 
+              [showSeconds]="showSeconds"
+              [stepHour]="stepHour" [stepMinute]="stepMinute" 
+              [stepSecond]="stepSecond"
+              [touchUi]="touchUi"
+              [color]="color">
+            </ngx-mat-datetime-picker>
+          </mat-form-field>
+        </div>
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-button (click)="closeMessageDialog()" class="cancel-button">Cancel</button>
+        <button mat-raised-button color="primary" (click)="SendMessage()" class="delete-button">Send</button>
+      </mat-dialog-actions>
+    </form>
+  </ng-template>
+
+  <ng-template #deletepopup>
+    <div mat-dialog-title class="dialog-header">
+      <h3 class="dialog-title">Delete Confirmation</h3>
+      <button mat-icon-button (click)="modalReference.close()" class="close-buttond">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Are you sure, you want to delete this record?</p>
+    </div>
+    <div class="modal-footer">
+      <button mat-button (click)="modalReference.close()" class="cancel-button">Cancel</button>
+      <button mat-button (click)="handleMessageDelete(); modalReference.close()" class="delete-button">Delete</button>
+    </div>
+  </ng-template>
+
+  <ng-template #viewPopUp let-data>
+    <h2 mat-dialog-title>View Message & Subject</h2>
+    <mat-dialog-content class="flex flex-col">
+    <mat-form-field class="full-width">
+    <mat-label>Subject</mat-label>
+    <textarea matInput id="desc-text-area" [value]="data.subject" rows="4" readonly></textarea>
+    </mat-form-field>
+    <div class="full-width">
+    <mat-label>Message</mat-label>
+    <br>
+    <div [innerHTML]="data.message"></div> 
+    </div>
+    </mat-dialog-content>
+    <mat-dialog-actions style="float: right;">
+    <button mat-button mat-dialog-close style="background: #04202E; color: whitesmoke">Close</button>
+    </mat-dialog-actions>
+    </ng-template>
+
+  <ng-template #usersListModal style="display: flex;">
+    <div class="flex flex-col gap-2 h-full">
+      <div mat-dialog-title>
+        View Users
+      </div>
+      <mat-dialog-content style="flex: 1;">
+        <app-data-grid
+          [gridSettings]="userMessageDetailColumns"
+          [dataSource]="userListDataSource"
+          [loading]="usersListLoading"
+          [pages]="userListPages"
+          [totalRecordCount]="userMessageHistoryApiRequest.itemCount"
+          [pageIndex]="userMessageHistoryApiRequest.pageIndex"
+          (emitRecordCount)="changeUserListPageCount($event)"
+          (fetchPageData)="onUserListPageChange($event)"
+          (sortChangeClick)="applyUserListSort($event)"
+        ></app-data-grid>
+      </mat-dialog-content>
+      <mat-dialog-actions align="end" style="border-top: 1px solid #dee2e6">
+        <button mat-raised-button  mat-dialog-close color="primary" class="delete-button">Close</button>
+      </mat-dialog-actions>
+    </div>
+    
+  </ng-template>

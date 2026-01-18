@@ -1,0 +1,17 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+        nodejs: 18
+    commands:
+        - echo Installing source NPM dependencies...
+        - npm install
+        - npm i -g @angular/cli
+  build:
+    commands:
+        - echo Build started 
+        - ng build --configuration production       
+artifacts:
+    files:
+        - '**/*'
+    base-directory: 'dist'

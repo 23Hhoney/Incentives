@@ -1,0 +1,183 @@
+#card-faq-header {
+    background: #00264c;
+    padding: 50px;
+    margin-bottom: 10px;
+    text-align: center !important;
+}
+
+.learn-more-container {
+    margin-left: -6rem !important;
+    margin-right: -6rem !important; 
+    @media only screen and (max-width: 1100px) and (min-width: 701px) {
+        margin-left: -6rem !important;
+        margin-right: -6rem !important; 
+    }
+    @media only screen and (max-width: 700px) and (min-width: 401px) {
+        margin-left: -3rem !important;
+        margin-right: -3rem !important; 
+    }
+    @media only screen and (max-width: 400px) {
+        margin-left: -1rem !important;
+        margin-right: -1rem !important; 
+    }
+}
+
+.card-blocks-container {
+    padding: 0;
+    font-family: HelveticaNeueMedium;
+}
+.card-blocks-container .card-block-left-learn .title {
+    text-transform: none;
+    font-weight: bold;
+    font-size: 35pt;
+    color: #00264c;
+    line-height: 45pt;
+}
+.mt-4 {
+    margin-top: 1.5rem !important;
+}
+
+.card-blocks-container .card-block-right-learn {
+    background: url('../../../../assets/images/card-bg-2.png') no-repeat center center #579dda;
+    max-width: 585px;
+    flex: calc(50% - 19px);
+    min-height: 692px;
+}
+.card-blocks-container .card-block-left-learn .list-number {
+    display: inline-block;
+    width: 10%;
+    color: #4093fe;
+    vertical-align: top;
+}
+.card-blocks-container .card-block-left-learn .list-text {
+    display: inline-block;
+    width: 85%;
+    font-weight: normal;
+}
+.card-blocks-container .card-block-left-learn .sub-title {
+    text-transform: none;
+    font-size: 20px;
+    color: #4093fe;
+    padding: 30px 0;
+}
+.card-blocks-container .card-block-left-learn {
+    padding: 17px 28px;
+    text-align: left;
+    max-width: 585px;
+    flex: calc(50% - 19px);
+    min-height: 692px;
+}
+#card-main {
+    padding: 30px 0 60px 0;
+}
+#card-main .card-redeem-desc {
+    padding: 0 25px;
+}
+.f-20 {
+    font-size: 20px !important;
+}
+#card-learn-footer .row-spacing {
+    padding-bottom: 25pt;
+}
+#card-learn-footer {
+    background: #4091ff;
+    padding: 30px 0;
+    margin-bottom: -20px;
+}
+#card-learn-footer .list-svg-check {
+    display: inline-block;
+    width: 10%;
+    vertical-align: top;
+}
+#card-main-form {
+    background: #f4f4f4 !important;
+    padding: 30px 0 !important;
+    margin-bottom: -20px !important;
+}
+#card-faq-header h1 {
+    font: 35pt "HelveticaNeueBold", sans-serif !important;
+    color: #fff !important;
+    text-transform: none;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.container-fluid {
+    max-width: 1224px !important;
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-right: auto;
+    margin-left: auto;
+}
+.card-faq-main {
+    font-size: 20px !important;
+}
+
+.clearfix::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+
+
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1* var(--bs-gutter-y));
+}
+
+@media (min-width: 576px) {
+    .col-sm-12 {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+}
+
+.f-600 {
+    font-weight: 600 !important;
+}
+
+.card-faq-text-area {
+    width: 100%;
+    margin: 30px auto 60px;
+    color: #585858;
+    font: 20px / 1.8 "Arial", sans-serif;
+    border-bottom: 1px solid #000;
+    padding: 0 0 30px;
+}
+.f-16 {
+    font-size: 16px !important;
+}
+.text-center {
+    text-align: center !important;
+}
+.btn-primaryDark {
+    background-color: #00264c !important;
+    border: 0px solid #FFF;
+}
+.row>* {
+    margin-bottom: .5rem;
+}
+.card-fine-print {
+    font-size: 10pt !important;
+    color: #a0a0a0 !important;
+    padding: 20px 40px 20px !important;
+    text-align: left;
+}
+
+#card-learn-footer .list-text {
+    display: inline-block;
+    color: #fff !important;
+    width: 85% !important;
+    font-weight: normal !important;
+    text-align: left !important;
+    line-height: 23pt !important;
+    vertical-align: top !important;
+    font-size: 20px !important;
+    font-weight: 400 !important;
+}

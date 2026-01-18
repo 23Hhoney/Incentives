@@ -1,0 +1,165 @@
+<div class="container mt-4" [ngClass]="{'cus-container': !isTokenPresent}">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" style="cursor: pointer;" aria-current="page" (click)="getRouteLink()">
+                {{ isTokenPresent ? 'Home' : 'Return to Sign In'}}
+            </li>
+        </ol>
+    </nav>
+
+    
+
+    <!-- Dynamic Content -->
+    <ng-container *ngIf="sectionsArray.length && publishedPage && showPublishedPage">
+        <div class="mt-3 mb-2">
+            <div *ngIf="sectionsArray[0]?.items[0]?.chartHeading"
+                style="width: 100%;"
+                class="text-black"
+                [innerHTML]="sanitizeHtml(sectionsArray[0]?.items[0]?.chartHeading)">
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="Terms-content">
+                    <div *ngIf="sectionsArray[0]?.items[0]?.text"
+                        [innerHTML]="sanitizeHtml(sectionsArray[0]?.items[0]?.text)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+
+    <ng-container *ngIf="!sectionsArray.length || !publishedPage || !showPublishedPage || !draftId">
+        <div class="d-flex justify-content-between mt-3 mb-2">
+            <h3 class="text-black">Terms of Use</h3>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="Terms-content">
+                <p>Effective Date: March 5, 2012</p><p>
+
+                </p><p>THE FOLLOWING TERMS OF USE (“TOU”) SET FORTH THE BASIC RULES THAT GOVERN YOUR USE OF THIS WEB SITE (“WEB SITE”). PLEASE READ THESE TOU CAREFULLY. BY ACCESSING OR USING THIS WEB SITE, YOU AGREE TO BE BOUND BY THE TERMS DESCRIBED IN THESE TOU AND ALL TERMS INCORPORATED BY REFERENCE. IF YOU DO NOT AGREE TO ALL OF THESE TERMS, DO NOT USE THIS WEB SITE.</p><p>
+
+                </p><p>Kohler Co. and EGR International Inc., as part of a specialty-branded rewards program (“Kohler Preferred Partner”) have created these TOU to describe the terms and conditions for your access to this specialty-branded Web Site. Please note that when you access other websites from links on this&nbsp;<em>Web Site,</em>&nbsp;those websites may have different terms of use specific to those websites. We encourage you to read all related terms and conditions for each website you visit because they will be different from this Web Site, and may pose different conditions regarding your access and use.</p><p>
+
+                </p><h5><strong>1. Introduction.</strong></h5>
+                <p>Your use of this Web Site constitutes your knowledge, understanding, and acceptance of these TOU, and your agreement to be bound by these TOU. Kohler Preferred Partner may change, edit, modify, delete, revise, or update these TOU from time to time without notice, and your use of this Web Site after any changes, edits, modifications, deletions, revisions, or updates are posted to the Web Site constitutes your agreement to comply with the posted TOU.</p><p>
+
+                </p><h5><strong>2. Trademarks.</strong></h5>
+                <p>The trademarks, trade names, trade dress, logos, and service marks (collectively, the "Trademarks") displayed on this Web Site are the nationally and/or internationally registered and/or unregistered Trademarks of Kohler Co. and its business partners, or such other third party that may own the displayed Trademarks. Nothing contained on this Web Site or in these TOU serves to grant to you, by implication or otherwise, any license or right to use any Trademarks displayed on this Web Site without the written permission of Kohler Co., EGR International Inc., or such third party (as applicable) that may own the displayed Trademarks.</p><p>
+
+                </p><h5><strong>3.</strong>&nbsp;<strong>Web Site Contents and Copyright.</strong></h5>
+                <p>The text, Trademarks, logos, images, graphics, photos, video files, application functionality, or any other digital media, and their arrangement on this Web Site (“Content”) are all subject to patent, copyright, trademark and other intellectual property protection. Content may not be copied for commercial use or distribution, nor may Content be modified, processed, or reposted to other websites. Access to and use of this Web Site is solely for your redemption of rewards points for Kohler Preferred Partner products for personal use, information, education, entertainment, and communication with Kohler Preferred Partner. You may download, copy or print the Content of this Web Site for your personal non-commercial use only. No right, title or interest in any of the Content of this Web Site is transferred to you as a result of any downloading, copying, printing or use of this Web Site.</p><p>
+
+                </p><h5><strong>4. User Comments and Other Submissions.</strong></h5>
+                <p>While Kohler Preferred Partner desires to receive feedback from its program participants, please do not send Kohler Preferred Partner any unsolicited creative or original concepts, ideas, materials or products, confidential or proprietary information, or the like (“Submission(s)”). Kohler Preferred Partner is under no obligation to use or compensate you for your Submissions. Kohler Preferred Partner will not respond to you regarding your Submissions, and your Submissions will not be returned to you and will not be treated as confidential information.</p><p>
+
+                </p><h5><strong>5. License to Use Submissions.</strong></h5>
+                <p>This Web Site may provide you with the opportunity to submit user-generated or third-party Submissions. By submitting items to this Web Site, you represent that you own or have unencumbered, transferable rights and permissions, including, without limitation, the right of publicity and rights to disclose personally identifiable information, to the Submissions that you submit. If your Submission contains photographs or digital or video images that depict a child that is under the age of majority in their state or province of residence, you represent that you have written permission from the child's parent or guardian to provide the photo, digital, or video image. If you make a Submission to this Web Site, you automatically grant Kohler Preferred Partner a perpetual, worldwide, unlimited, irrevocable, transferable, assignable, royalty-free license for Kohler Preferred Partner to use that Submission for any lawful purpose whatsoever, including, without limitation, the right to sub-license that Submission to third parties for their lawful uses and purposes. Subject to existing laws, you waive any moral rights that you or your licensors may have in any Submission.</p><p>
+
+                </p><h5><strong>6. No Endorsement or Liability for User-Generated or Third-Party Content.</strong></h5>
+                <p>Although third-party or user-generated Submissions may be posted on this Web Site, the posting of those Submissions does not constitute Kohler Preferred Partner’ endorsement of those Submissions. Kohler Preferred Partner is not responsible or liable for any claim, including, without limitation, loss or injury to real, tangible, or intellectual property, violations of personal privacy or privacy rights, actual, direct, indirect, incidental, consequential or punitive damages, personal injury, or wrongful death in connection with third-party or user-generated Submissions.</p><p>
+
+                </p><h5><strong>7. Third-Party Links.</strong></h5>
+                <p>Third-party links on this Web Site may direct you to third-party websites that are not affiliated with Kohler Preferred Partner that may be located in different countries, and those websites and the products sold on those websites are likely to be subject to the originating country’s regulatory or product safety requirements. Kohler Preferred Partner is not liable for any harm or damages related to the redemption of rewards points in exchange for goods, services, resources, or content or use of goods, services, resources, content, or any other transactions (“Third-Party Products”) made in connection with this Web Site and any third-party websites. Please review carefully the third party's policies and practices and make sure you understand them before you engage in any transaction. Complaints, claims, concerns, or questions regarding Third-Party Products should be directed to the third party.</p><p>
+
+                </p><h5><strong>8. Copyrights and Digital Millennium Copyright Agents.</strong></h5>
+                <p>Pursuant to our rights under the Digital Millennium Copyright Act (“DMCA”), 17 U.S.C. § 512, we have designated a copyright agent to receive copyright infringement notices for claims of infringement related to materials found on this Web Site. Our copyright agent is Kohler Preferred Partner’ Intellectual Property Counsel. The agent can be reached at (920) 457-4441, dmca@kohler.com with the subject line “DMCA,” or via U.S. Mail at: Kohler Co., Attention: DMCA Agent, M/S 005, 444 Highland Drive, Kohler, WI 53044.</p><p>
+
+                </p><h5><strong>9. DMCA Infringement Notification.</strong></h5>
+                <p>To be effective, your infringement notification must include the following:</p><p>
+                </p><ol>
+                    <li>A physical or electronic signature of a person authorized to act on behalf of the owner of an exclusive right that is allegedly infringed;</li>
+                    <li>Identification of the copyrighted work claimed to have been infringed, or, if multiple copyrighted works at a single online site are covered by a single notification, a representative list of such works at that site.</li>
+                    <li>Identification of the material or content that is claimed to be infringing or to be the subject of infringing activity and that is to be removed or have access disabled, and information reasonably sufficient to permit us to locate the material;</li>
+                    <li>Information reasonably sufficient to permit us to contact the complaining party, including address, telephone number and email address where the complaining party may be contacted;</li>
+                    <li>The following statement: “I have a good faith belief that use of the material in the manner complained of is not authorized by the copyright owner, its agent, or the law”; and</li>
+                    <li>The following statement: “The information in this notification is accurate, and under penalty of perjury, I swear that I am the copyright owner or that I am authorized to act on behalf of the owner of an exclusive right that is allegedly infringed.” /li&gt;
+                </li></ol>
+                <p>Upon receipt of the written notification containing the information as outlined in 1 through 6 above:</p>
+                <ol>
+                    <li>Kohler Preferred Partner will remove or disable access to the content that is alleged to be infringing;</li>
+                    <li>Kohler Preferred Partner will forward the written notification to the alleged infringer; and</li>
+                    <li>Kohler Preferred Partner will take reasonable steps to promptly notify the alleged infringer that we have removed or disabled access to the content.</li>
+                </ol>
+
+                <h5><strong>DMCA Infringement Counter Notification.</strong></h5>
+                <p>Pursuant to the DMCA, after the alleged infringer receives a notice of infringement from Kohler Preferred Partner, the alleged infringer will have the opportunity to respond to Kohler Preferred Partner with a counter notification (“Counter Notification”). To be effective, a Counter Notification must be a written communication provided to Kohler Preferred Partner’ designated copyright agent, and must include the following:</p><p>
+                </p><ol>
+                    <li>A physical or electronic signature of the subscriber</li>
+                    <li>Identification of the material that has been removed or to which access has been disabled and the location at which the material appeared before it was removed or access disabled;</li>
+                    <li>The following statement: “I swear under penalty of perjury that it is my good faith belief that the material identified above was removed or disabled as a result of mistake or misidentification of the material to be removed or disabled”; and</li>
+                    <li>The subscriber’s name, address, and telephone number, and a statement that the subscriber consents to the jurisdiction of the federal district court for the judicial district in which the subscriber’s address is located, or if the subscriber’s address is outside of the United States, any judicial district in which Kohler Preferred Partner may be found, and that the subscriber will accept service of process from the person who provided notification or an agent of such person.</li>
+                </ol>
+
+                <p>Upon the copyright agent’s receipt of a Counter Notification containing the information as outlined in 1 through 4 above, the DMCA provides that the removed material will be restored or access re-enabled and we will comply with this requirement as required by law, provided that the designated agent has not received notice from the original complaining party that an action has been filed seeking a court order to restrain the subscriber from engaging in infringing activity relating to the material on our network.</p>
+
+                <h5><strong>10. Prohibited Uses.</strong></h5>
+
+                <p>In addition to other prohibitions as set forth in these TOU, you are prohibited from using the Web Site or its Content: (a) for any unlawful purpose; (b) to solicit others to perform or participate in any unlawful acts; (c) to violate any international, federal, or state regulations, rules, laws, or local ordinances; (d) to infringe upon or violate our intellectual property rights or the intellectual property rights or privacy rights of others; (e) to harass, abuse, insult, harm, defame, slander, disparage, intimidate, or discriminate based on gender, sexual orientation, religion, ethnicity, race, age, national origin, or disability; (f) to submit false or misleading information; (g) to upload or transmit viruses or any other type of malicious code that will or may be used in any way that will affect the functionality or operation of this Web Site, other websites, or the Internet; (h) to collect or track the personal information of others; (i) to spam, phish, pharm, pretext, spider, crawl, or scrape; (j) for any obscene or immoral purpose; or (k) to interfere with or circumvent the security features of this Web Site, other websites, or the Internet. We reserve the right to terminate your use of the Web Site for violating any of the prohibited uses.</p><p>
+
+                </p><h5><strong>11. Registration, Accounts and Passwords.</strong></h5>
+
+                <p>In order to participate in certain areas of our Web Site, you will need to register for an account.&nbsp; You agree to (a) create only one account; (b) provide accurate, truthful, current and complete information when creating your account; (c) maintain and promptly update your account information; (d) maintain the security of your account by not sharing your password with others and restricting access to your account and your computer; (e) promptly notify us if you discover or otherwise suspect any security breaches relating to the Web Site; and (f) take responsibility for all activities that occur under your account and accept all risks of unauthorized access.</p><p>
+
+                </p><p>You are responsible for all direct or indirect damages and liable for all activity conducted on this Web Site that can be linked or traced back to your username or password.</p><p>
+
+                                                                                                                                                                                                    </p><h5><strong>12. Web Site Updates.</strong></h5>
+
+                <p>Kohler Preferred Partner undertakes no obligation to update, amend or clarify information on this Web Site, including, without limitation, point redemption levels or rewards information, except as required under applicable United States law. No specified update or refresh date applied on this Web Site should be taken to indicate that all information on the Web Site has been modified or updated. Please remember when reviewing information on this Web Site that such information may not represent the complete information available on a subject. In addition, subsequent events or changes in circumstances may cause existing information on this Web Site to become inaccurate or incomplete.</p><p>
+
+                </p><p>On occasion, information on this Web Site may contain errors, including, without limitation, typographical errors, inaccuracies, or omissions related to product availability, special offers, product promotions, point redemption levels or rewards information, product descriptions, or product shipping charges and transit times. Kohler Preferred Partner reserves the right to, at any time and without prior notice, correct any errors, inaccuracies or omissions and to change or update information or cancel orders if any information on the Web Site is inaccurate (including after you have submitted your points for redemption).</p><p>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </p><h5><strong>13. Product, Point Redemption Levels and Returns Information.</strong></h5>
+
+                <p>All products displayed on the Web Site will be delivered only within the United States, District of Columbia and Puerto Rico or Canada (as applicable). All point redemption levels for products or offers that are displayed on the Web Site are valid and effective only with participating fulfillment providers. This Web Site, Content, product information, and any products sold through the Web Site into permitted jurisdictions are intended to comply with U.S. and Canadian federal laws and regulations.</p><p>
+
+                </p><p>Kohler Preferred Partner reserves the right, but is not obligated, to limit the redemption of rewards products or services to any person, geographic region or jurisdiction. We may exercise this right on a case-by-case basis. We reserve the right to limit the quantities of any products or services that we offer. All descriptions of products or product point redemption levels are subject to change at any time without notice at the sole discretion of Kohler Preferred Partner. Kohler Preferred Partner reserves the right to discontinue any product at any time. Any offer for any product or service made on this Web Site is void where prohibited.</p><p>
+
+                </p><p>Returns and exchanges are accepted for damaged/defective items, items of wrong color/size, or items missing pieces only. For important details regarding the Kohler Preferred Partner return and exchange terms and conditions, click&nbsp;<a style="text-decoration-line: underline; cursor: pointer; color: #708090; font-size: 12pt;" href="http://www.egrkohler.com/FAQ.7401860.html" target="_blank" rel="noopener">here</a>.</p><p>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                             </p><h5><strong>14. Resale of Product.</strong></h5>
+
+                <p>This Web Site rewards Kohler Preferred Partner program participants with products and services. You shall not use the Web Site to redeem products for re-sale or export. Kohler Preferred Partner reserves the right to immediately bar access to the Web Site and terminate the account of any user who violates this provision.</p><p>
+
+                                                                                                                                                                                                                                                                                                                                </p><h5><strong>15. Limitations on Liability</strong></h5>
+
+                <p>YOU ACKNOWLEDGE, BY YOUR USE OF THIS WEB SITE: (1) THAT YOUR USE OF THIS WEB SITE IS AT YOUR SOLE RISK; (2) THAT YOU ASSUME FULL RESPONSIBILITY FOR ALL COSTS ASSOCIATED WITH ALL NECESSARY SERVICING OR REPAIRS OF ANY EQUIPMENT THAT YOU USE IN CONNECTION WITH YOUR USE OF THIS WEB SITE; AND (3) THAT Kohler Preferred Partner WILL NOT BE LIABLE FOR ANY DAMAGES OF ANY KIND RELATED TO YOUR USE OF OR INABILITY TO USE OUR WEB SITE, INCLUDING WITHOUT LIMITATION, FAILURE OF PERFORMANCE, ERROR, OMISSION, INTERRUPTION, COMPUTER VIRUS, OR NETWORK OR INTERNET FAILURE, OR INCLUDING, WITHOUT LIMITATION, DIRECT, INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, COMPENSATORY OR CONSEQUENTIAL DAMAGES, LOST PROFITS AND/OR LOSS OF OR DAMAGE TO PROPERTY WHETHER THE ALLEGED LIABILITY IS BASED ON CONTRACT, TORT, NEGLIGENCE, STRICT LIABILITY OR ANY OTHER BASIS, EVEN IF Kohler Preferred Partner HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN NO EVENT WILL Kohler Preferred Partner’, ITS AFFILIATES’, AGENTS’, LICENSORS’ OR SUPPLIERS’ TOTAL LIABILITY FOR ANY CLAIMS RELATED TO THIS WEB SITE EXCEED FIFTY ($50) DOLLARS.</p><p>
+
+                </p><p>BECAUSE SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, Kohler Preferred Partner’, ITS AFFILIATES’, AGENTS’, LICENSORS’ AND SUPPLIERS’ DAMAGES IN SUCH JURISDICTIONS SHALL BE LIMITED TO THE EXTENT PERMITTED BY LAW.</p><p>
+
+                                                                                                                                                                                                                                                                                    </p><h5><strong>16. Disclaimer.</strong></h5>
+
+                <p>THE CONTENT PROVIDED ON THIS WEB SITE IS PROVIDED "AS IS” AND “WITH ALL FAULTS.” Kohler Preferred Partner MAKES NO WARRANTY OR REPRESENTATION, EITHER EXPRESS OR IMPLIED, AS TO ITS USE, AVAILABILITY, CONTENT ACCURACY, APPROPRIATENESS OR PERFORMANCE OF THIS WEB SITE. THIS WEB SITE USES COOKIES AND BY USING THIS WEB SITE YOU CONSENT TO THE PLACEMENT OF COOKIES OR SIMILAR TECHNOLOGY ONTO DEVICES USED TO ACCESS THIS WEB SITE.&nbsp; AS A USER, YOU ASSUME ALL RISKS AND RESPONSIBILITIES FOR YOUR USE OR NON-USE OF THE WEB SITE, AND Kohler Preferred Partner MAKES NO REPRESENTATION THAT THE CONTENT APPEARING ON OR DOWNLOADED FROM THIS WEB SITE IS COMPATIBLE WITH YOUR COMPUTER OR FREE FROM ERROR OR VIRUSES. NO Kohler Preferred Partner EMPLOYEE, AGENT OR REPRESENTATIVE IS AUTHORIZED TO MODIFY OR AMEND THIS WARRANTY. TO THE EXTENT ALLOWABLE BY EXISTING LAW; Kohler Preferred Partner DISCLAIMS ALL OTHER WARRANTIES, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, WITH RESPECT TO THIS WEB SITE AND ITS CONTENT. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, OR LIMITATION ON HOW LONG AN IMPLIED WARRANTY LASTS, SO THE ABOVE LIMITATIONS OR EXCLUSIONS MAY NOT APPLY TO YOU.</p><p>
+
+                </p><p>Kohler Preferred Partner RESERVES THE RIGHT TO ALTER OR REMOVE WEB SITE CONTENT, OR SUSPEND OR TERMINATE YOUR USE IN ANY WAY, AT ANY TIME, FOR ANY REASON, WITHOUT PRIOR NOTIFICATION, AND Kohler Preferred Partner WILL NOT BE LIABLE IN ANY WAY FOR POSSIBLE CONSEQUENCES OF THAT ACTION.</p><p>
+
+                                                                                                                                                                                                                                                                                          </p><h5><strong>17. INDEMNIFICATION.</strong></h5>
+
+                <p>YOU AGREE TO INDEMNIFY AND HOLD Kohler Preferred Partner, ITS DIRECTORS, OFFICERS, EMPLOYEES, AGENTS, BUSINESS PARTNERS AND AFFILIATES HARMLESS FROM AND AGAINST ANY AND ALL CLAIMS, DAMAGES, COSTS AND EXPENSES, INCLUDING ATTORNEY FEES, ARISING FROM OR RELATED TO YOUR USE OF THIS WEB SITE OR BREACH OF THESE TOU.</p><p>
+
+                </p><h5><strong>18. Termination.</strong></h5>
+
+                <p>The TOU will remain in effect until you notify us that you no longer wish to use the Web Site, or you cease using the Web Site. Notwithstanding anything in this TOU to the contrary, the parties understand and agree that all terms and conditions of these TOU that may require continued performance, compliance, or effect beyond the termination date of this TOU will survive termination of these TOU and will be enforceable by the parties, including but not limited to Sections 2, 3, 5, 6, 7, 8, 9, 15, 16, 17, 19 and 21. Kohler Preferred Partner may also terminate these TOU at any time and may do so immediately without notice, and accordingly deny you access to this Web Site, if in Kohler Preferred Partner' sole discretion, you fail to comply with any term or provision of these TOU. Upon any termination of these TOU by either you or Kohler Preferred Partner, you must promptly destroy all materials downloaded or otherwise obtained from this Web Site, as well as copies of such materials, whether made under these TOU or otherwise.</p><p>
+
+                </p><h5><strong>19. Choice of Law and Forum; Consent to Electronic Communications.</strong></h5>
+
+                <p>These TOU will be governed and construed in accordance with the laws of the United States and the State of Wisconsin, without regard to its conflicts of law rules. For all disputes arising out of or relating to this Web Site or TOU, you consent to submit to exclusive personal jurisdiction and venue of the state and United States federal courts located in Milwaukee County, Wisconsin.</p><p>
+
+                </p><h5><strong>20. Notice.</strong></h5>
+
+                <p>When you visit this Web Site or send e-mails to us, you are communicating with us electronically. You consent to receive communications from us electronically. We will communicate with you by e-mail or by posting notices on this Web Site. You agree that all agreements, notices, disclosures and other communications that we provide to you electronically satisfy any legal requirement that such communications be in writing.</p><p>
+
+                </p><h5><strong>21. No other Agreements.</strong></h5>
+
+                <p>By agreeing to these TOU, you represent that you are at least the age of majority in your state of residence or geopolitical jurisdiction, or that you are the age of majority in your state of residence or geopolitical jurisdiction and you have given Kohler Preferred Partner your consent to allow any of your minor dependents to use this Web Site. The provisions and conditions of these TOU constitute the entire agreement between you and Kohler Preferred Partner related to the use of the Web Site and supersedes any prior agreements or understandings not incorporated in these TOU. These TOU are effective as of the Effective Date. Continued use of the Web Site by you after the Effective Date constitutes your acceptance of these TOU.</p><p>
+
+                </p><p>Should you have any questions concerning these TOU, or if you desire to contact Kohler Preferred Partner for any reason, please contact tritonsupport@kohlerpreferredpartners.com.</p><p>
+
+            </p>
+        </div>
+    </div>
+    </div>
+</ng-container>
+</div>

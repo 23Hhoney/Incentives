@@ -1,0 +1,127 @@
+.text-under {
+    text-decoration: underline;
+}
+
+.type-stl {
+    font-size: 0.875rem;
+    padding: 6px 8px;
+}
+
+.th-bdr{
+    font-weight: 600 !important;
+    border-bottom-width: 1px;
+    border-style: solid;
+}
+.upload-file-text {
+    display: block;
+    @media only screen and (max-width: 380px) {
+        display: none;
+    }
+}
+
+.mat-label-text-sku-list {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 22px;
+    text-align: left;
+}
+
+.cus-background-sku-list-tag {
+    background: #F3F4F6;
+
+}
+
+.border-color-cus-sku-list {
+    border-color: #BDC1CA
+}
+
+.button-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.manage-period-form-field {
+    min-width: 260px;
+    margin-right: 20px;
+}
+::ng-deep .mat-datepicker-popup {
+    top: 10% !important;
+}
+
+::ng-deep .mat-datepicker-content .mat-calendar {
+    height: auto !important;
+}
+
+::ng-deep .mat-datepicker-content {
+    height: max-content !important;
+}
+
+::ng-deep .mat-tab-body-content {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+.btn-disabled {
+    opacity: 0.4;
+}
+
+.dialog-header {
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.custom-container {
+    border-radius: 0px !important;
+}
+.custom-container .mat-dialog-container {
+    border-radius: 0px !important;
+    padding: 0px !important;
+    background: white;
+    color: #1e293b;
+    width: 1483px;
+    height: 90vh;
+    box-shadow: 0px 0px 1px 0px #171A1F12;
+    box-shadow: 0px 0px 2px 0px #171A1F1F;
+
+}
+
+.add-sku-field-container {
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    .three-section-width {
+      width: 32%;
+      @media only screen and (max-width: 664px) {
+        width: 100%;
+      }
+    }
+  }
+
+.btn-cus {
+    width: 124px;
+    height: 36px;
+    padding: 7px 11px 7px 12px;
+    gap: 0px;
+    border-radius: 4px;
+    background: #04202E;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    // text-align: left;
+}
+
+
+::ng-deep .mat-radio-label-content {
+    -webkit-user-select: auto;
+    user-select: auto;
+    color: #171A1F;
+    font-weight: 400 !important;
+    font-size: 14px;
+    display: inline-block;
+    order: 0;
+    line-height: inherit;
+    padding-left: 8px;
+    padding-right: 0;
+}

@@ -1,0 +1,43 @@
+<div class="w-full mt-4 containheight">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">My Account</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between mt-3 mb-2" style="justify-content: space-between;">
+        <h3 class="text-black">Points</h3>
+        <a routerLink="/account" class="btn btn-primary-outline">Back to My Account</a>
+    </div>
+    <div class="bg-white" style="border-radius: 5px; box-shadow: 6px 6px 20px #00000029;">
+        <mat-tab-group [(selectedIndex)]="selectedTabIndex" class="custom-tab-group p-2 points-tab-group" (selectedTabChange)="onTabChange($event)">
+            <mat-tab label="Transaction History">
+                <app-data-grid
+                    [gridSettings]="gridColumnsTab"
+                    [dataSource]="dataSource1"
+                    [loading]="loading"
+                    [pages]="pages"
+                    [pageIndex]="currentPage"
+                    (fetchPageData)="onPageChange($event)"
+                    [totalRecordCount]="apiRequest.itemCount"
+                    (emitRecordCount)="changePageCount($event)"
+                    (sortChangeClick)="handleSortChange($event)" 
+                    >
+                </app-data-grid>
+            </mat-tab>
+            <mat-tab label="Redeemed">
+                <app-data-grid
+                    [gridSettings]="gridColumnsTab1"
+                    [dataSource]="dataSource2"
+                    [loading]="redeemLoading"
+                    [pages]="redeemPages"
+                    [pageIndex]="currentRedeemPage"
+                    (fetchPageData)="onRedeemPageChange($event)"
+                    [totalRecordCount]="apiRequestRedeemHistory.itemCount"
+                    (emitRecordCount)="changeRedeemPageCount($event)"
+                    (sortChangeClick)="handleSortChange($event)" 
+                    >
+                </app-data-grid>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

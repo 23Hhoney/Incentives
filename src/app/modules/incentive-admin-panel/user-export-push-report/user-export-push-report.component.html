@@ -1,0 +1,99 @@
+<form [formGroup]="pushExportForm" style="margin: 20px; display: flex; flex-direction: column; gap: 30px;">
+  <div style="display: flex;">
+    <div style="width: 50%; display: flex; gap: 20px;">
+        <div style="display: flex;
+        gap: 30px;
+        flex-direction: column;">
+            <span style="font-size: 20px; font-weight: 600; color: #565D6D;">
+                Exclude Inactive Users
+            </span>
+            <span style="font-size: 20px; font-weight: 600; color: #565D6D;">
+                Exclude Test Users
+            </span>
+        </div>
+        <div style="display: flex;
+        flex-direction: column;
+        height: inherit;
+        padding: 2px 0;
+        justify-content: space-between;">
+            <span>
+                <mat-radio-group push-report-mat-label [formControlName]="'excludeInactive'" style="display: flex; gap: 10px;">
+                    <mat-radio-button value="yes">Yes</mat-radio-button>
+                    <mat-radio-button value="no">No</mat-radio-button>
+                </mat-radio-group>
+            </span>
+            
+            <span>
+                <mat-radio-group push-report-mat-label [formControlName]="'excludeTestUser'" style="display: flex; gap: 10px;">
+                    <mat-radio-button value="yes">Yes</mat-radio-button>
+                    <mat-radio-button value="no">No</mat-radio-button>
+                </mat-radio-group>
+            </span>
+        </div>
+    </div>
+    <div class="flex space-x-4 mt-4 ml-4" style="width: 50%; align-items: center; justify-content: start;">
+      <button style="height: 36px; width: 446px; overflow: hidden; white-space: nowrap;" (click)="openDialog(ColumnDialog)" class="bg-[#04202E] text-white py-2 rounded-lg">
+        <mat-icon [svgIcon]="'Settings-btn-cus'" class="report-icon"></mat-icon>
+        <span style="bottom: 7px; margin-left: 5px; position: relative;">Select Push Report Fields from User Export</span>
+      </button>
+    </div>
+  </div>
+  <div style="display: flex; gap: 30px;">
+      <div style="display: flex; justify-content: space-between; flex-direction: column; padding: 2px 0;">
+        <span style="font-size: 20px; font-weight: 600; color: #565D6D;">
+          Period
+        </span>
+       
+      </div>
+      <div style="display: flex; flex-direction: column; height: inherit; gap: 30px; justify-content: space-between;">
+          <span>
+            <mat-form-field push-report-mat-label style="min-width: 192px; align-items: center;">
+              <mat-select [formControlName]="'period'">
+                <mat-option *ngFor="let item of yearsArray" [value]="item">{{item}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          
+         
+      </div>
+  </div>
+  <div class="flex space-x-4 mt-4 ml-4" style="align-items: center; justify-content: start;">
+    <button (click)="submitUserExportForm()" style="height: 36px; width: 170px;" class="bg-[#04202E] text-white py-2 rounded-lg">
+      <mat-icon [svgIcon]="'svg-download-arrow-box'"></mat-icon>
+      <span style="bottom: 7px; position: relative;">
+        Download .CSV File
+      </span>
+    </button>
+  </div>
+</form>
+
+<ng-template #ColumnDialog>
+  <form>
+    <div style="display: flex; min-width: 300px; justify-content: space-between;" mat-dialog-title
+      class="dialog-header">
+      <h3 mat-dialog-title>Select Columns</h3>
+      <button mat-icon-button (click)="columnsFormDialog.close()" class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <mat-dialog-content>
+      <div style="margin-bottom: 10px;">
+        <!-- Select All Checkbox -->
+        <mat-checkbox class="mb-2" [checked]="areAllColumnsSelected()" (change)="toggleSelectAll($event)">
+          <mat-label style="font-weight: 500;"> Select All </mat-label>
+        </mat-checkbox>
+      </div>
+      
+      <div class="flex flex-row gap-4" style="flex-wrap: wrap;">
+        <div *ngFor="let item of selectionFormResponse">
+          <mat-checkbox class="mb-2" [checked]="item['checked']" (change)="item['checked'] = !item['checked']">
+            <mat-label style="font-weight: 500;"> {{item.value}} </mat-label>
+          </mat-checkbox>
+        </div>
+      </div>
+    </mat-dialog-content>
+  </form>
+</ng-template>
+
+

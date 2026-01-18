@@ -1,0 +1,1351 @@
+<div style="margin-top: 0.5rem !important; height: 100%;" *ngIf="!publishedPage">
+  <div class="flex items-center justify-center w-full" style="height: 100%;">
+    <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+  </div>
+</div>
+<div style="margin-top: 0.5rem !important;" *ngIf="!publishedPage">
+
+  <div class="container" style="padding-top: 2px; border-radius: 1rem; overflow: hidden;">
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" style="border-radius: 1rem;">
+      <div class="carousel-inner" style="border-radius: 1rem; overflow: hidden;">
+        <div class="carousel-item active" style="border-radius: 1rem;">
+          <img src="assets/images/hero_bg1.jpg" class="d-block w-100" alt="..." (click)="routeToProgram()"
+            style="cursor: pointer; border-radius: 1rem;">
+          <div class="carousel-caption d-block" (click)="routeToProgram()" style="cursor: pointer;">
+            <h5 style="line-height: 1.2;">NEWS YOU CAN USE</h5>
+            <h2 style="line-height: 1.2;">Q3 2024 Program Overview</h2>
+            <p>Learn more about the Kohler Preferred Partners Program today!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container mt-4 mb-4">
+    <div class="row d-flex flex-wrap">
+      <div class="d-flex justify-between">
+        <div class="d-flex flex-row align-items-center">
+          <div class="ms-2">
+            <span class="largetext">Good Morning, {{userName}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full">
+    <div class="grid-cols-3 gap-4 w-full home-response-grid">
+
+      <div class="w-full p-6 card cardhero bg-card  rounded-2xl overflow-hidden">
+        <div class="w-full flex mb-4 justify-between">
+          <div class="ms-2">
+            <span>Performance</span>
+            <h3 class="mb-0">{{ isSalesSelected ? 'Total Sales' : 'Total Points' }}</h3>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="badgeblack"><a routerLink="/performance">See More</a></div>
+            <div class="cstRadio customSwitch">
+              <input class="checkbox" style="padding-right: 0.65em !important" [checked]="isSalesSelected"
+                (change)="toggleSalesGraph($event.target.checked)" type="checkbox" role="switch" id="NotifyUploadoc">
+              <div class="knobs"></div>
+              <div class="cstRadioLayer"></div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="lineChartLoading" class="flex items-center justify-center w-full">
+          <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+        </div>
+        <!-- <div class="w-full h-auto flex items-center"> -->
+        <canvas *ngIf="!lineChartLoading" id="homelinechart" style="box-sizing: border-box;" baseChart
+          [data]="lineChartData" [type]="lineChartType" [options]="lineChartOptions"
+          style="width: 768px !important; height: 384px !important;"></canvas>
+        <!-- </div> -->
+      </div>
+
+
+      <div class="w-full p-6 card cardblue bg-card rounded-2xl overflow-hidden">
+        <div class="w-full flex justify-between mb-2">
+          <div class="ms-2">
+            <span>Performance</span>
+            <h3 class="mb-0">Total List Price Sales</h3>
+          </div>
+          <div class="w-3/12 text-right">
+            <div class="badgeblack" style="color: white !important"><a routerLink="/performance"
+                style="color: white !important">See More</a></div>
+          </div>
+        </div>
+        <div *ngIf="pointsAndSummaryLoading" class="flex items-center justify-center w-full">
+          <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+        </div>
+        <div *ngIf="!pointsAndSummaryLoading" class="w-full h-auto mt-12">
+          <div>
+            <div class="d-flex justify-between">
+              <div class="d-flex flex-row items-center">
+                <div class="ms-2">
+                  <span>${{formatNumberWithCommas(totalSales)}}</span>
+                </div>
+              </div>
+              <div class="d-flex flex-row items-center">
+                <div class="ms-2">
+                  <span>${{ formatNumberWithCommas(targetValue) }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="progress mt-3">
+              <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"
+                [ngStyle]="{ 'width': totalSales > 0 ? totalSales * 100 / 5000000 + '%' : 'unset' }"></div>
+            </div>
+          </div>
+          <div class="mt-5 bottom1">
+            <h3>${{formatNumberWithCommas(totalSales)}}</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden">
+        <div class="w-full flex justify-between mb-4">
+          <div class="ms-2">
+            <span>Performance</span>
+            <h3 class="mb-0">Sales By Category</h3>
+          </div>
+          <div class="w-3/12 text-right">
+            <div class="badgeblack"><a routerLink="/performance">See More</a></div>
+          </div>
+        </div>
+        <div *ngIf="pieChartLoading" class="flex items-center justify-center w-full">
+          <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+        </div>
+        <div *ngIf="!pieChartLoading" class="w-full flex items-center justify-center">
+          <ngx-charts-pie-chart (window:resize)="onResize($event)" [view]="view" [scheme]="colorScheme"
+            [results]="pieChartData" [gradient]="false" [legend]="false" [doughnut]="isDoughnut">
+            <ng-template #tooltipTemplate let-model="model">
+              <div style="padding: 10px;">
+                <span style="margin: 10px;">
+                  {{model.name}}
+                </span>
+              </div>
+            </ng-template>
+          </ngx-charts-pie-chart>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="w-full">
+    <div class="home-response-grid grid-cols-3 gap-4 w-full">
+      <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden">
+        <div class="inline-flex w-full" style="justify-content: space-between; border-bottom: 0.5px solid #DEE2E6;">
+          <div>
+            <div class="ms-2">
+              <h3 class="mb-0">Academy Curriculums</h3>
+            </div>
+          </div>
+          <div>
+            <div *ngIf="userType === 'normaluser'" class="badgeblack" style="cursor: pointer;">
+              <a (click)="handleViewAllCurriculums()">See More</a>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="isCurriculumLoading" class="flex items-center justify-center w-full">
+          <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+        </div>
+        <div *ngIf="!isCurriculumLoading" class="curriculum-container" style="max-height: 600px; overflow-y: auto;">
+          <div class="flex" style="padding: 10px 0px; border-bottom: 0.5px solid #DEE2E6; background-color: #fff;">
+            <h6 style="font-size: 18px !important;">Required Monthly Training Progress</h6>
+            <div class="progress-bar2">
+              <div *ngIf="!calculateWidth(totalCourse, totalAttempted)" class="pl-1">{{calculateWidth(totalCourse,
+                totalAttempted)}}%</div>
+              <div [ngStyle]="{'width': calculateWidth(totalCourse, totalAttempted) + '%'}"
+                style="background: radial-gradient(circle at 10% 20%, rgb(7, 134, 197) 0%, rgb(42, 76, 171) 90.1%); color:#fff; text-align: center;transition: width 0.6s ease; overflow: hidden;">
+                {{calculateWidth(totalCourse, totalAttempted)}}%</div>
+            </div>
+          </div>
+          <div *ngFor="let course of curriculumData; let last = last">
+            <div *ngIf="course.totalAvailableCourse > 0">
+              <div
+                style="border-bottom: 0.5px solid #DEE2E6 !important; display: flex; width: 100%; justify-content: space-between; padding: 1rem 0rem;"
+                [ngStyle]="{'background': course['open'] ? 'rgb(218 234 255)' : '#fff'}"
+                (click)="course['open'] = !course['open']" [ngClass]="{'bottom-corners-radius': last}">
+                <div>
+                  <h3
+                    style="font-size: 1.125rem; cursor: pointer; letter-spacing: normal; color: #212529; margin-top: 0; margin-bottom: .5rem;font-weight: 500;line-height: 1.2;">
+                    {{course.curriculm}}
+                    <ng-container *ngIf="course.curriculumLanguage && course.curriculumLanguage.length > 1">
+                      ({{getLanguageCodes(course.curriculumLanguage)}})
+                    </ng-container>
+                  </h3>
+                  <div class="flex flex-row">
+                    <span class="text-primary ml-2"
+                      style="font-size: 16px; font-family: HelveticaNeueBold;">{{course.totalCompleted}}/{{course.totalAvailableCourse}}
+                      Completed</span>
+                  </div>
+                </div>
+                <div style="cursor: pointer;">
+                  <mat-icon [ngStyle]="{'color': course['open'] ? '#0c63e4' : 'black'}"
+                    [svgIcon]="course['open'] ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"></mat-icon>
+                </div>
+              </div>
+              <div *ngIf="course.open" style="padding: 1rem 1.25rem; background: #fff; border-bottom: solid 1px #dee2e6"
+                [ngClass]="{'bottom-corners-radius': last, 'border-bottom-conditional': !last}">
+                <div *ngIf="course.list && course.list.length > 0; else noDataFoundBlock">
+                  <div *ngFor="let groupedCourse of course.list; index as i"
+                    style="display: flex !important; justify-content: space-between !important; margin-bottom: 1rem; border-bottom: solid 1px #dee2e6; padding: 0.5rem 0;">
+                    <div style="display: flex; width: 100%;">
+                      <div style="height: 60px; width: 60px;">
+                        <img style="height: 60px; width: 60px;"
+                          [src]="groupedCourse.mainCourse.imageUrl || 'assets/images/course_default.png'"
+                          alt="Course Image">
+                      </div>
+                      <div style="display: flex; flex-direction: column; margin: 0 1rem; width: 100%;" class="flex-1">
+                        <div class="flex flex-row" style="margin-bottom: 0.5rem;">
+                          <h6
+                            style="cursor: pointer;color: #416fb6 !important; font-family: HelveticaNeueBold !important; font-size: 0.9375rem !important;"
+                            (click)="goToCourse(groupedCourse.mainCourse.courseId, groupedCourse.mainCourse.status)">
+                            {{groupedCourse.mainCourse.course.replace('_SP', '').replace('_FR', '')}}
+                          </h6>
+                          <span *ngIf="groupedCourse.mainCourse.points > 0" class="ml-6"
+                            style="font-family: HelveticaNeueBold !important; color: rgba(25,135,84, 1); font-size: 0.9375rem !important;">
+                            {{groupedCourse.mainCourse.points}} Points
+                          </span>
+                        </div>
+                        <div style="color: #212529;">{{groupedCourse.mainCourse.description}}</div>
+
+                        <!-- Language options -->
+                        <div *ngIf="groupedCourse.languages && groupedCourse.languages.length > 0"
+                          class="language-options" style="margin-top: 8px;">
+                          <span style="font-size: 0.875rem; color: #6c757d; margin-right: 8px;">Available in:</span>
+                          <div class="language-buttons" style="display: inline-flex; gap: 8px;">
+                            <button *ngFor="let lang of groupedCourse.languages"
+                              (click)="goToCourse(lang.courseId, lang.status); $event.stopPropagation();"
+                              [ngClass]="{'active-language': lang.language === 'English'}"
+                              style="padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #dee2e6; background-color: #f8f9fa; cursor: pointer;">
+                              {{lang.language}}
+                              <svg *ngIf="lang.progressStatus === 'Completed' || lang.status === 'Pass'"
+                                style="color: rgba(25, 135, 84, 1); display: inline-block; margin-left: 4px;"
+                                xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                                class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path
+                                  d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
+                                <path
+                                  d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
+                              </svg>
+                              <svg *ngIf="lang.progressStatus === 'started' && lang.status !== 'Pass'"
+                                style="display: inline-block; margin-left: 4px;" xmlns="http://www.w3.org/2000/svg"
+                                width="12" height="12" fill="currentColor" class="bi bi-hourglass-split"
+                                viewBox="0 0 16 16">
+                                <path
+                                  d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #noDataFoundBlock>
+                  <div
+                    style="display: flex; justify-content: center; align-items: center; padding: 10px; background: #fff;">
+                    <span>No course is assigned to this curriculum.</span>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding-right: 0 !important;" class="col-span-2 w-full p-6 rounded-2xl overflow-hidden">
+        <div class="inline-flex w-full">
+          <div style="justify-content: space-between; flex: 1" class="pr-2">
+            <div class="ms-2">
+              <div class="videoTitle mb-4" [ngClass]="{ 'clickable': userType != 'admin' }"
+                [ngStyle]="{ 'cursor': userType != 'admin' ? 'pointer' : 'default' }"
+                (click)="userType != 'admin' && handleViewAllCurriculums()">
+                Training of the<br>
+                Month!
+              </div>
+            </div>
+            <div>
+              <div *ngIf="userType === 'normaluser'" class="badgeblack"><a (click)="RouteTokitchenFaucets(null)"
+                  style="cursor: pointer;">See More</a></div>
+            </div>
+          </div>
+          <div class="w-9/12">
+            <div class="d-flex justify-between w-full">
+              <div class="d-flex flex-row items-center w-full">
+                <div style="width: 100%;">
+                  <img *ngIf="userType !== 'admin'; else adminImage" (click)="RouteTokitchenFaucets(null)"
+                    src="assets/images/monthlyImageTraining.png" class="img-fluid rounded-2xl"
+                    style="cursor: pointer;" />
+                  <ng-template #adminImage>
+                    <img src="assets/images/monthlyImageTraining.png" class="img-fluid rounded-2xl" />
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="w-full">
+    <div class="home-response-grid grid-cols-2 gap-4 w-full">
+      <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden">
+        <div class="inline-flex w-full" style="justify-content: space-between;">
+          <div>
+            <div class="ms-2">
+              <h3 class="mb-2">Look at the points you’ve earned!</h3>
+              <span>
+                YTD List Price:
+                <span class="bluetext1 me-4">{{ formatNumberWithCommas(ytdSales) }}</span>
+                Current Point Balance:
+                <span class="bluetext1">{{ formatNumberWithCommas(remainingPoints) }}</span>
+              </span>
+            </div>
+          </div>
+          <div>
+            <div *ngIf="userType === 'normaluser'" class="badgeblack">
+              <a routerLink="/transactions">See More</a>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div *ngIf="isTransactionLoading" class="flex items-center justify-center w-full">
+          <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+        </div>
+        <div *ngIf="!isTransactionLoading">
+          <div *ngIf="transactionData.length === 0"
+            class="no-data-found flex items-center justify-center h-48 w-full text-xl text-center text-gray-500">
+            <p>No data found</p>
+          </div>
+          <div *ngIf="transactionData.length > 0" class="overflow-auto">
+            <table class="table tablenew w-full table-auto">
+              <thead>
+                <tr>
+                  <th class="th-bdr text-left" scope="col">Invoice#</th>
+                  <th class="th-bdr text-left" scope="col">Date Processed</th>
+                  <th class="th-bdr text-left" scope="col">Date of Sale</th>
+                  <th class="th-bdr text-left" scope="col">Type</th>
+                  <th class="th-bdr text-left" scope="col">Points</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let transaction of transactionData">
+                  <td>{{transaction.invoiceNumber}}</td>
+                  <td>{{transaction.dateProcessed}}</td>
+                  <td>{{transaction.dateOfSale}}</td>
+                  <td>
+                    <a style="cursor: default !important;" [ngClass]="{
+                          'mt-4 text-lg btn btn-priblue mx-0 !important': transaction.transactionType === 'Redemption',
+                          'type-stl btn btn-sm btn-secondary': transaction.transactionType !== 'Redemption'
+                        }">{{transaction.transactionType}}</a>
+                  </td>
+                  <td>{{transaction.totalPoints}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <!-- Messages section -->
+      <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden">
+        <div class="inline-flex w-full">
+          <div class="w-full">
+            <div class="ms-2">
+              <h3>You have Messages!</h3>
+            </div>
+          </div>
+        </div>
+        <hr class="mt-2 mb-2">
+        <div *ngIf="isNotificationLoading" class="flex items-center justify-center w-full">
+          <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+        </div>
+        <div *ngIf="!isNotificationLoading" class="mt-2 overflow-auto">
+          <table class="table tablenew w-full table-auto">
+            <tbody>
+              <tr>
+                <td style="width: 100%;">
+                  <span (click)="routeToNotification()" class="bluetext" style="cursor: pointer;">Unread Messages ({{
+                    notifications.customRecordCount }})</span>
+                </td>
+                <td></td>
+                <td>
+                  <div class="textgrey"><span>Status</span></div>
+                </td>
+              </tr>
+              <tr *ngFor="let notification of notifications.results">
+                <td>
+                  <h6 class="bluetext">{{ notification.title }}</h6>
+                  <p class="pb-2" [innerHTML]="notification.message"></p>
+                  <p class="text-muted">Received on: {{ notification.createdDateTime }}</p>
+                  <p *ngIf="notification.scheduledDateTime" class="text-muted">Scheduled on: {{
+                    notification.scheduledDateTime }}</p>
+                </td>
+                <td></td>
+                <td>
+                  <mat-icon (click)="handleReadClick(notification)"
+                    [ngClass]="{'Unread': !notification.isRead || notification.ishighlithed, 'read': notification.isRead}"
+                    [svgIcon]="notification.isAlert && !notification.isRead ? 'heroicons_outline:exclamation-circle' : (notification.isRead ? 'heroicons_outline:check' : 'heroicons_outline:mail')"></mat-icon>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="d-flex justify-between" *ngIf="userType === 'normaluser'">
+            <a class="messages-view-all" (click)="handleViewAllNotification()">View All</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div #scrollContainerItem class="sections-container custom-homepage-container"
+  *ngIf="publishedPage && publishedPage.menuId === 'HM'">
+  <div *ngFor="let section of sectionsArray; let i = index; trackBy: trackByFn" [ngStyle]="{
+      'margin-top': i > 0 ? '5px' : '0',
+      'min-height': (mobileView || isWindowWidthLessThan768()) ? 'auto' : getSectionArrayMaxHeight(i),
+      'height': (mobileView || isWindowWidthLessThan768()) ? 'auto' : getSectionArrayMaxHeight(i),
+      'position': 'relative',
+      'overflow': 'visible'
+    }">
+    <div class="parent-container">
+      <div *ngFor="let item of section.items; let j = index" class="element-container" [id]="'element-' + item.id"
+        [ngStyle]="{
+          'width': (mobileView || isWindowWidthLessThan768()) ? '100%' : (item.widthPercent > 100 ? '100%' : item.widthPercent + '%'),
+          'height': (mobileView || isWindowWidthLessThan768() || item.type === 'text' || item.type === 'greeting') ? null : item.heightPercent + 'vh',
+          'top': (mobileView || isWindowWidthLessThan768()) ? 'auto' : item.yPercent + 'vh',
+          'left': (mobileView || isWindowWidthLessThan768()) ? '0' : (item.xPercent + item.widthPercent > 100 ? (100 - item.widthPercent) : item.xPercent) + '%',
+          'z-index': item['isEdit'] || item['showChartHeading'] ? 9999 : item.zIndex,
+          'border': isPublishedView ? 'none' : ((selectedElement?.id === item.id && editingSection && isEditingSection === i) ? '2px solid #3273dc' : ((hoveredElement?.id === item.id && editingSection && isEditingSection === i) ? '1px solid #3273dc' : '1px solid transparent')),
+          'box-shadow': isPublishedView ? 'none' : (selectedElement?.id === item.id && editingSection && isEditingSection === i ? '0 0 8px rgba(50, 115, 220, 0.5)' : 'none'),
+          'cursor': isPublishedView || !editingSection || isEditingSection !== i ? 'default' : 'move',
+          'user-select': isPublishedView ? 'auto' : 'none',
+          'padding': isPublishedView ? '0' : '2px',
+          'position': (mobileView || isWindowWidthLessThan768()) ? 'relative' : 'absolute',
+          'max-width': '100%',
+          'box-sizing': 'border-box'
+        }">
+        <ng-container [ngSwitch]="item.type">
+      <!-- Greeting -->
+        <div *ngSwitchCase="'greeting'" class="text-element widget-zoom" [ngStyle]="{
+          'width': '100%',
+          'height': 'auto',
+          'padding': '8px',
+          'overflow': 'visible',
+          'color': item.style?.color || '#000',
+          'background-color': item.style?.backgroundColor || 'transparent',
+          'font-weight': item.style?.bold ? 'bold' : 'normal',
+          'font-style': item.style?.italic ? 'italic' : 'normal',
+          'text-decoration': item.style?.underline ? 'underline' : 'none',
+          'display': 'block',
+          'line-height': '1.2',
+          'white-space': (mobileView || isWindowWidthLessThan768()) ? 'normal' : 'nowrap',
+          'z-index': item.zIndex || 1
+        }" [innerHTML]="getSafeHtml(item.text)">
+        </div>
+        
+        <!-- Regular Text -->
+        <div *ngSwitchCase="'text'" class="text-element" [ngStyle]="{
+              'width': '100%',
+              'height': 'auto',
+              'min-height': item.heightPercent + 'vh',
+              'padding': '8px',
+              'overflow': 'visible',
+              'white-space': 'normal',
+              'overflow-wrap': 'break-word',
+              'word-wrap': 'break-word',
+              'font-size.px': item.style?.fontSize || 14,
+              'color': item.style?.color || '#000',
+              'background-color': item.style?.backgroundColor || 'transparent',
+              'font-weight': item.style?.bold ? 'bold' : 'normal',
+              'font-style': item.style?.italic ? 'italic' : 'normal',
+              'text-decoration': item.style?.underline ? 'underline' : 'none',
+              'display': 'block',
+              'line-height': '1.4',
+              'z-index': 20,
+              'position': 'relative',
+              'border-radius': mobileView ? '8px' : '8px',
+              'box-shadow': item.style?.backgroundColor ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
+              'box-sizing': 'border-box'
+            }" [innerHTML]="getSafeHtml(item.text)">
+        </div>
+        <div *ngSwitchCase="'image'" style="width: 100%; height: 100%; position: relative;">
+          <!-- Single Image -->
+          <div *ngIf="item.images; else noImage" style="width: 100%; height: 100%; position: relative;">
+            <ng-container *ngIf="(item.hyperlink || item.text); else nonClickableImage">
+              <a [href]="formatHyperlink(item.hyperlink || item.text)" target="_blank" rel="noopener noreferrer"
+                style="display: block; width: 100%; height: 100%;">
+                <img [src]="item.images" alt="Image" style="width: 100%; height: 100%; object-fit: cover;">
+              </a>
+            </ng-container>
+            <ng-template #nonClickableImage>
+              <img [src]="item.images" alt="Image" style="width: 100%; height: 100%; object-fit: cover;">
+            </ng-template>
+          </div>
+        
+          <!-- No Image Template -->
+          <ng-template #noImage>
+            <div
+              style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+              <i class="fas fa-image" style="font-size: 24px; margin-bottom: 8px;"></i>
+              <p style="margin: 0;">Click edit button to add image</p>
+            </div>
+          </ng-template>
+        </div>
+          <!-- Video -->
+          <div *ngSwitchCase="'video'" class="video-container"
+            style="width: 100%; height: 100%; position: relative; overflow: hidden;">
+            <ng-container *ngIf="item.isYoutubeOrVimeo && item.videoUrl; else localVideo">
+              <div style="position: relative; width: 100%; height: 100%; padding-top: 56.25%;">
+                <iframe [src]="item.videoUrl | safeEmbedUrls:item.autoPlay:item.loop" frameborder="0"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen [attr.aria-label]="'YouTube video player for ' + item.id"></iframe>
+              </div>
+            </ng-container>
+            <ng-template #localVideo>
+              <video *ngIf="getVideoUrl(item)" [src]="getVideoUrl(item)" [autoplay]="item.autoPlay" [loop]="item.loop"
+                [controls]="true" [muted]="item.autoPlay" style="width: 100%; height: 100%; object-fit: contain;"
+                (loadstart)="onVideoLoadStart(item)" (error)="onVideoError($event, item)"
+                [attr.aria-label]="'Video player for ' + item.id">
+                Your browser does not support the video tag.
+              </video>
+              <video *ngIf="!getVideoUrl(item) && item.tempVideoUrl" [src]="item.tempVideoUrl"
+                [autoplay]="item.autoPlay" [loop]="item.loop" [controls]="true" [muted]="item.autoPlay"
+                style="width: 100%; height: 100%; object-fit: contain; border: 2px solid red;"
+                (loadstart)="onVideoLoadStart(item)" (error)="onVideoError($event, item)"
+                [attr.aria-label]="'Temporary video player for ' + item.id">
+                Your browser does not support the video tag.
+              </video>
+              <div *ngIf="!getVideoUrl(item) && !item.tempVideoUrl"
+                style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+                <i class="fas fa-video" style="font-size: 24px; margin-bottom: 8px;"></i>
+                <p style="margin: 0;">Click edit button to add video</p>
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Audio -->
+          <div *ngSwitchCase="'audio'"
+            style="width: 100%; height: 100%; padding: 8px; display: flex; flex-direction: column;">
+            <div *ngIf="getAudioUrl(item)"
+              style="width: 100%; height: 100%; display: flex; flex-direction: column; position: relative;">
+              <div *ngIf="item.title"
+                style="font-family: HelveticaNeueBold; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: #333; text-align: left;">
+                {{ item.title }}
+              </div>
+              <div *ngIf="item.subtitle"
+                style="font-family: HelveticaNeueBold; color: #666; font-size: 13px; margin-bottom: 10px; text-align: left; font-style: italic;">
+                {{ item.subtitle }}
+              </div>
+              <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                <audio [src]="getAudioUrl(item)" [controls]="item.showControls !== false" [autoplay]="item.autoPlay"
+                  style="width: 100%; max-width: 100%; height: auto; min-height: 40px;"
+                  (loadedmetadata)="onAudioLoaded(audioPlayer, item)" preload="metadata">
+                </audio>
+
+
+              </div>
+            </div>
+            <div *ngIf="!getAudioUrl(item)"
+              style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+              <i class="fas fa-volume-up" style="font-size: 24px; margin-bottom: 8px;"></i>
+              <p style="margin: 0;">No audio available. Please check the audio URL.</p>
+            </div>
+          </div>
+
+          <div *ngSwitchCase="'button'"
+            style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 4px;"
+            [ngStyle]="{
+                          'backgroundColor': parseButtonStyle(item.salesHeading)?.backgroundColor || '#007bff',
+                          'color': parseButtonStyle(item.salesHeading)?.color || '#ffffff',
+                          'font-weight': parseButtonStyle(item.salesHeading)?.fontWeight || 'normal',
+                          'font-style': parseButtonStyle(item.salesHeading)?.fontStyle || 'normal',
+                          'text-decoration': parseButtonStyle(item.salesHeading)?.textDecoration || 'none',
+                          'z-index': parseButtonStyle(item.salesHeading)?.zIndex || 'auto',
+                          'cursor': item.chartHeading ? 'pointer' : 'default',
+                          'opacity': item.chartHeading ? '1' : ''
+                        }" (click)="onButtonClick(item)"
+            [title]="item.chartHeading ? 'Click to visit: ' + item.chartHeading : ''">
+            <span>{{item.text || 'Click me'}}</span>
+          </div>
+      <div *ngSwitchCase="'Pie Chart'" style="min-width: auto !important;" [ngClass]="item.className"
+        class="h-full min-h-full">
+        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
+          [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
+          style="display: flex; flex-direction: column;">
+          <div class="inline-flex w-full justify-between flex-col-mobile">
+            <div class="ms-2 chart-text">
+              <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+              <div class="mb-0" *ngIf="!isSalesSelected" [innerHTML]="sanitizeHtml(item.text)"></div>
+              <div class="mb-0" *ngIf="isSalesSelected" [innerHTML]="sanitizeHtml(item.salesHeading)"></div>
+            </div>
+            <div class="w-3/12 text-right flex flex-col items-end gap-2">
+              <div class="text-sm font-medium">{{ getChartDropdownText(item.chartDropdown) }}</div>
+              <div class="badgeblack"><a routerLink="/performance">See More</a></div>
+            </div>
+          </div>
+          <div *ngIf="pieChartLoading" class="flex items-center justify-center w-full">
+            <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+          </div>
+          <div *ngIf="!pieChartLoading && noPieChartData" class="flex items-center justify-center w-full">
+            <p>No Data Found</p>
+          </div>
+          <div *ngIf="!pieChartLoading && !noPieChartData" class="w-full flex items-center justify-center">
+            <ngx-charts-pie-chart (window:resize)="onResize($event)" [view]="item['chartView'] || [item.width * 0.7, 300]"
+              [scheme]="colorScheme" [results]="pieChartData" [gradient]="false" [legend]="false" [doughnut]="isDoughnut">
+              <ng-template #tooltipTemplate let-model="model">
+                <div style="padding: 10px;">
+                  <span style="margin: 10px;">{{model.name}} ({{model.extra.percentage}}%)</span>
+                </div>
+              </ng-template>
+            </ngx-charts-pie-chart>
+          </div>
+        </div>
+      </div>
+
+      <!-- Line Chart -->
+      <!-- Line Chart -->
+      <div *ngSwitchCase="'Line Chart'" style="min-width: auto !important;" [ngClass]="item.className"
+        class="h-full min-h-full">
+        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
+          [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent">
+          <div class="w-full flex mb-4 justify-between flex-col-mobile">
+            <div class="ms-2 chart-text">
+              <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+              <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)"></div>
+            </div>
+            <div class="flex flex-col items-end gap-2">
+              <div class="text-sm font-medium">{{ getChartDropdownText(item.chartDropdown) }}</div>
+              <div class="badgeblack"><a routerLink="/performance">See More</a></div>
+            </div>
+          </div>
+          <div *ngIf="lineChartLoading[item.chartIndex]" class="flex items-center justify-center w-full">
+            <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+          </div>
+          <div *ngIf="!lineChartLoading[item.chartIndex] && noLineChartData[item.chartIndex]"
+            class="flex items-center justify-center w-full">
+            <p>No Data Found</p>
+          </div>
+          <div *ngIf="!lineChartLoading[item.chartIndex] && !noLineChartData[item.chartIndex]" class="w-full h-[300px]">
+            <canvas baseChart [data]="lineChartData[item.chartIndex]" [type]="lineChartType"
+              [options]="getLineChartOptions(item.chartDataType)"
+              style="width: 768px !important; height: 384px !important;"></canvas>
+          </div>
+        </div>
+      </div>
+      <div *ngSwitchCase="'Bar Chart'" style="min-width: auto !important;" [ngClass]="item.className"
+        class="h-full min-h-full">
+        <div class="w-full p-6 card cardblue bg-card rounded-2xl overflow-hidden h-full min-h-full"
+          [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent">
+          <div class="w-full flex justify-between mb-2 flex-col-mobile">
+            <div class="ms-2 chart-text">
+              <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+              <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)"></div>
+            </div>
+            <div class="w-3/12 text-right flex flex-col items-end gap-2">
+              <div class="text-sm font-medium">{{ getChartDropdownText(item.chartDropdown) }}</div>
+              <div class="badgeblack" style="color: white !important">
+                <a routerLink="/performance" style="color: white !important">See More</a>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="pointsAndSummaryLoading" class="flex items-center justify-center w-full">
+            <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+          </div>
+          <div *ngIf="!pointsAndSummaryLoading && noBarChartData" class="flex items-center justify-center w-full">
+            <p>No Data Found</p>
+          </div>
+          <div *ngIf="!pointsAndSummaryLoading && !noBarChartData" class="w-full mt-12">
+            <div
+              *ngIf="selectedTimePeriodBar === 'yearVsYear' && barChartData.currentYear && barChartData.previousYear; else singlePeriod">
+              <!-- Current Year -->
+              <div class="mb-6">
+                <div class="d-flex justify-between">
+                  <div class="d-flex flex-row items-center">
+                    <div class="ms-2">
+                      <span>Current Year ({{currentYear}}):
+                        ${{formatNumberWithCommas(barChartData.currentYear.totalSales)}}</span>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row items-center">
+                    <div class="ms-2">
+                      <span>Target: ${{formatNumberWithCommas(barChartData.currentYear.targetValue)}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="progress mt-3">
+                  <div class="progress-bar bg-blue-600" role="progressbar"
+                    [attr.aria-valuenow]="barChartData.currentYear.totalSales" aria-valuemin="0"
+                    [attr.aria-valuemax]="barChartData.currentYear.targetValue"
+                    [ngStyle]="{'width': barChartData.currentYear.targetValue > 0 ? (barChartData.currentYear.totalSales * 100 / barChartData.currentYear.targetValue) + '%' : '0%'}">
+                  </div>
+                </div>
+              </div>
+              <!-- Previous Year -->
+              <div>
+                <div class="d-flex justify-between">
+                  <div class="d-flex flex-row items-center">
+                    <div class="ms-2">
+                      <span>Previous Year ({{previousYear}}):
+                        ${{formatNumberWithCommas(barChartData.previousYear.totalSales)}}</span>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row items-center">
+                    <div class="ms-2">
+                      <span>Target: ${{formatNumberWithCommas(barChartData.previousYear.targetValue)}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="progress mt-3">
+                  <div class="progress-bar bg-red-600" role="progressbar"
+                    [attr.aria-valuenow]="barChartData.previousYear.totalSales" aria-valuemin="0"
+                    [attr.aria-valuemax]="barChartData.previousYear.targetValue"
+                    [ngStyle]="{'width': barChartData.previousYear.targetValue > 0 ? (barChartData.previousYear.totalSales * 100 / barChartData.previousYear.targetValue) + '%' : '0%'}">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ng-template #singlePeriod>
+              <div>
+                <div class="d-flex justify-between">
+                  <div class="d-flex flex-row items-center">
+                    <div class="ms-2">
+                      <span>${{formatNumberWithCommas(barChartData.totalSales)}}</span>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row items-center">
+                    <div class="ms-2">
+                      <span>${{formatNumberWithCommas(barChartData.targetValue)}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="progress mt-3">
+                  <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="barChartData.totalSales"
+                    aria-valuemin="0" [attr.aria-valuemax]="barChartData.targetValue"
+                    [ngStyle]="{'width': barChartData.targetValue > 0 ? (barChartData.totalSales * 100 / barChartData.targetValue) + '%' : '0%'}">
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+            <div class="mt-5 bottom1">
+              <h3 *ngIf="selectedTimePeriodBar === 'yearVsYear' && barChartData.currentYear && barChartData.previousYear">
+                Current: ${{formatNumberWithCommas(barChartData.currentYear.totalSales)}} |
+                Previous: ${{formatNumberWithCommas(barChartData.previousYear.totalSales)}}
+              </h3>
+              <h3 *ngIf="selectedTimePeriodBar !== 'yearVsYear'">
+                ${{formatNumberWithCommas(barChartData.totalSales)}}
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+          <!-- Panel (for video/image with multiple items) -->
+          <div *ngSwitchCase="'panel' && item.getAllCMSItemViews && item.getAllCMSItemViews.length > 0"
+            style="height: 100%; min-height: 100%; max-height: 420px;">
+            <div class="container"
+              style="padding-top: 2px; border-radius: 1rem; overflow: hidden; height: 100%; min-height: 100%;">
+              <div id="carouselExampleCaptions{{i}}" style="height: 100%; min-height: 100%;" class="carousel slide"
+                data-bs-ride="carousel">
+                <div class="carousel-indicators" *ngIf="item.getAllCMSItemViews.length > 1">
+                  <ng-container *ngFor="let slide of item.getAllCMSItemViews; let slideIndex = index">
+                    <button type="button" (click)="handleCarouselChange(item, slideIndex)"
+                      [attr.data-bs-target]="'#carouselExampleCaptions' + i" [attr.data-bs-slide-to]="slideIndex"
+                      [class.active]="slideIndex === item.selectedIndex"
+                      [class.inactive]="slideIndex !== item.selectedIndex"
+                      [attr.aria-current]="slideIndex === item.selectedIndex ? 'true' : 'false'"
+                      [attr.aria-label]="'Slide ' + (slideIndex + 1)"></button>
+                  </ng-container>
+                </div>
+                <div class="carousel-inner" style="height: 100%; min-height: 100%;">
+                  <div *ngFor="let slide of item.getAllCMSItemViews; let slideIndex = index" class="carousel-item"
+                    [class.active]="slideIndex === item.selectedIndex" style="height: 100%; min-height: 100%;">
+                    <ng-container *ngIf="!slide.isVideo; else videoTemplate">
+                      <img style="height: 100%; min-height: 100%; object-fit: cover;" [src]="slide.url"
+                        class="d-block w-100" alt="Slide Image">
+                    </ng-container>
+                    <ng-template #videoTemplate>
+                      <ng-container *ngIf="slide.content; else fileVideoTemplate">
+                        <iframe [src]="sanitizeVideoUrl(slide.url)" frameborder="0" allowfullscreen
+                          class="d-block w-100" style="height: 100%;"></iframe>
+                      </ng-container>
+                      <ng-template #fileVideoTemplate>
+                        <video class="d-block w-100" controls style="height: 100%;"
+                          [attr.autoplay]="slide.autoPlay ? 'autoplay' : null">
+                          <source [src]="slide.url" type="video/mp4">
+                          Your browser does not support the video tag.
+                        </video>
+                      </ng-template>
+                    </ng-template>
+                    <div *ngIf="!slide.isVideo" class="carousel-caption d-block" style="cursor: pointer;">
+                      <div *ngFor="let textItem of slide.newHeadings; let textIndex = index" style="position: absolute;"
+                        [ngStyle]="{
+                                      'top': textItem.y + '%',
+                                      'left': textItem.x + '%',
+                                      'position': 'absolute'
+                                    }">
+                        <div class="text-container-new">
+                          <div [innerHTML]="sanitizeHtml(textItem.text)"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Template Image (for single image/video) -->
+          <div *ngSwitchCase="'template image' && item.getAllCMSItemViews && item.getAllCMSItemViews.length > 0"
+            style="height: 100%; position: relative; max-height: 420px;"
+            (click)="item['showOption'] = !item['showOption']">
+            <div class="container"
+              style="padding-top: 2px; border-radius: 1rem; overflow: hidden; height: 100%; min-height: 100%;">
+              <div id="carouselExampleCaptions{{i}}" style="height: 100%; min-height: 100%;" class="carousel slide">
+                <div class="carousel-inner" style="height: 100%; min-height: 100%;">
+                  <div class="carousel-item active" style="height: 100%; min-height: 100%;">
+                    <ng-container *ngIf="!item.getAllCMSItemViews[0].isVideo; else videoTemplate">
+                      <img style="height: 100%; min-height: 100%; object-fit: cover;"
+                        [src]="item.getAllCMSItemViews[0].url" class="d-block w-100" alt="Slide Image">
+                    </ng-container>
+                    <ng-template #videoTemplate>
+                      <ng-container *ngIf="item.getAllCMSItemViews[0].content; else fileVideoTemplate">
+                        <iframe [src]="sanitizeVideoUrl(item.getAllCMSItemViews[0].url)" frameborder="0" allowfullscreen
+                          class="d-block w-100" style="height: 100%;"></iframe>
+                      </ng-container>
+                      <ng-template #fileVideoTemplate>
+                        <video class="d-block w-100" controls style="height: 100%;"
+                          [attr.autoplay]="item.getAllCMSItemViews[0].autoPlay ? 'autoplay' : null">
+                          <source [src]="item.getAllCMSItemViews[0].url" type="video/mp4">
+                          Your browser does not support the video tag.
+                        </video>
+                      </ng-template>
+                    </ng-template>
+                    <div *ngIf="!item.getAllCMSItemViews[0].isVideo" class="carousel-caption d-block"
+                      style="cursor: pointer;">
+                      <div *ngFor="let textItem of item.getAllCMSItemViews[0].newHeadings; let textIndex = index"
+                        style="position: absolute;" [ngStyle]="{
+                                      'top': textItem.y + '%',
+                                      'left': textItem.x + '%',
+                                      'position': 'absolute'
+                                    }">
+                        <div class="text-container-new" style="border: none !important; border-radius: 0 !important;">
+                          <div [innerHTML]="sanitizeHtml(textItem.text)"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TrainingMonth -->
+        <div *ngSwitchCase="'TrainingMonth'" style="height: 100%; min-height: 100%; width: 100%;"
+          class="p-6 card cardhero bg-card rounded-2xl overflow-hidden widget-zoom">
+          <div style="padding-right: 0 !important; height: 100%;" class="col-span-2 w-full p-6 rounded-2xl overflow-hidden">
+            <div class="w-full flex">
+              <div class="w-3/12 ms-2 flex flex-col">
+                <div [innerHTML]="sanitizeHtml(item.chartHeading)" (click)="onClickTrainingMonth(item)" style="cursor: pointer;"
+                  class="mb-4">
+                </div>
+                <div class="badgeblack mr-64"><a (click)="userType != 'admin' && handleViewAllCurriculums()"
+                    style="cursor: pointer;">See More</a></div>
+              </div>
+              <div class="w-9/12">
+                <div class="container training-media-container"
+                  style="padding-top: 2px; border-radius: 1rem; overflow: hidden;">
+                  <iframe *ngIf="getTrainingVideoUrl(item)" [src]="getTrainingVideoUrl(item)" frameborder="0" allowfullscreen
+                    class="d-block w-100" style="border-radius: 1rem;"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                  </iframe>
+                  <img (click)="onClickTrainingMonth(item)"
+                    [src]="item['courseImageUrl'] ? item['courseImageUrl'] : 'assets/images/course_default.png'"
+                    class="img-fluid d-block w-100" style="border-radius: 1rem; cursor: pointer;" alt="Training Month" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          <!-- Academy -->
+      <div *ngSwitchCase="'Academy'" style="height: 100%;">
+        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden">
+          <div class="inline-flex w-full" style="justify-content: space-between; border-bottom: 0.5px solid #DEE2E6;">
+            <div>
+              <div class="c-details pr-2">
+                <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+              </div>
+            </div>
+            <div>
+              <div *ngIf="userType === 'normaluser'" class="badgeblack" style="cursor: pointer;">
+                <a (click)="handleViewAllCurriculums()">See More</a>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="isCurriculumLoading" class="flex items-center justify-center w-full">
+            <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+          </div>
+          <div *ngIf="!isCurriculumLoading" class="curriculum-container" style="max-height: 600px; overflow-y: auto;">
+            <div class="flex" style="padding: 10px 0px; border-bottom: 0.5px solid #DEE2E6; background-color: #fff;">
+              <h6 style="font-size: 18px !important;">Required Training</h6>
+              <div class="progress-bar2">
+                <div *ngIf="!calculateWidth(totalRequiredCourses, totalRequiredCompleted)" class="pl-1">
+                  {{calculateWidth(totalRequiredCourses, totalRequiredCompleted)}}%
+                </div>
+                <div [ngStyle]="{'width': calculateWidth(totalRequiredCourses, totalRequiredCompleted) + '%'}"
+                  style="background: radial-gradient(circle at 10% 20%, rgb(7, 134, 197) 0%, rgb(42, 76, 171) 90.1%); color:#fff; text-align: center; transition: width 0.6s ease; overflow: hidden;">
+                  {{calculateWidth(totalRequiredCourses, totalRequiredCompleted)}}%
+                </div>
+              </div>
+            </div>
+            <div *ngFor="let curriculum of curriculumData; let last = last">
+              <div *ngIf="curriculum.totalAvailableCourse > 0">
+                <div
+                  style="border-bottom: 0.5px solid #DEE2E6 !important; display: flex; width: 100%; justify-content: space-between; padding: 1rem 0rem;"
+                  [ngStyle]="{'background': curriculum['open'] ? 'rgb(218 234 255)' : '#fff'}"
+                  (click)="curriculum['open'] = !curriculum['open']" [ngClass]="{'bottom-corners-radius': last}">
+                  <div>
+                    <h3
+                      style="font-size: 1.125rem; cursor: pointer; letter-spacing: normal; color: #212529; margin-top: 0; margin-bottom: .5rem; font-weight: 500; line-height: 1.2;">
+                      {{curriculum.curriculm}}
+                      <ng-container *ngIf="curriculum.curriculumLanguage && curriculum.curriculumLanguage.length > 1">
+                        ({{getLanguageCodes(curriculum.curriculumLanguage)}})
+                      </ng-container>
+                    </h3>
+                    <div class="flex flex-row">
+                      <span class="text-primary ml-2"
+                        style="font-size: 16px; font-family: HelveticaNeueBold;">{{curriculum.totalCompleted}}/{{curriculum.totalAvailableCourse}}
+                        Completed</span>
+                    </div>
+                  </div>
+                  <div style="cursor: pointer;">
+                    <mat-icon [ngStyle]="{'color': curriculum['open'] ? '#0c63e4' : 'black'}"
+                      [svgIcon]="curriculum['open'] ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"></mat-icon>
+                  </div>
+                </div>
+                <div *ngIf="curriculum.open" style="padding: 1rem 1.25rem; background: #fff; border-bottom: solid 1px #dee2e6"
+                  [ngClass]="{'bottom-corners-radius': last, 'border-bottom-conditional': !last}">
+                  <div *ngIf="curriculum.list && curriculum.list.length > 0; else noDataFoundBlock">
+                    <div *ngFor="let groupedCourse of curriculum.list; index as i"
+                      style="display: flex !important; justify-content: space-between !important; margin-bottom: 1rem; border-bottom: solid 1px #dee2e6; padding: 0.5rem 0;">
+                      <div style="display: flex; width: 100%;">
+                        <div style="height: 60px; width: 60px;">
+                          <img style="height: 60px; width: 60px;"
+                            [src]="groupedCourse.mainCourse.imageUrl || 'assets/images/course_default.png'"
+                            alt="Course Image">
+                        </div>
+                        <div style="display: flex; flex-direction: column; margin: 0 1rem; width: 100%;" class="flex-1">
+                          <div class="flex flex-row" style="margin-bottom: 0.5rem;">
+                            <h6
+                              style="cursor: pointer; color: #416fb6 !important; font-family: HelveticaNeueBold !important; font-size: 0.9375rem !important;"
+                              (click)="goToCourse(groupedCourse.mainCourse.courseId, groupedCourse.mainCourse.status)">
+                              {{groupedCourse.mainCourse.course.replace('_SP', '').replace('_FR', '')}}
+                            </h6>
+                            <span *ngIf="groupedCourse.mainCourse.points > 0" class="ml-6"
+                              style="font-family: HelveticaNeueBold !important; color: rgba(25,135,84, 1); font-size: 0.9375rem !important;">
+                              {{groupedCourse.mainCourse.points}} Points
+                            </span>
+                          </div>
+                          <div style="color: #212529;">{{groupedCourse.mainCourse.description}}</div>
+                          <div *ngIf="groupedCourse.languages && groupedCourse.languages.length > 0" class="language-options"
+                            style="margin-top: 8px;">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="courseStatus">
+                        <svg style="color: rgba(25, 135, 84, 1);"
+                          *ngIf="groupedCourse.mainCourse.progressStatus === 'Completed' || groupedCourse.mainCourse.status === 'Pass'"
+                          xmlns="http://www.w3.org/2000/svg" width="31" height="30" fill="currentColor"
+                          class="bi bi-check2-circle" viewBox="0 0 16 16">
+                          <path
+                            d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
+                          <path
+                            d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 0 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
+                        </svg>
+                        <svg
+                          *ngIf="groupedCourse.mainCourse.progressStatus === 'started' && groupedCourse.mainCourse.status !== 'Pass'"
+                          xmlns="http://www.w3.org/2000/svg" width="31" height="30" fill="currentColor"
+                          class="bi bi-hourglass-split" viewBox="0 0 16 16">
+                          <path
+                            d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c.29.139.443.377.443.59v.7c0 .213-.154.451-.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z" />
+                        </svg>
+                        <svg
+                          *ngIf="groupedCourse.mainCourse.progressStatus !== 'Completed' && groupedCourse.mainCourse.progressStatus !== 'started' && groupedCourse.mainCourse.status !== 'Pass'"
+                          xmlns="http://www.w3.org/2000/svg" width="31" height="30" fill="currentColor"
+                          class="bi bi-dash-circle-dotted" viewBox="0 0 16 16">
+                          <path
+                            d="M8 0q-.264 0-.523.017l.064.998a7 7 0 0 1 .918 0l.064-.998A8 8 0 0 0 8 0M6.44.152q-.52.104-1.012.27l.321.948q.43-.147.884-.237L6.44.153zm4.132.271a8 8 0 0 0-1.011-.27l-.194.98q.453.09.884.237zm1.873.925a8 8 0 0 0-.906-.524l-.443.896q.413.205.793.459zM4.46.824q-.471.233-.905.524l.556.83a7 7 0 0 1 .793-.458zM2.725 1.985q-.394.346-.74.74l.752.66q.303-.345.648-.648zm11.29.74a8 8 0 0 0-.74-.74l-.66.752q.346.303.648.648zm1.161 1.735a8 8 0 0 0-.524-.905l-.83.556q.254.38.458.793l.896-.443zM1.348 3.555q-.292.433-.524.906l.896.443q.205-.413.459-.793zM.423 5.428a8 8 0 0 0-.27 1.011l.98.194q.09-.453.237-.884zM15.848 6.44a8 8 0 0 0-.27-1.012l-.948.321q.147.43.237.884zM.017 7.477a8 8 0 0 0 0 1.046l.998-.064a7 7 0 0 1 0-.918zM16 8a8 8 0 0 0-.017-.523l-.998.064a7 7 0 0 1 0 .918l.998.064A8 8 0 0 0 16 8M.152 9.56q.104.52.27 1.012l.948-.321a7 7 0 0 1-.237-.884l-.98.194zm15.425 1.012q.168-.493.27-1.011l-.98-.194q-.09.453-.237.884zM.824 11.54a8 8 0 0 0 .524.905l.83-.556a7 7 0 0 1-.458-.793zm13.828.905q.292-.434.524-.906l-.896-.443q-.205.413-.459.793zm-12.667.83q.346.394.74.74l.66-.752a7 7 0 0 1-.648-.648zm11.29.74q.394-.346.74-.74l-.752-.66q-.302.346-.648.648zm-1.735 1.161q.471-.233.905-.524l-.556-.83a7 7 0 0 1-.793.458zm-7.985-.524q.434.292.906.524l.443-.896a7 7 0 0 1-.793-.459zm1.873.925q.493.168 1.011.27l.194-.98a7 7 0 0 1-.884-.237zm4.132.271a8 8 0 0 0 1.012-.27l-.321-.948a7 7 0 0 1-.884.237l.194.98zm-2.083.135a8 8 0 0 0 1.046 0l-.064-.998a7 7 0 0 1-.918 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z">
+                          </path>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <ng-template #noDataFoundBlock>
+                    <div
+                      style="display: flex; justify-content: center; align-items: center; padding: 10px; background: #fff;">
+                      <span>No course is assigned to this curriculum.</span>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+          <!-- Transactions (Redemptions, All, Credit) -->
+          <div *ngSwitchCase="'Redemptions'" style="height: 100%;">
+            <div style="height: 100%;" class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden">
+              <div class="w-full flex justify-between mb-4">
+                <div class="ms-2">
+                  <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                  <div class="mb-0">YTD Sales: ${{ formatNumberWithCommas(getSafeNumber(ytdSales)) }}</div>
+                  <div class="mb-0">Remaining Points: {{formatNumberWithCommas(remainingPoints)}}</div>
+                </div>
+                <div *ngIf="userType === 'normaluser'" class="w-3/12 text-right">
+                  <div class="badgeblack"><a routerLink="/transactions">See More</a></div>
+                </div>
+              </div>
+              <div *ngIf="isTransactionLoading || isTransactionRedemptionLoading || isTransactionCreditLoading"
+                class="flex items-center justify-center w-full">
+                <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+              </div>
+              <div *ngIf="!isTransactionLoading && item.type === 'All' && transactionData.length > 0">
+                <table class="table table-auto tablenew">
+                  <thead>
+                    <tr>
+                      <th>Invoice#</th>
+                      <th>Date Processed</th>
+                      <th>Date of Sale</th>
+                      <th>Type</th>
+                      <th>Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let trans of transactionData">
+                      <td>{{trans.invoiceNumber}}</td>
+                      <td>{{trans.dateProcessed}}</td>
+                      <td>{{trans.dateOfSale}}</td>
+                      <td><span
+                          [ngClass]="trans.transactionType === 'Redemption' ? 'btn btn-priblue' : 'btn btn-secondary'">{{trans.transactionType}}</span>
+                      </td>
+                      <td>{{trans.totalPoints}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div
+                *ngIf="!isTransactionRedemptionLoading && item.type === 'Redemptions' && redemptionTransactionData.length > 0">
+                <table class="table table-auto tablenew">
+                  <thead>
+                    <tr>
+                      <th>Invoice#</th>
+                      <th>Date Processed</th>
+                      <!-- <th>Date of Sale</th> -->
+                      <th>Type</th>
+                      <th>Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let trans of redemptionTransactionData">
+                      <td>{{trans.invoiceNumber}}</td>
+                      <td>{{trans.dateProcessed}}</td>
+                      <!-- <td>{{trans.dateOfSale}}</td> -->
+                      <td><span class="btn btn-priblue">{{trans.transactionType}}</span></td>
+                      <td>{{trans.totalPoints}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="!isTransactionCreditLoading && item.type === 'Credit' && creditTransactionData.length > 0">
+                <table class="table table-auto tablenew">
+                  <thead>
+                    <tr>
+                      <th>Invoice#</th>
+                      <th>Date Processed</th>
+                      <!-- <th>Date of Sale</th> -->
+                      <th>Type</th>
+                      <th>Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let trans of creditTransactionData">
+                      <td>{{trans.invoiceNumber}}</td>
+                      <td>{{trans.dateProcessed}}</td>
+                      <!-- <td>{{trans.dateOfSale}}</td> -->
+                      <td><span class="btn btn-secondary">{{trans.transactionType}}</span></td>
+                      <td>{{trans.totalPoints}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="flex justify-center items-center" style="height: 70%; text-align: center; margin-top: 10px;"
+                *ngIf="((item.type === 'All' && !transactionData.length) || (item.type === 'Redemptions' && !redemptionTransactionData.length) || (item.type === 'Credit' && !creditTransactionData.length)) && !(isTransactionLoading || isTransactionRedemptionLoading || isTransactionCreditLoading)">
+                No data found.
+              </div>
+            </div>
+          </div>
+          <div *ngSwitchCase="'All'" style="height: 100%;">
+            <div style="height: 100%;" class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden">
+              <div class="w-full flex justify-between mb-4">
+                <div class="ms-2">
+                  <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                  <div class="mb-0">YTD Sales: ${{ formatNumberWithCommas(getSafeNumber(ytdSales)) }}</div>
+                  <div class="mb-0">Remaining Points: {{formatNumberWithCommas(remainingPoints)}}</div>
+                </div>
+                <div *ngIf="userType === 'normaluser'" class="w-3/12 text-right">
+                  <div class="badgeblack"><a routerLink="/transactions">See More</a></div>
+                </div>
+              </div>
+              <div *ngIf="isTransactionLoading || isTransactionRedemptionLoading || isTransactionCreditLoading"
+                class="flex items-center justify-center w-full">
+                <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+              </div>
+              <div *ngIf="!isTransactionLoading && item.type === 'All' && transactionData.length > 0">
+                <table class="table table-auto tablenew">
+                  <thead>
+                    <tr>
+                      <th>Invoice#</th>
+                      <th>Date Processed</th>
+                      <!-- <th>Date of Sale</th> -->
+                      <th>Type</th>
+                      <th>Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let trans of transactionData">
+                      <td>{{trans.invoiceNumber}}</td>
+                      <td>{{trans.dateProcessed}}</td>
+                      <!-- <td>{{trans.dateOfSale}}</td> -->
+                      <td><span
+                          [ngClass]="trans.transactionType === 'Redemption' ? 'btn btn-priblue' : 'btn btn-secondary'">{{trans.transactionType}}</span>
+                      </td>
+                      <td>{{trans.totalPoints}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div
+                *ngIf="!isTransactionRedemptionLoading && item.type === 'Redemptions' && redemptionTransactionData.length > 0">
+                <table class="table table-auto tablenew">
+                  <thead>
+                    <tr>
+                      <th>Invoice#</th>
+                      <th>Date Processed</th>
+                      <!-- <th>Date of Sale</th> -->
+                      <th>Type</th>
+                      <th>Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let trans of redemptionTransactionData">
+                      <td>{{trans.invoiceNumber}}</td>
+                      <td>{{trans.dateProcessed}}</td>
+                      <!-- <td>{{trans.dateOfSale}}</td> -->
+                      <td><span class="btn btn-priblue">{{trans.transactionType}}</span></td>
+                      <td>{{trans.totalPoints}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="!isTransactionCreditLoading && item.type === 'Credit' && creditTransactionData.length > 0">
+                <table class="table table-auto tablenew">
+                  <thead>
+                    <tr>
+                      <th>Invoice#</th>
+                      <th>Date Processed</th>
+                      <!-- <th>Date of Sale</th> -->
+                      <th>Type</th>
+                      <th>Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let trans of creditTransactionData">
+                      <td>{{trans.invoiceNumber}}</td>
+                      <td>{{trans.dateProcessed}}</td>
+                      <!-- <td>{{trans.dateOfSale}}</td> -->
+                      <td><span class="btn btn-secondary">{{trans.transactionType}}</span></td>
+                      <td>{{trans.totalPoints}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="flex justify-center items-center" style="height: 70%; text-align: center; margin-top: 10px;"
+                *ngIf="((item.type === 'All' && !transactionData.length) || (item.type === 'Redemptions' && !redemptionTransactionData.length) || (item.type === 'Credit' && !creditTransactionData.length)) && !(isTransactionLoading || isTransactionRedemptionLoading || isTransactionCreditLoading)">
+                No data found.
+              </div>
+            </div>
+          </div>
+          <div *ngSwitchCase="'Credit'" style="height: 100%;">
+            <div style="height: 100%;" class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden">
+              <div class="w-full flex justify-between mb-4">
+                <div class="ms-2">
+                  <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                  <div class="mb-0">YTD Sales: ${{ formatNumberWithCommas(getSafeNumber(ytdSales)) }}</div>
+                  <div class="mb-0">Remaining Points: {{formatNumberWithCommas(remainingPoints)}}</div>
+                </div>
+                <div *ngIf="userType === 'normaluser'" class="w-3/12 text-right">
+                  <div class="badgeblack"><a routerLink="/transactions">See More</a></div>
+                </div>
+              </div>
+              <div *ngIf="isTransactionLoading || isTransactionRedemptionLoading || isTransactionCreditLoading"
+                class="flex items-center justify-center w-full">
+                <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+              </div>
+              <div *ngIf="!isTransactionLoading && item.type === 'All' && transactionData.length > 0">
+                <table class="table table-auto tablenew">
+                  <thead>
+                    <tr>
+                      <th>Invoice#</th>
+                      <th>Date Processed</th>
+                      <!-- <th>Date of Sale</th> -->
+                      <th>Type</th>
+                      <th>Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let trans of transactionData">
+                      <td>{{trans.invoiceNumber}}</td>
+                      <td>{{trans.dateProcessed}}</td>
+                      <!-- <td>{{trans.dateOfSale}}</td> -->
+                      <td><span
+                          [ngClass]="trans.transactionType === 'Redemption' ? 'btn btn-priblue' : 'btn btn-secondary'">{{trans.transactionType}}</span>
+                      </td>
+                      <td>{{trans.totalPoints}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div
+                *ngIf="!isTransactionRedemptionLoading && item.type === 'Redemptions' && redemptionTransactionData.length > 0">
+                <table class="table table-auto tablenew">
+                  <thead>
+                    <tr>
+                      <th>Invoice#</th>
+                      <th>Date Processed</th>
+                      <!-- <th>Date of Sale</th> -->
+                      <th>Type</th>
+                      <th>Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let trans of redemptionTransactionData">
+                      <td>{{trans.invoiceNumber}}</td>
+                      <td>{{trans.dateProcessed}}</td>
+                      <!-- <td>{{trans.dateOfSale}}</td> -->
+                      <td><span class="btn btn-priblue">{{trans.transactionType}}</span></td>
+                      <td>{{trans.totalPoints}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="!isTransactionCreditLoading && item.type === 'Credit' && creditTransactionData.length > 0">
+                <table class="table table-auto tablenew">
+                  <thead>
+                    <tr>
+                      <th>Invoice#</th>
+                      <th>Date Processed</th>
+                      <!-- <th>Date of Sale</th> -->
+                      <th>Type</th>
+                      <th>Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let trans of creditTransactionData">
+                      <td>{{trans.invoiceNumber}}</td>
+                      <td>{{trans.dateProcessed}}</td>
+                      <!-- <td>{{trans.dateOfSale}}</td> -->
+                      <td><span class="btn btn-secondary">{{trans.transactionType}}</span></td>
+                      <td>{{trans.totalPoints}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="flex justify-center items-center" style="height: 70%; text-align: center; margin-top: 10px;"
+                *ngIf="((item.type === 'All' && !transactionData.length) || (item.type === 'Redemptions' && !redemptionTransactionData.length) || (item.type === 'Credit' && !creditTransactionData.length)) && !(isTransactionLoading || isTransactionRedemptionLoading || isTransactionCreditLoading)">
+                No data found.
+              </div>
+            </div>
+          </div>
+
+          <!-- Messages -->
+          <div *ngSwitchCase="'Messages'" style="height: 100%;">
+            <div class="w-full p-6 card cardhero bg-card rounded-2xl" style="overflow-y: auto;">
+              <div class="inline-flex w-full">
+                <div class="w-full">
+                  <div class="ms-2 c-details">
+                    <div [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                  </div>
+                </div>
+              </div>
+              <hr class="mt-2 mb-2">
+              <div *ngIf="isNotificationLoading" class="flex items-center justify-center w-full">
+                <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+              </div>
+              <div *ngIf="!isNotificationLoading" class="mt-2">
+                <table class="table tablenew">
+                  <tbody>
+                    <tr>
+                      <td style="width: 100%;">
+                        <span class="bluetext">Unread Messages ({{ notifications.customRecordCount }})</span>
+                      </td>
+                      <td></td>
+                      <td>
+                        <div class="textgrey"> <span>Status</span> </div>
+                      </td>
+                    </tr>
+                    <tr *ngFor="let notification of notifications.results; let i = index">
+                      <td>
+                        <h6 class="bluetext">
+                          {{ seeMore[i] ? notification.title : (notification.title | slice:0:100) }}
+                        </h6>
+                        <p class="pb-4"
+                          [innerHTML]="seeMore[i] ? notification.message : (notification.message | slice:0:100)">
+                        </p>
+                        <span *ngIf="notification.message.length > 100">
+                          <a (click)="toggleSeeMore(i)" style="cursor: pointer;">{{ seeMore[i] ? 'See Less' : 'See More'
+                            }}</a>
+                        </span>
+                      </td>
+                      <td>
+                        <!-- <div style="display: flex; justify-content: center;">
+                                        <i class="fa fa-chevron-right" style="color: #416fb6 !important;"></i>
+                                      </div> -->
+                      </td>
+                      <td>
+                        <mat-icon (click)="handleReadClick(notification)" [ngClass]="{
+                                                'Unread': !notification.isRead || notification.ishighlithed,
+                                                'read': notification.isRead
+                                              }"
+                          [svgIcon]="notification.isAlert && !notification.isRead ? 'heroicons_outline:exclamation-circle' : (notification.isRead ? 'heroicons_outline:check' : 'heroicons_outline:mail')">
+                        </mat-icon>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div *ngIf="userType === 'normaluser'" class="d-flex justify-between">
+                  <a style="font-size: 14px !important; color: #416fb6 !important; font-weight: 400; cursor: pointer;"
+                    (click)="handleViewAllNotification()">View All</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

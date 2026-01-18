@@ -1,0 +1,182 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+    <h2 style="margin: 0;">Course Content</h2>
+    <mat-form-field
+      appearance="outline"
+      class="language-selector"
+      style="
+        margin-left: 20px;
+        min-width: 200px;
+        background-color: #f5f8fa;
+        border-radius: 4px;
+      "
+    >
+      <mat-label style="color: #04202E; font-weight: 500;">Language *</mat-label>
+      <mat-select
+        [(value)]="selectedLanguage"
+        (selectionChange)="onLanguageChange($event)"
+        style="color: #04202E;"
+        [disabled]="isLoading"
+      >
+        <mat-option
+          *ngFor="let language of languages"
+          [value]="language"
+          [ngStyle]="{ color: '#04202E' }"
+        >
+          {{ language }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p class="loading-text">Loading course content...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p class="error-text">{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadCourseContent()">
+      Retry
+    </button>
+  </div>
+
+  <!-- Content (only show when not loading and no error) -->
+  <div *ngIf="!isLoading && !error">
+    <!-- Course Slides -->
+    <div *ngIf="courseSlideData?.length > 0; else noSlide">
+      <h3 class="section-title">Course Slides</h3>
+      <div *ngFor="let slide of courseSlideData; let i = index" class="slide-item" style="background: #ffffffcf">
+        <h5 class="slide-title">{{ i + 1 }}. {{ slide.slide || 'NA' }} ({{ slide.slideType }})</h5>
+        <p *ngIf="slide.title">{{ slide.title }}</p>
+        <p *ngIf="slide.description">{{ slide.description }}</p>
+        
+        <!-- All Slide Types (Video, Content, Audio-Content) -->
+        <div class="slide-content">
+          <ng-container *ngIf="getSlideItems(slide).length > 0; else noSlideData">
+            <ng-container *ngFor="let item of getSlideItems(slide); let itemIndex = index">
+              
+              <!-- Image Fields -->
+              <div *ngIf="item.type === 'image'" class="image-preview">
+                <mat-icon>image</mat-icon>
+                <span class="field-name">{{ item.label }}:</span>
+                <a [href]="item.url" target="_blank" class="image-link">
+                  {{ item.fileName }}
+                </a>
+              </div>
+              
+              <!-- Text Fields -->
+              <div *ngIf="item.type === 'text'" class="text-box-preview">
+                <mat-icon>text_fields</mat-icon>
+                <span class="field-name">{{ item.label }}:</span>
+                <div class="text-box-value">{{ item.content }}</div>
+              </div>
+              
+              <!-- Button Fields -->
+              <div *ngIf="item.type === 'button'" class="text-box-preview">
+                <mat-icon>smart_button</mat-icon>
+                <span class="field-name">{{ item.label }}:</span>
+                <div class="text-box-value">
+                  {{ item.content }}
+                  <a *ngIf="item.hyperlink" [href]="item.hyperlink" target="_blank" class="button-link">
+                    ({{ item.hyperlink }})
+                  </a>
+                </div>
+              </div>
+              
+              <!-- Audio Fields -->
+              <div *ngIf="item.type === 'audio'" class="audio-preview">
+                <mat-icon>audiotrack</mat-icon>
+                <span class="field-name">{{ item.label }}:</span>
+                <a [href]="item.url" target="_blank">
+                  {{ item.fileName }}
+                </a>
+              </div>
+              
+              <!-- Video Fields -->
+              <div *ngIf="item.type === 'video'" class="video-preview">
+                <mat-icon>videocam</mat-icon>
+                <span class="field-name">{{ item.label }}:</span>
+                <a [href]="item.url" target="_blank" class="video-link">
+                  <span *ngIf="item.isExternalLink" class="external-link-indicator">[External Link]</span>
+                  <span *ngIf="!item.isExternalLink" class="uploaded-file-indicator">[Uploaded File]</span>
+                  {{ item.fileName }}
+                </a>
+              </div>
+              
+              <!-- Other File Types -->
+              <div *ngIf="item.type === 'file'" class="file-preview">
+                <mat-icon>attachment</mat-icon>
+                <span class="field-name">{{ item.label }}:</span>
+                <a [href]="item.url" target="_blank">
+                  {{ item.fileName }}
+                </a>
+              </div>
+            </ng-container>
+          </ng-container>
+          
+          <!-- No data in slide template -->
+          <ng-template #noSlideData>
+            <div class="no-slide-data">
+              <mat-icon>info_outline</mat-icon>
+              <span>No data in slide</span>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noSlide>
+      <div class="no-slides-message">
+        <mat-icon>folder_open</mat-icon>
+        <p>No slides available for this language.</p>
+      </div>
+    </ng-template>
+
+    <!-- Enhanced Quiz Section -->
+    <div *ngIf="quizSlideData?.id" class="content-section quiz-section">
+      <h3 class="section-title">Quiz Details</h3>
+      
+      <div class="quiz-details">
+        <div class="quiz-info">
+          <div *ngIf="quizSlideData.successMsg" class="info-item">
+            <span class="label">Success Message:</span>
+            <span class="value">{{ quizSlideData.successMsg }}</span>
+          </div>
+          
+          <div *ngIf="quizSlideData.failMsg" class="info-item">
+            <span class="label">Fail Message:</span>
+            <span class="value">{{ quizSlideData.failMsg }}</span>
+          </div>
+          
+          <div *ngIf="quizSlideData.passingMarks" class="info-item">
+            <span class="label">Passing Marks:</span>
+            <span class="value">{{ quizSlideData.passingMarks }}%</span>
+          </div>
+        </div>
+        
+        <!-- Questions Section -->
+        <div class="questions-container" *ngIf="quizSlideData.questions && quizSlideData.questions.length > 0">
+          <div *ngFor="let question of quizSlideData.questions; let i = index" class="question-item">
+            <h6 class="question-text">
+              <span class="question-number">Q{{i + 1}}.</span>
+              <span class="question-content">{{question.label || 'NA'}}</span>
+            </h6>
+            
+            <div class="options-container">
+              <div *ngFor="let option of question.options"
+                   class="option-item"
+                   [class.correct-option]="option.isCorrect">
+                {{ option.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

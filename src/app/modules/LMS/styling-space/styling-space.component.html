@@ -1,0 +1,67 @@
+<div class="w-full mt-24">
+    <div class="container mt-3">
+        <div class="flex-row align-items-center">
+            <span
+            [routerLink]="'../bathroom_faucets'"
+            class="mb-2 textsmallblue" 
+            style="
+            cursor: pointer;
+            font-weight: 400;
+            font-size: 16px;
+            color: #0088cc;
+            font-family: HelveticaNeueMedium"
+            [routerLink]="'../academy-curriculums'">&lt;&lt; ACADEMY CURRICULUMS</span>
+        </div>
+    </div>
+    <div class="container mt-3 mb-3">
+        <div class="row d-flex flex-wrap">
+
+            <!--ACADEMY CURRICULUMS-->
+            <div class="col-lg-12 col-md-12 col-sm-12 d-flex flex-column justify-content-between w-full">
+                <div class="container mb-2">
+                    <div class="ms-2 c-details">
+                        <span style="
+                        color: #000000;
+                        font-size: 36px;
+                        font-weight: 200;
+                        font-family: HelveticaNeuelight;">
+                            STYLING SPACE
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="container mb-3 mt-3">
+
+            <div class="col-lg-12 col-md-12 col-sm-12 d-flex flex-column justify-content-between" style="
+            width: 100%;
+            margin: 0 30px;">
+                <div class="container mb-3 mt-3" style="
+                background: white;
+                padding: 5px;">
+                    <div class="accordion accordion-flush" id="accordionExample">
+                        <div *ngFor="let item of items; index as index" [ngStyle]="{ 'border-bottom': items.length -1 > index ? '1px solid #dee2e6' : '0', 'margin-bottom': items.length -1 > index ? '10px' : '0'}">
+                            <mat-accordion>
+                                <mat-expansion-panel
+                                (opened)="item.isOpen = true"
+                                (closed)="item.isOpen = false">
+                                  <mat-expansion-panel-header [ngStyle]="{ 'border-bottom': item.isOpen ? '1px solid #dee2e6' : '0' }">
+                                    <mat-panel-title>
+                                        <div style="justify-content: space-between; display: flex; width: 100%;">
+                                        <div class="flex-item">{{item.title}}</div>
+                                        <div class="flex-item">{{item.subtitle}}</div>
+                                        <div class="flex-item">More Info</div>
+                                    </div>
+                                    </mat-panel-title>
+                                  </mat-expansion-panel-header>
+                                  <div style="color: #212429; font-size: 18px; padding-top: 16px;; font-weight: 300;">{{item.content}}</div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

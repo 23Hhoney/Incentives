@@ -1,0 +1,559 @@
+
+<div class="w-full containheight">
+   
+  <div class="flex justify-between items-center mt-4 mb-4" style="flex-wrap: wrap;">
+      <!-- <h4 class="text-black">Training Courses</h4> -->
+      <div class="flex mt-6 sm:mt-0 sm:ml-4" style="align-items: end !important; gap: 20px; flex-wrap: wrap;">
+        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-56">
+          <input #trainingSearchBar matInput [placeholder]="'Search'" (keyup)="ApplySearch($event.target.value, trainingSearchBar)">
+        </mat-form-field>
+        <div class="pr-3">
+          <button class="flex filter-btn-cus" [popover]="filter" #filterPopOver="bs-popover"
+            (click)="showFilter(filterPopOver, filter)" placement="auto" containerClass="filter-container-popover"
+            placement="bottom">
+        
+            <svg *ngIf="!filterApplied" width="100%" height="100%" viewBox="0 0 14 13" fill="none"
+              xmlns="http://www.w3.org/2000/svg" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
+              <path
+                d="M13.4125 1.09564C13.3355 0.917836 13.208 0.766576 13.0458 0.660675C12.8835 0.554774 12.6937 0.498905 12.5 0.500016L1.49998 0.500016C1.30644 0.500398 1.11717 0.556935 0.955124 0.66277C0.793081 0.768606 0.665233 0.91919 0.587088 1.09626C0.508943 1.27332 0.483861 1.46926 0.514883 1.6603C0.545906 1.85134 0.6317 2.02928 0.761858 2.17252L0.766858 2.17814L4.99998 6.69814L4.99998 11.5C4.99994 11.681 5.04902 11.8586 5.14198 12.0139C5.23494 12.1692 5.36831 12.2963 5.52785 12.3818C5.6874 12.4672 5.86714 12.5078 6.04792 12.4991C6.22869 12.4904 6.40373 12.4329 6.55436 12.3325L8.55436 10.9988C8.69146 10.9074 8.80388 10.7837 8.88162 10.6384C8.95936 10.4932 9.00002 10.331 8.99998 10.1663L8.99998 6.69814L13.2337 2.17814L13.2387 2.17252C13.3703 2.02993 13.4569 1.85176 13.4878 1.66025C13.5187 1.46873 13.4925 1.27236 13.4125 1.09564ZM8.27123 6.01752C8.09754 6.20163 8.00054 6.44502 7.99998 6.69814L7.99998 10.1663L5.99998 11.5L5.99998 6.69814C6.00057 6.44411 5.90397 6.19949 5.72998 6.01439L1.49998 1.50002L12.5 1.50002L8.27123 6.01752Z"
+                fill="#565D6D"></path>
+            </svg>
+            <svg *ngIf="filterApplied" fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="25px" viewBox="0 0 971.986 971.986"
+              xml:space="preserve">
+              <g>
+                <path d="M370.216,459.3c10.2,11.1,15.8,25.6,15.8,40.6v442c0,26.601,32.1,40.101,51.1,21.4l123.3-141.3
+                          c16.5-19.8,25.6-29.601,25.6-49.2V500c0-15,5.7-29.5,15.8-40.601L955.615,75.5c26.5-28.8,6.101-75.5-33.1-75.5h-873
+                          c-39.2,0-59.7,46.6-33.1,75.5L370.216,459.3z" />
+              </g>
+            </svg>
+        
+            <span style="padding-top: 2px;">Filter</span>
+          </button>
+        </div>
+        <button *ngIf="apiRequest.search !== ''" (click)="ApplySearch('', trainingSearchBar)" mat-flat-button style="background: #314653;color: white;float:right">
+            <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+            <span class="ml-2 mr-1" style="color: white">Clear</span>
+        </button>
+        <button mat-flat-button (click)="AddCourse()" style="background: #314653;color: white;float:right">
+            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+            <span class="ml-2 mr-1" style="color: white">Add</span>
+        </button>
+        <button mat-flat-button (click)="handleBulkGradeBookDownload()" style="background: #314653;color: white;float:right"
+        [disabled]="selectedCourseList.length === 0" 
+        [ngClass]="{'opacity-40': selectedCourseList.length === 0, 'opacity-100': selectedCourseList.length > 0}">
+              <mat-icon [svgIcon]="'book'" style="padding: 3px; color: #ffff !important;"></mat-icon> 
+              <span class="">Bulk GradeBook</span>    
+        </button>
+        <button mat-flat-button (click)="AutomaticallyPassCourse(PassTrainingCourse)" style="background: #314653; color: white;">
+          <span class="ml-2 mr-1">Automatically Pass Course</span>
+        </button>
+      </div>
+     
+      
+
+  </div>
+
+ 
+
+  <div class="flex-auto border-t -mt-px pt-4 sm:pt-2">
+    <div *ngIf="appliedFilters?.length > 0 && isFilterSubmitted" class="filter-tags mt-2">
+      <div class="font-normal mb-2 ml-4" style="align-items: center; display: flex;">
+        Results:
+      </div>
+    
+      <div class="filter-tag-container flex items-center flex-wrap">
+        <div 
+          *ngFor="let filter of appliedFilters" 
+          class="flex items-center m-1 py-0.5 px-3 rounded-full text-md font-medium text-gray-500 cus-background-tags h-9">
+          <mat-icon 
+            style="color: white; cursor: pointer;" 
+            class="mr-2  text-white" 
+            [svgIcon]="'e-remove-white'" 
+            (click)="removeFilter(filter)">
+          </mat-icon>
+          <div style="color: #FFFFFF;">
+            {{ filter.label }}: {{ filter.value }}
+          </div>
+        </div>
+      </div>
+    </div>
+   
+    <div class="w-full max-w-screen-xl mx-auto p-4">
+      <div class="relative">
+        <!-- Tab group with a container that allows positioning -->
+        <mat-tab-group custom-mat-tab
+          (selectedTabChange)="onTabChanged($event);"
+          [selectedIndex]="defaultTabIndex"
+          [animationDuration]="'0'">
+          <!-- Home -->
+          <mat-tab label="Active">
+            <ng-template matTabContent>
+              <div class="active-grid-wrapper bg-white" style="border-radius: 5px; box-shadow: 6px 6px 20px #00000029; overflow: auto;">
+                <app-data-grid
+                  [gridSettings]="gridColumns"
+                  [enableRowClick]="true"
+                  [dataSource]="dataSource"
+                  [sortBy]="sortBy"
+                  [sortDirection]="sortDirection"
+                  [loading]="loading"
+                  (sortChangeClick)="handleSortChange($event)"
+                  [pages]="pages"
+                  [pageIndex]="currentPage"
+                  [totalRecordCount]="apiRequest.itemCount"
+                  (emitRecordCount)="changePageCount($event)"
+                  (buttonClick)="handleButtonClick($event, content)"
+                  (fetchPageData)="onPageChange($event)"
+                  (rowClick)="handleRowClick($event)"
+                  (checkboxClick)="handleCheckBoxClick($event)">
+                </app-data-grid>
+              </div>
+            </ng-template>
+          </mat-tab>
+                    
+          <!-- Inactive -->
+          <mat-tab label="Inactive">
+            <ng-template matTabContent>
+              <div class="active-grid-wrapper bg-white" style="border-radius: 5px; box-shadow: 6px 6px 20px #00000029; overflow: auto;">
+                <app-data-grid
+                  [gridSettings]="gridColumns"
+                  [enableRowClick]="true"
+                  [dataSource]="dataSource"
+                  [sortBy]="sortBy"
+                  [sortDirection]="sortDirection"
+                  [loading]="loading"
+                  (sortChangeClick)="handleSortChange($event)"
+                  [pages]="pages"
+                  [pageIndex]="currentPage"
+                  [totalRecordCount]="apiRequest.itemCount"
+                  (emitRecordCount)="changePageCount($event)"
+                  (buttonClick)="handleButtonClick($event, content)"
+                  (fetchPageData)="onPageChange($event)"
+                  (rowClick)="handleRowClick($event)"
+                  (checkboxClick)="handleCheckBoxClick($event)">
+                </app-data-grid>
+              </div>
+            </ng-template>
+          </mat-tab>
+                    
+          <!-- Archive -->
+          <mat-tab label="Archive">
+            <ng-template matTabContent>
+              <div class="active-grid-wrapper bg-white" style="border-radius: 5px; box-shadow: 6px 6px 20px #00000029; overflow: auto;">
+                <app-data-grid
+                  [gridSettings]="gridColumns"
+                  [enableRowClick]="true"
+                  [dataSource]="dataSource"
+                  [sortBy]="sortBy"
+                  [sortDirection]="sortDirection"
+                  [loading]="loading"
+                  (sortChangeClick)="handleSortChange($event)"
+                  [pages]="pages"
+                  [pageIndex]="currentPage"
+                  [totalRecordCount]="apiRequest.itemCount"
+                  (emitRecordCount)="changePageCount($event)"
+                  (buttonClick)="handleButtonClick($event, content)"
+                  (fetchPageData)="onPageChange($event)"
+                  (rowClick)="handleRowClick($event)"
+                  (checkboxClick)="handleCheckBoxClick($event)">
+                </app-data-grid>
+              </div>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+        
+        <!-- Positioned to align with tab headers -->
+        <div class="absolute top-0 right-0 flex items-center mr-6" style="height: 48px;">
+          <h3 style="margin: 0; padding: 0; font-size: 20px; line-height: 1; margin-right: 4px;">*</h3>
+          <p style="color: rgb(0, 0, 0); font-weight: 800!important; font-size: 14px; margin: 0;">
+            Active Language Versions
+          </p>
+        </div>
+      </div>
+    </div>  
+  </div>
+
+</div>
+
+
+
+
+
+
+<ng-template #duplicateCourse>
+  <div mat-dialog-title class="dialog-header flex items-center justify-between">
+    <h3 class="m-0">Duplicate Course</h3>
+    <button mat-icon-button (click)="courseDuplicatePopUp.close()" class="close-button" type="button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <form [formGroup]="duplicateCourseForm">
+  <mat-form-field class="w-full">
+    <mat-label>Course ID *</mat-label>
+    <input matInput id="course-name-input" [formControlName]="'courseId'" maxlength="300">
+    <mat-hint align="end">
+    </mat-hint>
+
+  </mat-form-field>
+ </form>
+  <mat-dialog-actions class="fixed-footer flex justify-end space-x-4">
+
+    <button class="bg-white text-black border border-gray-300 px-4 py-2"  type="button" (click)="courseDuplicatePopUp.close()">
+      Cancel
+    </button>
+    <button class="bg-[#04202E] text-white px-4 py-2"  type="button" (click)="duplicateCourseFun()">Save</button>
+
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #content>
+<div mat-dialog-title class="dialog-header">
+  <h3>{{popUpDetails.caps}} Confirmation</h3>
+  <button mat-icon-button (click)="modalReference.close()" class="close-button">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<div class="modal-body">
+  <p>{{popUpDetails.modalMessage}}</p>
+</div>
+<div class="modal-footer" style="float: right;">
+  <button mat-button (click)="modalReference.close()" class="cancel-button">Cancel</button>
+  <button mat-raised-button (click)="ArchieveCourse(popUpDetails.small); modalReference.close()" class="delete-button">{{popUpDetails.caps}}</button>
+</div>
+</ng-template>
+
+
+<ng-template #courseContent>
+  <div class="dialog-container">
+    <!-- Header -->
+    <div class="dialog-header">
+      <h3 class="dialog-title">Course Content</h3>
+      <button mat-icon-button class="close-button" (click)="courseContentPopUp.close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <!-- Language Selection -->
+    <div class="language-selector">
+      <mat-form-field appearance="outline" class="language-field">
+        <mat-label>Language *</mat-label>
+        <mat-select [(value)]="selectedLanguage" (selectionChange)="onLanguageChange($event)">
+          <mat-option *ngFor="let language of languages" [value]="language">
+            {{ language }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+        
+    <!-- Course Content -->
+    <div class="dialog-content">
+      <!-- Course Slides Section -->
+      <div *ngIf="courseSlideData && courseSlideData.length > 0; else noSlide" class="content-section">
+        <h3 class="section-title">Course Slides</h3>
+                
+        <div class="slides-container">
+          <ng-container *ngIf="courseSlideData && courseSlideData.length > 0;">
+            <div *ngFor="let slideObj of courseSlideData; let i = index" class="slide-item">
+              <h5 class="slide-title">{{i + 1}}. {{slideObj.slide || 'NA'}} ({{slideObj.slideType}})</h5>
+              
+              <!-- Video Slide Content -->
+              <div *ngIf="slideObj.slideType === 'video'" class="slide-content">
+                <div *ngFor="let slideFileObj of slideObj.uploadLmsSlideFileModelData" class="file-item">
+                  <div *ngIf="slideFileObj.content" class="video-link">
+                    <mat-icon>videocam</mat-icon>
+                    <a [href]="slideFileObj.content" target="_blank">{{slideFileObj.content}}</a>
+                  </div>
+                  <div *ngIf="!slideFileObj.content && slideFileObj.url" class="video-link">
+                    <mat-icon>videocam</mat-icon>
+                    <a [href]="slideFileObj.url" target="_blank">{{slideFileObj.url}}</a>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Content Slide (Images) -->
+              <div *ngIf="slideObj.slideType === 'content'" class="slide-content">
+                <div *ngFor="let group of slideObj.lmsSlideGroupViewDatas" class="content-group">
+                  <div *ngFor="let field of group.lmsSlideGroupFieldViews" class="content-field">
+                    <!-- Show only the first image for each field -->
+                    <div *ngIf="field.lmsSlideContentFileViewData && field.lmsSlideContentFileViewData.length > 0" class="image-preview">
+                      <mat-icon>image</mat-icon>
+                      <span class="field-name">{{field.name}}:</span>
+                      <a [href]="field.lmsSlideContentFileViewData[0].url" target="_blank">
+                        {{field.lmsSlideContentFileViewData[0].fileName || field.lmsSlideContentFileViewData[0].url}}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Audio Content Slide -->
+              <div *ngIf="slideObj.slideType === 'audio-content'" class="slide-content">
+                <div *ngFor="let group of slideObj.lmsSlideGroupViewDatas" class="content-group">
+                  <div *ngFor="let field of group.lmsSlideGroupFieldViews" class="content-field">
+                    <!-- Show only the first audio for each field -->
+                    <div *ngIf="field.lmsSlideContentFileViewData && field.lmsSlideContentFileViewData.length > 0" class="audio-preview">
+                      <mat-icon>audiotrack</mat-icon>
+                      <span class="field-name">{{field.name}}:</span>
+                      <a [href]="field.lmsSlideContentFileViewData[0].url" target="_blank">
+                        {{field.lmsSlideContentFileViewData[0].fileName || field.lmsSlideContentFileViewData[0].url}}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Other file types -->
+              <div *ngIf="slideObj.slideType !== 'video' && slideObj.slideType !== 'content' && slideObj.slideType !== 'audio-content'" class="slide-files">
+                <div *ngFor="let slideFileObj of slideObj.uploadLmsSlideFileModelData" class="file-item">
+                  <a [href]="slideFileObj.url" target="_blank" class="file-link">
+                    <mat-icon>attachment</mat-icon>
+                    <span>{{ slideFileObj.fileName || slideFileObj.url }}</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+            
+      <ng-template #noSlide>
+        <div class="empty-state">
+          <p>No course slides available.</p>
+        </div>
+      </ng-template>
+            
+      <!-- Quiz Section -->
+      <div *ngIf="quizSlideData.id" class="content-section quiz-section">
+        <h3 class="section-title">Quiz Details</h3>
+                
+        <div class="quiz-details">
+          <div class="quiz-info">
+            <div *ngIf="quizSlideData.successMsg" class="info-item">
+              <span class="label">Success Message:</span>
+              <span class="value">{{ quizSlideData.successMsg }}</span>
+            </div>
+                        
+            <div *ngIf="quizSlideData.failMsg" class="info-item">
+              <span class="label">Fail Message:</span>
+              <span class="value">{{ quizSlideData.failMsg }}</span>
+            </div>
+                        
+            <div *ngIf="quizSlideData.passingMarks" class="info-item">
+              <span class="label">Passing Marks:</span>
+              <span class="value">{{ quizSlideData.passingMarks }}%</span>
+            </div>
+          </div>
+          <!-- Questions Section -->
+          <div class="questions-container">
+            <ng-container *ngIf="quizSlideData.questions && quizSlideData.questions.length > 0; else noQuestions">
+              <div *ngFor="let question of quizSlideData.questions; let i = index" class="question-item">
+                <h6 class="question-text">
+                  <span class="question-number">Q{{i + 1}}.</span>
+                  <span class="question-content">{{question.label || 'NA'}}</span>
+                </h6>
+                                
+                <div class="options-container">
+                  <div *ngFor="let option of question.options"
+                        class="option-item"
+                       [class.correct-option]="option.isCorrect">
+                    {{ option.label }}
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+                                                
+            <ng-template #noQuestions>
+              <div class="no-questions-message">
+                <span>No questions have been added yet</span>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+
+
+<ng-template #PassTrainingCourse>
+  <div mat-dialog-title class="dialog-header modal-header-cus m-0 px-6 flex justify-between items-center">
+    <div>Automatically Pass Training Courses</div>
+    <button mat-icon-button (click)="PassCourse.close()" class="close-button">
+      <mat-icon style="color: #fff;">close</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content class="container mx-auto px-4">
+    <div class="w-full space-y-6 mt-8">
+      <div class="flex flex-col lg:flex-row items-center justify-start w-full space-x-4 space-y-4 lg:space-y-0">
+        <div *ngIf="showDropBox" class="flex flex-col items-center" style="width: 21% !important;">
+          <button (click)="fileInput.click()" class="bg-[#03202E] text-white px-4 py-2 rounded-lg flex items-center">
+            <svg class="h-6 w-6 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293l2.414 2.414A1 1 0 0012.414 8H21a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z">
+              </path>
+            </svg>
+            Choose Upload File
+          </button>
+          <input type="file" accept=".csv" (change)="onFileSelect($event)" class="hidden" #fileInput />
+        </div>
+
+        <div *ngIf="showDropBox" class="text-gray-500 font-semibold" style="width: 3% !important;">OR</div>
+
+        <div *ngIf="showDropBox" class="flex items-center justify-start w-full space-x-4">
+          <div (drop)="onFileDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+            class="border-2 border-dashed border-gray-300 rounded-lg p-2 flex flex-col items-center cursor-pointer bg-[#FAFAFB] w-full max-w-xs h-36">
+            <div class="flex items-center justify-center h-16 w-16 rounded-full mb-2">
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M32 50.8718L32 32V35.2821" stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10"
+                  stroke-linecap="square" />
+                <path d="M22.9746 41.0256L32.0003 32L41.0259 41.0256" stroke="#6F7787" stroke-width="1.96923"
+                  stroke-miterlimit="10" stroke-linecap="square" />
+                <path
+                  d="M38.565 50.8045C42.2744 50.495 45.8202 49.1406 48.7913 46.8981C51.7623 44.6557 54.0369 41.6171 55.3515 38.1346C56.666 34.6521 56.9665 30.8683 56.2183 27.222C55.4701 23.5756 53.7037 20.216 51.1239 17.5326C48.5442 14.8492 45.2567 12.9519 41.6426 12.0608C38.0285 11.1696 34.2359 11.321 30.7043 12.4974C27.1728 13.6738 24.047 15.827 21.6893 18.7075C19.3317 21.588 17.8387 25.0777 17.3835 28.7721C14.5556 29.0527 11.9439 30.4094 10.0882 32.5615C8.23256 34.7137 7.27501 37.4967 7.41358 40.335C7.55216 43.1733 8.77626 45.8498 10.8327 47.811C12.8892 49.7721 15.6207 50.868 18.4624 50.8718L25.4368 50.8718"
+                  stroke="#6F7787" stroke-width="1.96923" stroke-miterlimit="10" stroke-linecap="square" />
+              </svg>
+            </div>
+            <span class="text-gray-500 text-2xl">Drop files here</span>
+            <span class="text-gray-400 text-lg">Supported format: .csv</span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="uploadResult" class="flex flex-col items-start justify-start w-full space-y-4">
+        <div class="text-left  text-[#171A1F] font-normal mt-4 ml-4 content">
+          Queued File for Upload:
+          <p>
+            <!-- <strong>File Name:</strong>  -->
+            {{ fileName }}
+          </p>
+        </div>
+
+         <div class="ml-4 grid grid-cols-2 gap-4  text-[#171A1F] font-normal" style="gap: 3.5rem !important;">
+          <div class="resultContent">
+          <p>File Validation</p>
+          <br>
+          <p>{{ uploadResult.totalRecordsCount }} Records Found</p>
+          <p>{{ uploadResult.duplicateCount }} Duplicate Records</p>
+          <p>{{ uploadResult.errorRecordCount }} Records with errors</p>
+          </div>
+          <!-- <div class="resultContent">
+          <p>Issuance Summary</p>
+          <br>
+          <p>{{ uploadResult.totalInvExist ?? 0 }} Points </p>
+          <p>{{ uploadResult.totalPrice | number:'1.2-2' }} Paid Price Credit</p>
+          <p>{{ uploadResult.units }} Units</p>
+          </div> -->
+      </div> 
+        <div class="flex space-x-4 mt-4 ml-4 resultContent" *ngIf="uploadResult && showViewReportButton"
+          (click)="viewUploadedReport()">
+          <p style="border-bottom: 1px solid #0D78C9 !important; color: #0D78C9 !important; cursor: pointer;">View
+            Report</p>
+        </div>
+        <div class="flex space-x-4 mt-4 ml-4">
+           <button class="bg-[#04202E] text-white px-4 py-2 rounded-lg" (click)="proceedWithUpload()"
+            [disabled]="(uploadResult && showViewReportButton) || (uploadResult.totalRecordsCount === 0)"
+            [ngStyle]="{'opacity': ((uploadResult && showViewReportButton) || (uploadResult.totalRecordsCount === 0)) ? 0.5 : 1}">
+            Proceed with Upload
+          </button> 
+          <button (click)="cancelUpload()" style="
+          display: flex;
+          align-items: center;
+          border: 1px solid black;
+          border-radius: 4px;
+          padding: 0 10px;
+          cursor: pointer;
+          height: 41px;
+          width: fit-content;">
+            Cancel / Remove File From Queue
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="w-full mt-10 space-y-6 overflow-x-auto">
+      <div class="w-full space-y-6">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+          <div class="font-poppins font-normal text-3xl leading-12 mt-4 text-left">
+            File History
+          </div>
+          <div class="flex flex-row gap-6 flex-wrap">
+            <div style="align-items: center; display: flex;">
+              <button style="
+                  width: 100%;
+                  padding: 5px 10px;
+                  align-items: center;
+                  justify-content: start;
+                  border-radius: 4px;" mat-icon-button [matTooltip]="'Refresh Page'" mat-icon-button
+                data-placement="bottom" (click)="ImportUpdateHistoryPaginated()">
+                <mat-icon [class]="'btn-color-600 refresh-icon'" [svgIcon]="'refresh'"></mat-icon>
+              </button>
+            </div>
+            <button (click)="updateTrainingCourseTemplate()" style="
+            display: flex;
+            align-items: center;
+            border: 1px solid black;
+            border-radius: 4px;
+            padding: 0 10px;
+            cursor: pointer;
+            height: 41px;
+            width: fit-content;" >
+            <mat-icon [svgIcon]="'download'"></mat-icon>
+            Training course Template
+          </button>
+            <button  (click)="DownloadActiveCourses()" style="
+            display: flex;
+            align-items: center;
+            border: 1px solid black;
+            border-radius: 4px;
+            padding: 0 10px;
+            cursor: pointer;
+            height: 41px;
+            width: fit-content;" >
+            <mat-icon [svgIcon]="'download'"></mat-icon>
+            Download Active Course
+          </button>
+        
+          </div>
+        </div>
+
+        <div class="my-2"></div>
+        <app-data-grid [gridSettings]="gridColumnsBulkRedemption" [dataSource]="dataSourceUpdateBulkRedemption"
+          [loading]="bulkUpdateRedemptionLoading" [pages]="BulkUpdateRedemptionPages"
+          [totalRecordCount]="bulkUpdateRedemptionApiRequest.itemCount"
+          (emitRecordCount)="changeBulkUpdateRedemptionPageCount($event)" [pageIndex]="currentPageBulkUpdateRedemption"
+          (fetchPageData)="onPageChangeBulkUpdateRedemption($event)"
+          (buttonClick)="handleButtonClickBulkRedemption($event)"
+          (sortChangeClick)="applySortBulkUpdateRedemption($event)"></app-data-grid>
+      </div>
+    </div>
+  </div>
+  <!-- <mat-dialog-actions align="left" class="m-0 px-4 py-2">
+    <div class="w-full">
+      <div class="inline-flex w-full" style="flex-wrap: wrap; gap: 10px; justify-content: end;">
+        <div>
+          <button class="bulk-update-btn-cus" (click)="AutomaticallyPassCourseForBpNumberFun()">
+            <span> Save</span>
+          </button>
+        </div>
+        <div>
+          <button class="bulk-update-btn-cus" (click)="PassCourse.close()">
+            <span> Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-actions> -->
+</ng-template>
+
+<ng-template #filter let-close="close" let-data>
+  <app-filter 
+    [closeOnClickOutside]="true"
+    (updateFiltersAction)="applyFilter($event, filterPopOver)" 
+    [filterOptionsArry]="filterOptions"  
+    [selectedFilters]="appliedFilters" 
+    (closeAction)="closeFilter(filterPopOver);">
+  </app-filter>
+</ng-template>
+
+

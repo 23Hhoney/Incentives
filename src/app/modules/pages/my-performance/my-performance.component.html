@@ -1,0 +1,125 @@
+<div class="w-full mt-2">
+    <!-- <nav aria-label="breadcrumb mt-2">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">My Account</li>
+        </ol>
+    </nav> -->
+    <h4 class="text-black mt-3 mb-4">My Performance</h4>
+
+    <div class="w-full">
+
+        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-auto">
+            <div class="flex justify-between">
+                <div class="ms-2 c-details">
+                    <span>Performance</span>
+                    <h3 class="mb-0">{{ isSalesSelected ? 'Total Sales' : 'Total Points' }}</h3>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div class="cstRadio customSwitch">
+                        <input class="checkbox" style="padding-right: 0.65em !important" [checked]="isSalesSelected" (change)="toggleSalesGraph($event.target.checked)" type="checkbox" role="switch" id="NotifyUploadoc">
+                        <div class="knobs"></div>
+                        <div class="cstRadioLayer"></div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="lineChartLoading" class="flex items-center justify-center w-full">
+                <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+            </div>
+            <div class="w-full h-auto" *ngIf="!lineChartLoading">
+                <canvas id="homelinechart" style="box-sizing: border-box;"
+                    baseChart
+                    [data]="lineChartData"
+                    [type]="lineChartType"
+                    [options]="lineChartOptions"
+                >
+                </canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full">
+        <div class="grid-cols-2 gap-4 w-full performance-cards">
+            <div class="w-full p-6 card cardblue bg-card rounded-2xl overflow-hidden">
+                <div  class="inline-flex w-full" style="justify-content: space-between;">
+                    <div class="flex justify-between w-full">
+                        <div class="ms-2 c-details">
+                            <span>Performance</span>
+                            <h3 class="mb-0">Total List Price Sales</h3>
+                        </div>
+                        <!-- <div class="w-3/12 text-right" *ngIf="userType === 'normaluser'">
+                            <div class="badgeblack" style="color: white !important"><a routerLink="/account" style="color: white !important">See More</a></div>
+                        </div> -->
+                    </div>
+                    <!-- <div class="">
+                        <div class="badgeblack"><a href="#" style="color: #fff !important;text-decoration: underline !important;">See More</a></div>
+                    </div> -->
+                </div>
+                <div *ngIf="poinstAndSummaryIsLoading" class="flex items-center justify-center w-full">
+                    <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+                </div>
+                <div *ngIf="!poinstAndSummaryIsLoading" class="mt-5">
+                    <div class="d-flex justify-between">
+                        <div class="d-flex flex-row items-center">
+                            <div class="ms-2 c-details">
+                                <span>${{formatNumberWithCommas(totalSales)}}</span>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row items-center">
+                            <div class="ms-2 c-details">
+                                <span>${{ formatNumberWithCommas(targetValue) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress mt-3">
+                        <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': totalSales > 0 ? totalSales * 100 / 5000000 + '%' : 'unset' }" aria-valuenow="50"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div *ngIf="!poinstAndSummaryIsLoading" class="mt-5 bottom1">
+                    <h3>${{formatNumberWithCommas(totalSales)}}</h3>
+                </div>
+            </div>
+
+            <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden">
+                <div class="inline-flex w-full justify-between">
+                    <div class="flex justify-between w-full">
+                        <div class="ms-2 c-details">
+                            <span>Performance</span>
+                            <h3 class="mb-0">Sales Category</h3>
+                        </div>
+                        <!-- <div *ngIf="userType === 'normaluser'" class="w-3/12 text-right">
+                            <div class="badgeblack"><a routerLink="/account">See More</a></div>
+                        </div> -->
+                    </div>
+                    <!-- <div>
+                        <div class="badgeblack"><a href="#">See More</a></div>
+                    </div> -->
+                </div>
+                <div *ngIf="pieChartLoading" class="flex items-center justify-center w-full">
+                    <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+                </div>
+                <div *ngIf="!pieChartLoading" class="w-full flex items-center justify-center">
+                    <ngx-charts-pie-chart
+                    (window:resize)="onResize($event)"
+                    [view]="view"
+                    [scheme]="colorScheme"
+                    [results]="pieChartData"
+                    [gradient]="false"
+                    [legend]="false"
+                    [doughnut]="isDoughnut">
+                    <ng-template #tooltipTemplate let-model="model">
+                        <div style="padding: 10px;">
+                          <span style="margin: 10px;">
+                            {{model.name}}
+                          </span>
+                        </div>
+                    </ng-template>
+                </ngx-charts-pie-chart>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+
+</div>

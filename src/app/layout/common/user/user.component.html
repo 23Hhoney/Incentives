@@ -1,0 +1,204 @@
+<button *ngIf="editMode" mat-icon-button>
+    <div class="flex items-center" style="width: 41.59px !important;">
+        <img
+        class="w-10 h-10 rounded-full"
+        *ngIf="showAvatar"
+        [src]="userProfilePicture"
+        alt="User Avatar" style="width: 41.59px !important; height: 41.59px !important;">
+      
+    	<mat-icon  *ngIf="showAvatar" style="color: black; font-size: 20px; margin-left: -3px;">keyboard_arrow_down</mat-icon>
+    </div>
+</button>
+<button *ngIf="!editMode" mat-icon-button [matMenuTriggerFor]="userActions">
+    <div class="flex items-center" style="width: 41.59px !important;">
+        <img
+        class="w-10 h-10 rounded-full"
+        *ngIf="showAvatar && user.avatar"
+        [src]="userProfilePicture"
+        alt="User Avatar" style="width: 41.59px !important; height: 41.59px !important;">
+      
+    	<mat-icon  *ngIf="showAvatar && user.avatar" style="color: black; font-size: 20px; margin-left: -3px;">keyboard_arrow_down</mat-icon>
+    </div>
+</button>
+
+<mat-menu style="min-width: 186.75px;" [xPosition]="'before'" #userActions="matMenu" >
+    <button mat-menu-item style="height: 40px !important;">
+        <span class="flex flex-col leading-none">
+            <!-- <span>Signed in as</span> -->
+            <h5 class="px-1 pt-3 pb-4 text-md font-medium" 
+            style="font-family: HelveticaNeueBold !important;
+            padding: var(--bs-dropdown-header-padding-y) var(--bs-dropdown-header-padding-x);
+            margin-bottom: .5rem;
+            font-weight: 500 !important;
+            line-height: 1.2;
+            font-size: 18px !important;
+            color: #6c757d;">{{userName}}</h5>
+        </span>
+    </button>
+
+    <mat-divider class="my-2"></mat-divider>
+
+    <button *ngIf="userRole!=='admin'" class="menu-item-user" style="color: #000!important;" (click)="Routetoaccount()" mat-menu-item>
+        <mat-icon class="user-menu-color-cus" [svgIcon]="'heroicons_outline:user'"></mat-icon>
+        <span class="mat-user-text-cus">My Account</span>
+    </button>
+    <button *ngIf="userRole=='admin'" class="menu-item-user" style="color: #000!important;" (click)="handleProfileAndPasswordChange(EditProfilePassword)" mat-menu-item>
+        <mat-icon class="user-menu-color-cus" [svgIcon]="'heroicons_outline:user'"></mat-icon>
+        <span class="mat-user-text-cus">Edit Profile/Password</span>
+    </button>
+    <button *ngIf="userRole=='admin'" class="menu-item-user" style="color: #000!important;" (click)="RolesAndPermissionChanges(ShowRolesandPermissions)" mat-menu-item>
+        <mat-icon class="user-menu-color-cus" [svgIcon]="'heroicons_outline:user'"></mat-icon>
+        <span class="mat-user-text-cus">Manage Module Permissions</span>
+    </button>
+    
+    <button *ngIf="userRole!=='admin'" class="menu-item-user" style="color: #000!important;" (click)="RoutetoPerformance()" mat-menu-item>
+        <mat-icon class="user-menu-color-cus" [svgIcon]="'heroicons_outline:user'"></mat-icon>
+        <span class="mat-user-text-cus">My Performance</span>
+    </button>
+    
+
+    <mat-divider class="my-2"></mat-divider>
+
+    <button style="color: #000 !important;" mat-menu-item (click)="signOut()">
+        <mat-icon  class="user-menu-color-cus" [svgIcon]="'heroicons_outline:logout'"></mat-icon>
+        <span class="mat-user-text-cus">Sign Out</span>
+    </button>
+</mat-menu>
+
+<mat-menu
+    class="user-status-menu"
+    #userStatus="matMenu">
+    <button
+        mat-menu-item
+        (click)="updateUserStatus('online')">
+        <span class="w-4 h-4 mr-3 rounded-full bg-green-500"></span>
+        <span>Online</span>
+    </button>
+    <button
+        mat-menu-item
+        (click)="updateUserStatus('away')">
+        <span class="w-4 h-4 mr-3 rounded-full bg-amber-500"></span>
+        <span>Away</span>
+    </button>
+    <button
+        mat-menu-item
+        (click)="updateUserStatus('busy')">
+        <span class="w-4 h-4 mr-3 rounded-full bg-red-500"></span>
+        <span>Busy</span>
+    </button>
+    <button
+        mat-menu-item
+        (click)="updateUserStatus('not-visible')">
+        <span class="w-4 h-4 mr-3 rounded-full bg-gray-400"></span>
+        <span>Invisible</span>
+    </button>
+</mat-menu>
+
+
+<ng-template #EditProfilePassword>
+    <div class="flex flex-col w-full">
+        <div class="flex flex-row justify-between items-center" style="padding: 0.4rem 0.8rem !important; border-bottom: 1px solid #dee2e6; font-family: HelveticaNeueBold;">
+            <div class="font-normal" style="font-size: 1.25rem;line-height: 1.5; padding-top: 3px;">Edit Profile / Password</div>
+            <mat-icon style="font-size: 17px;cursor: pointer;" (click)="handleCanceProfileAndPasswordUpdate();">close</mat-icon>
+        </div>
+        <div *ngIf="isUserProfileLoading" class="flex items-center justify-center w-full h-full my-10">
+            <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+        </div>
+        <mat-dialog-content class="mat-typography p-0 m-0" *ngIf="!isUserProfileLoading">
+            <form [formGroup]="profileAndPasswordForm" class="flex flex-wrap flex-col py-2">
+                <div class="w-full flex flex-col" style="padding: 0.75rem !important;">
+                    <div class="flex flex-row w-full gap-4 flex-wrap justify-center">
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>First Name *</mat-label>
+                            <input matInput formControlName="firstName">
+                        </mat-form-field>
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>Last Name *</mat-label>
+                            <input matInput formControlName="lastName">
+                        </mat-form-field>
+                    </div>
+                    <div class="flex flex-row w-full gap-4 flex-wrap justify-center">
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>Contact Number *</mat-label>
+                            <input matInput formControlName="contactNumber" placeholder="(xxx) xxx-xxxx" maxlength="14" appPhoneNumberFormatter>
+                        </mat-form-field>
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>Email *</mat-label>
+                            <input matInput formControlName="email">
+                        </mat-form-field>
+                    </div>
+                    <div class="h4 pb-2 mb-6 text-danger" style="border-bottom: 1px solid #dee2e6">
+                    </div>
+                    <span style="font-size: 0.9375rem; font-family: HelveticaNeueBold; margin-bottom: 1rem; font-weight: 500; line-height: 1.2;">Change Password</span>
+                    <div class="flex flex-row w-full gap-4 flex-wrap justify-center">
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>Current Password</mat-label>
+                            <input matInput formControlName="currentPassword" type="password">
+                        </mat-form-field>
+                        <mat-form-field  class="edit-profile-password-mat-field hidden-mat-field" style="visibility: hidden;">
+                            <mat-label>Label</mat-label>
+                            <input matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex flex-row w-full gap-4 flex-wrap justify-center">
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>New Password</mat-label>
+                            <input matInput formControlName="newPassword" type="password">
+                            <mat-error *ngIf="profileAndPasswordForm.get('newPassword').hasError('minlength')">
+                                Password must be at least 8 characters long
+                            </mat-error>
+                            <mat-error *ngIf="profileAndPasswordForm.get('newPassword')?.value?.length && profileAndPasswordForm.get('newPassword')?.hasError('passwordStrength')">
+                                Password must contain at least one number, one uppercase letter, one lowercase letter, and one special character.
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field  class="edit-profile-password-mat-field">
+                            <mat-label>Confirm New Password</mat-label>
+                            <input matInput type="password" formControlName="confirmNewPassword">
+                        </mat-form-field>
+                    </div>
+                    <mat-error *ngIf="profileAndPasswordForm.hasError('mismatch')">
+                        Passwords do not match
+                    </mat-error>
+                </div>
+            </form>
+        </mat-dialog-content>
+        <mat-dialog-actions class="flex gap-4 m-0 px-4 py-2" align="end" style="border-top: 1px solid #dee2e6">
+            <button type="button" style="padding: 0.375rem 0.75rem" class="btn btn-secondary" data-bs-dismiss="modal" (click)="handleCanceProfileAndPasswordUpdate()">Close</button>
+            <button type="button" style="padding: 0.375rem 0.75rem;" class="btn btn-primary" (click)="handleProfileAndPasswordSubmit()" [disabled]="isProfileUpdating">Save Changes</button>
+        </mat-dialog-actions>
+    </div>
+</ng-template>
+
+<ng-template #ShowRolesandPermissions>
+    <div class="flex flex-col w-full">
+      <div class="flex flex-row justify-between items-center" 
+           style="padding: 0.4rem 0.8rem !important; border-bottom: 1px solid #dee2e6; font-family: HelveticaNeueBold;">
+        <div class="font-normal" style="font-size: 1.25rem; line-height: 1.5; padding-top: 3px;">Edit Module Permission</div>
+        <mat-icon style="font-size: 17px; cursor: pointer;" (click)="CanceRolesAndPermission()">close</mat-icon>
+      </div>
+  
+      <div *ngIf="isUserProfileLoading" class="flex items-center justify-center w-full h-full my-10">
+        <mat-spinner class="grid-loading green-spinner"></mat-spinner>
+      </div>
+  
+      <mat-dialog-content class="mat-typography p-4" *ngIf="!isUserProfileLoading">
+        <form [formGroup]="permissionsForm" class="flex flex-wrap py-2 gap-4">
+          <div *ngFor="let module of userModulesSettingData; let i = index" 
+               class="flex flex-row items-center w-1/2 gap-2">
+            <label class="flex-1 font-medium pr-2">{{ module.moduleName }}</label>
+            <mat-slide-toggle [formControlName]="'module_' + i">
+              {{ permissionsForm.get('module_' + i)?.value ? 'Enabled' : 'Disabled' }}
+            </mat-slide-toggle>
+          </div>
+        </form>
+      </mat-dialog-content>
+  
+      <mat-dialog-actions class="flex gap-4 px-2 py-2" align="end" style="border-top: 1px solid #dee2e6">
+        <button type="button" style="padding: 0.375rem 0.75rem;" class="btn btn-secondary" (click)="CanceRolesAndPermission()">Close</button>
+        <button type="button" style="padding: 0.375rem 0.75rem;" class="btn btn-primary" (click)="updateModulePermissions()" [disabled]="isProfileUpdating">Save Changes</button>
+      </mat-dialog-actions>
+    </div>
+  </ng-template>
+  
+  
+  

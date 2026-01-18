@@ -1,0 +1,344 @@
+
+<div class="w-full containheight">
+   
+    <div class="flex justify-between items-center mt-4 mb-4" style="flex-wrap: wrap;">
+        <!-- <h4 class="text-black">Training Courses</h4> -->
+        <div class="flex mt-6 sm:mt-0 sm:ml-4" style="align-items: end !important; gap: 20px; flex-wrap: wrap;">
+          <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-56">
+            <input #trainingSearchBar matInput [placeholder]="'Search'" (keyup)="ApplySearch($event.target.value, trainingSearchBar)">
+          </mat-form-field>
+          <button *ngIf="apiRequest.search !== ''" (click)="ApplySearch('', trainingSearchBar)" mat-flat-button style="background: #314653;color: white;float:right">
+              <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+              <span class="ml-2 mr-1" style="color: white">Clear</span>
+          </button>
+          <button mat-flat-button (click)="AddCourse()" style="background: #314653;color: white;float:right">
+              <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+              <span class="ml-2 mr-1" style="color: white">Add</span>
+          </button>
+          <button mat-flat-button (click)="handleBulkGradeBookDownload()" style="background: #314653;color: white;float:right"
+          [disabled]="selectedCourseList.length === 0" 
+          [ngClass]="{'opacity-40': selectedCourseList.length === 0, 'opacity-100': selectedCourseList.length > 0}">
+                <mat-icon [svgIcon]="'book'" style="padding: 3px; color: #ffff !important;"></mat-icon> 
+                <span class="">Bulk GradeBook</span>    
+          </button>
+          <!-- <button mat-flat-button (click)="AutomaticallyPassCourse(PassTrainingCourse)" style="background: #314653; color: white;">
+            <span class="ml-2 mr-1">Automatically Pass Course</span>
+          </button> -->
+        </div>
+       
+    </div>
+    <div class="flex-auto border-t -mt-px pt-4 sm:pt-6">
+      <div class="w-full max-w-screen-xl mx-auto p-4">
+       
+        <!-- Flex container to align tabs and button in one row -->
+        <div class="flex items-center justify-between">
+          
+          <!-- Tabs -->
+          <mat-tab-group custom-mat-tab
+            (selectedTabChange)="onTabChanged($event);"
+            [animationDuration]="'0'"
+            style="flex-grow: 1;">
+            <!-- Home -->
+            <mat-tab label="Active">
+              <ng-template matTabContent>
+                <div class="bg-white" style="border-radius: 5px; box-shadow: 6px 6px 20px #00000029; overflow: auto;">
+                  <app-data-grid
+                    [gridSettings]="gridColumns"
+                    [enableRowClick]="true"
+                    [dataSource]="dataSource"
+                    [sortBy]="sortBy"
+                    [sortDirection]="sortDirection"
+                    [loading]="loading"
+                    (sortChangeClick)="handleSortChange($event)"
+                    [pages]="pages"
+                    [pageIndex]="currentPage"
+                    [totalRecordCount]="apiRequest.itemCount"
+                    (emitRecordCount)="changePageCount($event)"
+                    (buttonClick)="handleButtonClick($event, content)"
+                    (fetchPageData)="onPageChange($event)"
+                    (rowClick)="handleRowClick($event)"
+                    (checkboxClick)="handleCheckBoxClick($event)"
+                  >
+                  </app-data-grid>
+                </div>
+              </ng-template>
+            </mat-tab>
+    
+            <!-- Inactive -->
+            <mat-tab label="Inactive">
+              <ng-template matTabContent>
+                <div class="bg-white" style="border-radius: 5px; box-shadow: 6px 6px 20px #00000029; overflow: auto;">
+                  <app-data-grid
+                    [gridSettings]="gridColumns"
+                    [enableRowClick]="true"
+                    [dataSource]="dataSource"
+                    [sortBy]="sortBy"
+                    [sortDirection]="sortDirection"
+                    [loading]="loading"
+                    (sortChangeClick)="handleSortChange($event)"
+                    [pages]="pages"
+                    [pageIndex]="currentPage"
+                    [totalRecordCount]="apiRequest.itemCount"
+                    (emitRecordCount)="changePageCount($event)"
+                    (buttonClick)="handleButtonClick($event, content)"
+                    (fetchPageData)="onPageChange($event)"
+                    (rowClick)="handleRowClick($event)"
+                    (checkboxClick)="handleCheckBoxClick($event)"
+                  >
+                  </app-data-grid>
+                </div>
+              </ng-template>
+            </mat-tab>
+    
+            <!-- Archive -->
+            <mat-tab label="Archive">
+              <ng-template matTabContent>
+                <div class="bg-white" style="border-radius: 5px; box-shadow: 6px 6px 20px #00000029; overflow: auto;">
+                  <app-data-grid
+                    [gridSettings]="gridColumns"
+                    [enableRowClick]="true"
+                    [dataSource]="dataSource"
+                    [sortBy]="sortBy"
+                    [sortDirection]="sortDirection"
+                    [loading]="loading"
+                    (sortChangeClick)="handleSortChange($event)"
+                    [pages]="pages"
+                    [pageIndex]="currentPage"
+                    [totalRecordCount]="apiRequest.itemCount"
+                    (emitRecordCount)="changePageCount($event)"
+                    (buttonClick)="handleButtonClick($event, content)"
+                    (fetchPageData)="onPageChange($event)"
+                    (rowClick)="handleRowClick($event)"
+                    (checkboxClick)="handleCheckBoxClick($event)"
+                  >
+                  </app-data-grid>
+                </div>
+              </ng-template>
+            </mat-tab>
+          </mat-tab-group>
+         
+        </div>
+      </div>
+    </div>
+    
+<div class="p-6">
+</div>
+</div>
+
+<ng-template #content>
+  <div mat-dialog-title class="dialog-header">
+    <h3>{{popUpDetails.caps}} Confirmation</h3>
+    <button mat-icon-button (click)="modalReference.close()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{popUpDetails.modalMessage}}</p>
+  </div>
+  <div class="modal-footer" style="float: right;">
+    <button mat-button (click)="modalReference.close()" class="cancel-button">Cancel</button>
+    <button mat-raised-button (click)="DeleteCourse(popUpDetails.small); modalReference.close()" class="delete-button">{{popUpDetails.caps}}</button>
+  </div>
+</ng-template>
+<ng-template #courseContent>
+  <div mat-dialog-title class="dialog-header">
+    <h3>Course Content</h3>
+    <button mat-icon-button (click)="courseContentPopUp.close()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="modal-body" style="overflow-y: auto; max-height: calc(100vh - 84px); width: calc(100vw - 340px);">
+    <div *ngIf="imageSlideData.length > 0; else NoImageSlide">
+      <div *ngFor="let imageSlide of imageSlideData" style="display: flex; gap: 15px; flex-direction: column; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 0.5px solid #7E7E7E;">
+        <h3 style="font-weight: 550; font-size: 16px;">Image Slide:</h3>
+        <div style="display: flex; gap: 10px; flex-direction: column;">
+          <span *ngIf="imageSlide.header" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">Header: </h3> {{ imageSlide.header }}
+          </span>
+          <span *ngIf="imageSlide.body" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550; margin-top: 12px;">Body: </h3>
+            <app-view-html [html]="imageSlide.body" style="border-top: 0px !important;"></app-view-html>
+          </span>
+          <span *ngIf="imageSlide.imageSlidVideoURl" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">URL: </h3> {{ imageSlide.imageSlidVideoURl }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <ng-template #NoImageSlide>
+      <div style="display: flex; gap: 15px; flex-direction: column; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 0.5px solid #7E7E7E;">
+        <h3 style="font-weight: 550; font-size: 16px;">Image Slide:</h3>
+        <div style="display: flex; gap: 10px; flex-direction: column;">
+          <span style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">No Image Slide Available</h3>
+          </span>
+        </div>
+      </div>
+    </ng-template>
+    <div *ngIf="textSlideData.length > 0; else NoTextSlide">
+      <div *ngFor="let textSlide of textSlideData" style="display: flex; gap: 15px; flex-direction: column; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 0.5px solid #7E7E7E;">
+        <h3 style="font-weight: 550; font-size: 16px;">Text Slide:</h3>
+        <div style="display: flex; gap: 10px; flex-direction: column;">
+          <span *ngIf="textSlide.header" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">Header: </h3> {{ textSlide.header }}
+          </span>
+          <span *ngIf="textSlide.body" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550; margin-top: 12px;">Body: </h3> 
+            <app-view-html [html]="textSlide.body" style="border-top: 0px !important;"></app-view-html>
+          </span>
+        </div>
+      </div>
+    </div>
+    <ng-template #NoTextSlide>
+      <div style="display: flex; gap: 15px; flex-direction: column; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 0.5px solid #7E7E7E;">
+        <h3 style="font-weight: 550; font-size: 16px;">Text Slide:</h3>
+        <div style="display: flex; gap: 10px; flex-direction: column;">
+          <span style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">No Text Slide Available</h3>
+          </span>
+        </div>
+      </div>
+    </ng-template>
+    <div *ngIf="audioSlideData.length > 0; else NoAudioSlide">
+      <div *ngFor="let audioSlide of audioSlideData" style="display: flex; gap: 15px; flex-direction: column; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 0.5px solid #7E7E7E;">
+        <h3 style="font-weight: 550; font-size: 16px;">Audio Slide:</h3>
+        <div style="display: flex; gap: 10px; flex-direction: column;">
+          <span *ngIf="audioSlide.header" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">Header: </h3> {{ audioSlide.header }}
+          </span>
+          <span *ngIf="audioSlide.body" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550; margin-top: 12px;">Body: </h3>
+            <app-view-html [html]="audioSlide.body" style="border-top: 0px !important;"></app-view-html>
+          </span>
+          <span *ngIf="audioSlide.audioSlideVideoURl" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">URL: </h3> {{ audioSlide.audioSlideVideoURl }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <ng-template #NoAudioSlide>
+      <div style="display: flex; gap: 15px; flex-direction: column; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 0.5px solid #7E7E7E;">
+        <h3 style="font-weight: 550; font-size: 16px;">Audio Slide:</h3>
+        <div style="display: flex; gap: 10px; flex-direction: column;">
+          <span style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">No Audio Slide Available</h3>
+          </span>
+        </div>
+      </div>
+    </ng-template>
+    <div *ngIf="videoSlideData.length > 0; else NoVideoSlideAvailable">
+      <div *ngFor="let videoSlide of videoSlideData" style="display: flex; gap: 15px; flex-direction: column; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 0.5px solid #7E7E7E;">
+        <h3 style="font-weight: 550; font-size: 16px;">Video Slide:</h3>
+        <div style="display: flex; gap: 10px; flex-direction: column;">
+          <span *ngIf="videoSlide.header" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">Header: </h3> {{ videoSlide.header }}
+          </span>
+          <span *ngIf="videoSlide.body" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550; margin-top: 12px;">Body: </h3>
+            <app-view-html [html]="videoSlide.body" style="border-top: 0px !important;"></app-view-html>
+          </span>
+          <span *ngIf="videoSlide.videoURl" style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">URL: </h3> {{ videoSlide.videoURl }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <ng-template #NoVideoSlideAvailable>
+      <div style="display: flex; gap: 15px; flex-direction: column; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 0.5px solid #7E7E7E;">
+        <h3 style="font-weight: 550; font-size: 16px;">Video Slide:</h3>
+        <div style="display: flex; gap: 10px; flex-direction: column;">
+          <span style="display: flex; gap: 4px;">
+            <h3 style="font-size: 14px; font-weight: 550;">No Video Side Available</h3>
+          </span>
+        </div>
+      </div>
+    </ng-template>
+    <div *ngIf="quizSlideData.id" style="display: flex; gap: 15px; flex-direction: column; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 0.5px solid #7E7E7E;">
+      <h3 style="font-weight: 550; font-size: 16px;">Quiz Slide:</h3>
+      <div style="display: flex; gap: 10px; flex-direction: column;">
+        <span *ngIf="quizSlideData.successMsg" style="display: flex; gap: 4px;">
+          <h3 style="font-size: 14px; font-weight: 550;">Success Message: </h3> {{ quizSlideData.successMsg }}
+        </span>
+        <span *ngIf="quizSlideData.failMsg" style="display: flex; gap: 4px;">
+          <h3 style="font-size: 14px; font-weight: 550;">Fail Message: </h3> {{ quizSlideData.failMsg }}
+        </span>
+        <span *ngIf="quizSlideData.passingMarks" style="display: flex; gap: 4px;">
+          <h3 style="font-size: 14px; font-weight: 550;">Passing Marks: </h3> {{ quizSlideData.passingMarks }}
+        </span>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div *ngFor="let questions of quizSlideData.questions">
+            <h6>{{questions.label || 'NA'}}</h6>
+            <div *ngFor="let options of questions.options" style="display: flex; flex-direction: column; gap: 7px;margin-top: 5px;">
+              <span style="padding: 10px; border-radius: 4px;" [ngStyle]="{'background': options.isCorrect ? '#46c146' : 'white', 'color': options.isCorrect ? 'white' : 'black'}">{{ options.label }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #PassTrainingCourse>
+  <div mat-dialog-title class="dialog-header modal-header-cus m-0 px-6">
+    <div>Automatically Pass training courses</div>
+    <button mat-icon-button (click)="PassCourse.close()" class="close-button">
+      <mat-icon style="color: #fff;">close</mat-icon>
+    </button>
+  </div>
+  <mat-dialog-content class="mat-typography p-0 m-0">
+    <div class="px-4 py-2">
+
+      <form [formGroup]="CourseForm">
+        <!-- Course ID Field -->
+        <div style="display: flex; gap: 20px; justify-content: space-between; flex-direction: column;">
+          <div style="padding-top: 2px; width: 100%;">
+            <mat-form-field class="w-full">
+              <mat-label>Course</mat-label>
+              <mat-select formControlName="courseId" placeholder="Select Course From DropDown">
+                <mat-option *ngFor="let item of selectedCourses" [value]="item.id">{{ item.value }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- User ID Field -->
+        <div style="display: flex; gap: 20px; justify-content: space-between; flex-direction: column;">
+          <div style="padding-top: 2px; width: 100%;">
+            <mat-form-field class="w-full" (mouseover)="over('users')" (mouseout)="out('users')">
+              <mat-label>User *</mat-label>
+              <mat-select formControlName="userId" [(ngModel)]="selectedUsers" multiple>
+                <div style="padding: 0 15px;">
+                  <input style="padding: 10px; width: calc(100% - 20px); margin: 10px 0; border: 0.4px solid #707070; border-radius: 6px;" 
+                         matInput placeholder="Search users" #searchUserBox (keyup)="filterUserList(searchUserBox.value)" />
+                </div>
+                <div style="padding: 15px;">
+                  <mat-checkbox [disabled]="searchText !== '' && searchText !== null && searchText !== undefined ? true : false" 
+                                [checked]="allSelected" 
+                                (change)="selectAll($event)">
+                    <span [ngClass]="{'label-color': allSelected}">{{ allSelected ? 'Deselect All' : 'Select All'}}</span>
+                  </mat-checkbox>
+                </div>
+                <mat-option *ngFor="let item of filteredUserList" (click)="detectCheckboxClick(item)" [value]="item.id">{{ item.value }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="left" class="m-0 px-4 py-2">
+    <div class="w-full">
+      <div class="inline-flex w-full" style="flex-wrap: wrap; gap: 10px; justify-content: end;">
+        <div>
+          <button class="bulk-update-btn-cus" (click)="AutomaticallyPassCourseForBpNumberFun()">
+            <span> Save</span>
+          </button>
+        </div>
+        <div>
+          <button class="bulk-update-btn-cus" (click)="PassCourse.close()">
+            <span> Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-actions>
+</ng-template>

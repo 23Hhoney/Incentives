@@ -1,0 +1,46 @@
+.mat-accordion .mat-expansion-panel {
+    margin-bottom: 2px;
+    border-radius: 0 !important;
+    transition: none;
+    --tw-shadow: none !important;
+    --tw-shadow-colored: none !important;
+    box-shadow: none !important;
+}
+.mat-expansion-panel-header {
+    height: 56px !important;
+    padding: 0.6rem !important;
+   // background: rgba(244, 248, 251, 1) !important;
+    color: #000;
+    font-size: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 0;
+   // transition: height 225ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.containheight {
+    min-height: 75vh;
+}
+
+ .textsmallblue
+  {
+   cursor: pointer;
+   font-weight: 400;
+   font-size: 14px;
+   color: #416fb6 !important;
+    font-family: HelveticaNeueLight;
+}
+
+.acedemyInfo {
+    color: #212529 !important;
+}
+
+.text-success {
+    opacity: 1;
+    color: rgb(25, 135, 84) !important;
+}
+
+.fa-asterisk::before {
+    width: 10px;
+    display: inline-flex;
+}

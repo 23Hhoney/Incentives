@@ -1,0 +1,147 @@
+<!-- Loading bar -->
+<fuse-loading-bar></fuse-loading-bar>
+
+<fuse-vertical-navigation
+   class="dark bg-gray-900 print:hidden"
+   [mode]="fullWidth ? 'over' : 'side'"
+   [name]="'mainNavigation'"
+   [navigation]="navigation.default"
+   [opened]="!fullWidth">
+   <!-- Navigation header hook -->
+   <ng-container fuseVerticalNavigationContentHeader>
+       <div class="flex w-full py-2 px-4">
+           <div class="incen-admin-stl-cus logo-area flex items-center">
+               <img (click)="handleRouteHome()"
+                   class="w-8 logo-stl-wd cursor-pointer"
+                   src="assets/images/kohler_logo.png">
+                           
+               <!-- Left arrow inside the sidebar when it's open -->
+               <button *ngIf="!isMenuOpen" (click)="toggleNavigation('mainNavigation')" class="ml-12">
+                   <!-- Left arrow SVG next to logo -->
+                   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="56" height="56" viewBox="0 0 56 56">
+                       <defs>
+                           <filter id="Ellipse_32" x="0" y="0" width="56" height="56" filterUnits="userSpaceOnUse">
+                               <feOffset input="SourceAlpha"/>
+                               <feGaussianBlur stdDeviation="5" result="blur"/>
+                               <feFlood flood-opacity="0.161"/>
+                               <feComposite operator="in" in2="blur"/>
+                               <feComposite in="SourceGraphic"/>
+                           </filter>
+                       </defs>
+                       <g id="leftarrow" transform="translate(15 15)">
+                           <g transform="matrix(1, 0, 0, 1, -15, -15)" filter="url(#Ellipse_32)">
+                               <g id="Ellipse_32-2" transform="translate(15 15)" fill="#fff" stroke="#c4c4c4" stroke-width="0.5">
+                                   <circle cx="13" cy="13" r="13" stroke="none"/>
+                                   <circle cx="13" cy="13" r="12.75" fill="none"/>
+                               </g>
+                           </g>
+                           <path id="left-chevron-svgrepo-com" d="M5.906.2a.678.678,0,0,1,0,.959L1.638,5.427,5.906,9.7a.678.678,0,0,1-.959.959L.2,5.906a.678.678,0,0,1,0-.959L4.947.2A.678.678,0,0,1,5.906.2Z" transform="translate(13 7.761)" fill-rule="evenodd"/>
+                           <line id="Line_45" y2="9.43" transform="translate(9.333 8.285)" fill="none" stroke="#000" stroke-linecap="round" stroke-width="1"/>
+                       </g>
+                   </svg>
+               </button>
+           </div>
+       </div>
+   </ng-container>
+</fuse-vertical-navigation>
+
+<!-- Wrapper -->
+<div class="flex flex-col flex-auto w-full min-w-0">
+   <!-- Header -->
+   <div class="relative flex flex-0 items-center w-full h-16 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent print:hidden">
+       <!-- Navigation toggle button - Always visible in mobile view -->
+       <button (click)="toggleNavigation('mainNavigation')" class="flex items-center">
+           <!-- Right arrow SVG for outside button - Always visible when menu is open -->
+           <ng-container *ngIf="isMenuOpen">
+               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="56" height="56" viewBox="0 0 56 56">
+                   <!-- Using the rightarrow SVG content -->
+                   <defs>
+                       <filter id="Ellipse_32_right" x="0" y="0" width="56" height="56" filterUnits="userSpaceOnUse">
+                           <feOffset input="SourceAlpha"/>
+                           <feGaussianBlur stdDeviation="5" result="blur"/>
+                           <feFlood flood-opacity="0.161"/>
+                           <feComposite operator="in" in2="blur"/>
+                           <feComposite in="SourceGraphic"/>
+                       </filter>
+                   </defs>
+                   <g id="rightarrow" transform="translate(15 15)">
+                       <g transform="matrix(1, 0, 0, 1, -15, -15)" filter="url(#Ellipse_32_right)">
+                           <g id="Ellipse_32-2" transform="translate(15 15)" fill="#fff" stroke="#c4c4c4" stroke-width="0.5">
+                               <circle cx="13" cy="13" r="13" stroke="none"/>
+                               <circle cx="13" cy="13" r="12.75" fill="none"/>
+                           </g>
+                       </g>
+                       <path id="left-chevron-svgrepo-com" d="M5.906,10.655a.678.678,0,0,0,0-.959L1.638,5.427,5.906,1.158A.678.678,0,1,0,4.947.2L.2,4.947a.678.678,0,0,0,0,.959l4.748,4.748A.678.678,0,0,0,5.906,10.655Z" transform="translate(13 18.615) rotate(180)" fill-rule="evenodd"/>
+                       <line id="Line_45" y2="9.43" transform="translate(16.667 8.285)" fill="none" stroke="#000" stroke-linecap="round" stroke-width="1"/>
+                   </g>
+               </svg>
+           </ng-container>
+           
+           <!-- Right arrow SVG for when menu is closed - Only visible in mobile when sidebar is closed -->
+           <ng-container *ngIf="!isMenuOpen && fullWidth">
+               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="56" height="56" viewBox="0 0 56 56">
+                   <!-- Using the rightarrow SVG content -->
+                   <defs>
+                       <filter id="Ellipse_32_mobile" x="0" y="0" width="56" height="56" filterUnits="userSpaceOnUse">
+                           <feOffset input="SourceAlpha"/>
+                           <feGaussianBlur stdDeviation="5" result="blur"/>
+                           <feFlood flood-opacity="0.161"/>
+                           <feComposite operator="in" in2="blur"/>
+                           <feComposite in="SourceGraphic"/>
+                       </filter>
+                   </defs>
+                   <g id="rightarrow_mobile" transform="translate(15 15)">
+                       <g transform="matrix(1, 0, 0, 1, -15, -15)" filter="url(#Ellipse_32_mobile)">
+                           <g id="Ellipse_32-2" transform="translate(15 15)" fill="#fff" stroke="#c4c4c4" stroke-width="0.5">
+                               <circle cx="13" cy="13" r="13" stroke="none"/>
+                               <circle cx="13" cy="13" r="12.75" fill="none"/>
+                           </g>
+                       </g>
+                       <path id="left-chevron-svgrepo-com" d="M5.906,10.655a.678.678,0,0,0,0-.959L1.638,5.427,5.906,1.158A.678.678,0,1,0,4.947.2L.2,4.947a.678.678,0,0,0,0,.959l4.748,4.748A.678.678,0,0,0,5.906,10.655Z" transform="translate(13 18.615) rotate(180)" fill-rule="evenodd"/>
+                       <line id="Line_45" y2="9.43" transform="translate(16.667 8.285)" fill="none" stroke="#000" stroke-linecap="round" stroke-width="1"/>
+                   </g>
+               </svg>
+           </ng-container>
+       </button>
+
+       <ng-container>
+           <div class="incen-admin-header-cus inline-flex">
+               <img class="cursor-pointer" style="width: 30px;height: 30px;margin-top: 9px;" [src]="getIcon(pageTitle)">
+                <span class="incen-admin-header-title">{{pageTitle}}</span>
+           </div>
+       </ng-container>
+       
+       <!-- Components -->
+       <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
+           <user style="padding-right: 0.5rem !important" class="flex items-center"></user>
+           <div *ngIf="showGoToBtn">
+               <button class="gotoadmin-btn inline-flex" [routerLink]="gotoRoute">
+                    <img class="cursor-pointer" style="width: 14px; height: 14px;margin-top: 2px; margin-right: 6px;" src="assets/images/key-img.png">
+                   <span class="gotoadmin-txt"> {{gotoRouteLabel}} </span>
+               </button>
+           </div>
+       </div>
+   </div>
+
+   <!-- Content -->
+   <div class="flex flex-col flex-auto" style="background-color: #fff; overflow-y: auto; height: 0; flex-grow: 1 !important;">
+       <router-outlet *ngIf="true"></router-outlet>
+   </div>
+</div>
+
+
+
+<!-- Quick chat -->
+<quick-chat #quickChat="quickChat"></quick-chat>
+
+<!-- <mat-menu [xPosition]="'before'" #userActions="matMenu">
+    <button (click)="RoutetoProfile()" mat-menu-item>
+        <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+        <span>Profile</span>
+    </button>
+    <mat-divider class="my-2"></mat-divider>
+    <button mat-menu-item (click)="signOut()">
+        <mat-icon [svgIcon]="'heroicons_outline:logout'"></mat-icon>
+        <span>Sign out</span>
+    </button>
+</mat-menu> -->

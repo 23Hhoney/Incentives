@@ -1,0 +1,268 @@
+.text-under {
+    text-decoration: underline;
+}
+
+.type-stl {
+    font-size: 0.875rem;
+    padding: 6px 8px;
+}
+
+.th-bdr{
+    font-weight: 600 !important;
+    border-bottom-width: 1px;
+    border-style: solid;
+}
+.upload-file-text {
+    display: block;
+    @media only screen and (max-width: 380px) {
+        display: none;
+    }
+}
+
+.mat-label-text-sku-list {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 22px;
+    text-align: left;
+}
+
+.cus-background-sku-list-tag {
+    background: #F3F4F6;
+
+}
+
+.border-color-cus-sku-list {
+    border-color: #BDC1CA
+}
+
+.button-flex-container {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+::ng-deep .mat-form-field[points-credits-mat-field].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+    height: 34px !important;
+    min-height: 34px !important;
+}
+
+::ng-deep .mat-form-field[points-credits-user-details-mat-field].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+  height: 34px !important;
+  min-height: 34px !important;
+  padding-left: 5px !important;
+}
+
+::ng-deep .mat-form-field[points-credits-mat-select].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+  height: 34px !important;
+  min-height: 34px !important;
+  padding-left: 10px !important;
+}
+
+.mat-input-element{
+    padding-left: 5px !important;
+}
+::ng-deep .mat-datepicker-popup{
+    top: 10% !important;
+    height: fit-content !important;
+}
+::ng-deep .mat-datepicker-content .mat-calendar {
+    width: 296px;
+    height: 100% !important;
+}
+::ng-deep .mat-radio-label-content {
+    -webkit-user-select: auto;
+    user-select: auto;
+    color: #171A1F;
+    font-weight: 400 !important;
+    font-size: 14px;
+    display: inline-block;
+    order: 0;
+    line-height: inherit;
+    padding-left: 8px;
+    padding-right: 0;
+}
+.add-user-field-container {
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    .equal-width {
+      width: 49%;
+      @media only screen and (max-width: 664px) {
+        width: 100%;
+      }
+    }
+    .three-section-width {
+      width: 32%;
+      @media only screen and (max-width: 664px) {
+        width: 100%;
+      }
+    }
+    .two-section-width {
+      width: 48%;
+      @media only screen and (max-width: 664px) {
+        width: 100%;
+      }
+    }
+  }
+  .wide-dialog {
+    width: 800px;
+  }
+  .dialog-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .close-button {
+    margin-left: auto;
+  }
+  
+  .bulk-update-btn-cus {
+    width: 124px;
+    height: 36px;
+    padding: 7px 11px 7px 12px;
+    gap: 0px;
+    border-radius: 6px;
+    opacity: 0.4;
+    background: #04202E;
+    color: #FFFFFF; 
+  }
+  .save-btn-cus {
+    width: 124px;
+    height: 36px;
+    padding: 7px 11px 7px 12px;
+    gap: 0px;
+    border-radius: 4px;
+    background: #04202E;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+  }
+  .close-btn-cus {
+    width: 106px;
+    height: 36px;
+    padding: 7px 34.5px 7px 35.5px;
+    gap: 0px;
+    border-radius: 4px;
+    background: #04202E;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    text-align: left;
+  }
+  .w-1\/2 {
+    width: 49% !important;
+}
+.readonly-input {
+  cursor: not-allowed;
+  pointer-events: none; /* Prevent any interaction */
+}
+.user-id-searchfortext{
+  top: -25px;
+  right: 0 !important;
+  cursor: pointer;
+  color: #0D78C9;
+}
+.user-id-search {
+  position: absolute;
+  top: -25px;
+  right: 0 !important;
+  cursor: pointer;
+  color: #0D78C9;
+}
+::ng-deep .mat-form-field[points-credits-mat-field].mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix .mat-form-field-label-wrapper {
+  top: -25px;
+  height: auto;
+  padding-top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.dialog-headers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.full-width {
+  width: 48%;
+}
+.viewport {
+  height: 200px; /* Adjust the height as needed */
+}
+.dialog-headersd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cancel-button {
+  background: #37649F !important;;
+  color: white !important;;
+  margin-right: 20px; /* Adds gap between Cancel and Delete buttons */
+}
+
+.delete-button {
+  background: #000000 !important;;
+  color: white !important;;
+}
+.disabled-button {
+  opacity: 0.4;
+  pointer-events: none; /* This ensures the button is not clickable */
+  }
+
+  .search-container {
+    display: flex;
+    align-items: center;
+    }
+    
+    .search-container input {
+    flex: 1;
+    }
+    
+    .search-container button {
+    margin-left: 8px;
+    }
+    
+    mat-autocomplete .mat-option b {
+      color: #ff5722;
+      font-weight: bold;
+    }
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+    
+    .text-animation {
+      animation: fadeInOut 1.5s infinite ease-in-out;
+    }
+    .loader-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      min-height: 70px;
+      background-color: white;
+      position: relative;
+    }
+    
+    .loader-content {
+      text-align: center;
+      padding: 10px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: none;
+      max-width: 300px;
+    }
+    
+    .loader-spinner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px; /* Adds spacing between spinner and text */
+    }
+    
+    .text-animation {
+      margin-right: -100px;
+      margin-left: -60px;
+    }

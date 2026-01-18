@@ -1,0 +1,14 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalCenterTitle">{{title}}</h5>
+    <a href="javascript:void(0);" class="right_note" (click)="closeCall()"  style="color:#dc3545"><i class="fa fa-close"></i></a>
+</div>
+<div class="modal-body">
+    <p> {{message}} ?</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal"
+        (click)="closeCall()">{{cancelBtnName}}</button>
+    <button type="button" class="btn btn-primary theme-bg gradient"
+        style="background-color: cadetblue;" (click)="confirm()">{{confirmBtnName}}
+    </button>
+</div>

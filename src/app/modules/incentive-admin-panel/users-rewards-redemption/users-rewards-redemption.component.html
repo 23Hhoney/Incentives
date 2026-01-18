@@ -1,0 +1,74 @@
+<form [formGroup]="dateSelectionForm" class="w-full containheight">
+  <div class="date-row" style="margin: 20px;">
+    <div class="date-option">
+        <span class="item-header">Order Date</span>
+      <div class="date-fields flex-wrap">
+        <mat-form-field users-reward-redemption-mat-fields style="min-width: 192px;">
+          <mat-label>Start Date</mat-label>
+          <input matInput [matDatepicker]="startDatePicker1" formControlName="startDate">
+          <mat-datepicker-toggle matSuffix [for]="startDatePicker1"></mat-datepicker-toggle>
+          <mat-datepicker #startDatePicker1></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field users-reward-redemption-mat-fields style="min-width: 192px;">
+          <mat-label>End Date</mat-label>
+          <input matInput [matDatepicker]="endDatePicker1" formControlName="endDate">
+          <mat-datepicker-toggle matSuffix [for]="endDatePicker1"></mat-datepicker-toggle>
+          <mat-datepicker #endDatePicker1></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="items-divider"></div>
+  <div>
+    <div class="date-row" style="margin: 20px; display: flex; gap: 100px;">
+      <div style="display: flex; gap: 20px; flex-direction: column;">
+        <div class="or-text">And</div>
+        <div class="date-option">
+          <div class="date-fields">
+            <mat-form-field users-reward-redemption-mat-fields class="reduced-width">
+              <mat-label>User Lookup</mat-label>
+              <input type="text" matInput [formControl]="userSearchControl" [matAutocomplete]="auto"
+                [matTooltip]="selectedUserTooltip" matTooltipPosition="above"
+                placeholder="Enter user name, email, or BP Number" />
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onUserSelected($event)">
+                <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
+                matTooltip="{{ user.firstName }} {{ user.lastName }} - {{ user.email }} {{ user.bpNumber }}"
+                >
+                  <span [innerHTML]="formatUserDisplay(user, userSearchControl.value)"></span>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="reduced-width">
+            <div *ngIf="selectedFullname" class="mr-8"
+              style="font-family: 'Open Sans', sans-serif; font-weight: 200; font-size: 20px; margin-top: 30px;">
+              Participant Name: {{ selectedFullname }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="date-row" style="margin: 20px; display: flex; gap: 100px;">
+      <div style="display: flex; gap: 20px; flex-direction: column;">
+        <div class="or-text">And</div>
+        <div class="date-option">
+          <div class="date-fields">
+            <mat-form-field users-reward-redemption-mat-fields class="reduced-width">
+              <mat-label>Company (Optional)</mat-label>
+              <input matInput type="text" formControlName="organization">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="items-divider"></div>
+  <div class="flex space-x-4 mt-4 ml-4" style="align-items: center; justify-content: center;">
+    <button style="height: 36px; width: 170px;" class="bg-[#04202E] text-white py-2 rounded-lg" (click)="downloadCSV()">
+      <mat-icon [svgIcon]="'svg-download-arrow-box'"></mat-icon>
+      <span style="bottom: 7px; position: relative;">
+        Download .CSV File
+      </span>
+    </button>
+  </div>
+</form>

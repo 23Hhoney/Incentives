@@ -1,0 +1,58 @@
+li {
+    list-style-type: none;
+}
+
+.statusTxt {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.roleTxt {
+    font-size: 13px;
+}
+
+.statusDot {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    border: 1px solid rgb(223, 222, 222);
+    position: static;
+}
+
+.stepImg {
+    border-radius: 50%;
+    height: 60px !important;
+    width: 60px !important;
+}
+
+.connector {
+    height: 120px;
+    width: 1px;
+    background: rgb(223, 222, 222);
+    position: relative;
+    align-self: center !important
+}
+
+.approved {
+    background: rgb(45, 252, 45);
+    color: white;
+}
+
+.reject {
+    background: rgb(252, 30, 30);
+    color: white;
+}
+
+.greenConnector {
+    background: rgb(45, 252, 45);
+}
+
+.mat-card {
+    padding: 10px !important;
+    width: fit-content;
+    height: fit-content;
+}
+
+.extra {
+    height: 260px;
+}

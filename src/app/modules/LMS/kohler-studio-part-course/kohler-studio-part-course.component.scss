@@ -1,0 +1,67 @@
+.containheight {
+    min-height: 75vh;
+}
+
+
+.mediumtext{
+    font-size: 1.625rem;
+}
+.normaltext{
+    
+  font-family: HelveticaNeueLight !important
+}
+.audio-player-width {
+  @media only screen and (min-width:671px) {
+    width: 640px;  
+  }
+  @media only screen and (max-width:670px) and (min-width: 415px) {
+    width: 400px;    
+  }
+}
+.cursor-pointer {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.bottom-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+  height: 78px;
+  position: relative;
+  width: calc(100% + 156px);
+  right: 78px;
+}
+.button-container {
+  height: 78px;
+  align-items: center;
+  display: flex;
+}
+.button-body {
+  background-color: #fff;
+  color: #000;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 10px;
+  height: 58px;
+  font-weight: 300;
+  align-items: center;
+  width: 126px;
+  display: flex !important;
+  justify-content: center;
+  border-radius: 0 !important;
+}
+
+.quizTitle {
+  font-size: 32px !important;
+  font-weight: normal !important;
+}
+::ng-deep .ck .ck-sticky-panel__content {
+  border: none !important;
+}
+::ng-deep .ck-content ol {
+  list-style-type: decimal;
+  margin-left: 10px;
+}

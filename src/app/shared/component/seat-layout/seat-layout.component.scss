@@ -1,0 +1,67 @@
+.white
+{
+  background-color: white;
+  color: black; 
+}
+
+.selectedSeats
+{
+   color: rgb(168, 7, 7) !important;
+}
+
+.red
+{
+  background-color: red; 
+  color: white !important;
+}
+
+.green
+{
+    background-color: greenyellow;
+    color: white !important; 
+}
+
+.black
+{
+    background: black;
+    color: white !important; 
+}
+
+.seatText1
+{
+    color: black;
+    font-size: 25px;
+}
+
+.border
+{
+  border: 2px solid #c5c1c1;
+  border-radius: 5px
+}
+#rowName
+{
+  font-weight: bold;
+  color: #6C6C6D;
+  margin-right: 10px
+}
+.pass-space {
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    cursor: default;
+}
+.front-style {
+    position: absolute;
+    margin-top: -9px;
+    background-color: #e2dddd;
+    padding: 0px 3px 0px 3px;
+    border-radius: 15%;
+    color: #3e3c3c;
+}
+
+span
+{
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: bold;
+}

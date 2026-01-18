@@ -1,0 +1,38 @@
+<div fxLayout="column">
+  <span class="tag mt-12" fxLayoutAlign="center center">Activity TimeLine</span>
+  <hr style="height:1px; border:none; color:#E6E6E6; background-color:#E6E6E6; width:70%;">
+  <div class=" mb-24"></div>
+  <div fxLayout="row" *ngFor="let obj of logs; index as i;" fxFlex="100" fxLayoutGap="15px">
+    <div fxFlex="22" fxLayout="column" fxLayoutAlign=" center">
+      <span class="date">{{obj.dateTime | date: 'MMM, d'}}</span>
+      <span class="time">{{obj.dateTime | date: 'h:mm a'}}</span>
+    </div>
+    <div fxFlex="5" fxLayout="column" fxLayoutAlign=" center">
+      <span *ngIf="obj.type === 'Lead Re-Assigned'" class="status-circle leadAssigned" fxLayoutAlign="center center">
+        <mat-icon class="status-icon" matTooltip="Lead Re-Assigned">person</mat-icon>
+      </span>
+      <span *ngIf="obj.type === 'Email'" class="status-circle email" fxLayoutAlign="center center">
+        <mat-icon class="status-icon" matTooltip="Email">email</mat-icon>
+      </span>
+      <span *ngIf="obj.type === 'Remarks'" class="status-circle remark" fxLayoutAlign="center center">
+        <mat-icon class="status-icon" matTooltip="Remark">sticky_note_2</mat-icon>
+      </span>
+      <span *ngIf="obj.type === 'Call'" class="status-circle call" fxLayoutAlign="center center">
+        <mat-icon class="status-icon" matTooltip="Call">call</mat-icon>
+      </span>
+      <span *ngIf="obj.type === 'SMS'" class="status-circle sms" fxLayoutAlign="center center">
+        <mat-icon class="status-icon" matTooltip="SMS">sms</mat-icon>
+      </span>
+      <span *ngIf="(logs.length - 1) > i" class="connector"></span>
+    </div>
+    <div fxFlex="3"></div>
+    <div fxFlex="70" fxLayout="column" style="cursor: pointer;" (click)="sendDetails(obj)">
+      <span class="tag">{{obj.type}}</span>
+      <span class="subtag">Agent - {{obj.agentName}}</span>
+      <span *ngIf="obj.type === 'Email'" class="subtag">Sent To - {{obj.to}} </span>
+      <span *ngIf="obj.type === 'Call'" class="subtag">Contact No - {{obj.caller_number}} </span>
+      <span *ngIf="obj.type === 'SMS'" class="subtag">Sent To - {{obj.contactNo}} </span>
+    </div>
+  </div>
+
+</div>
