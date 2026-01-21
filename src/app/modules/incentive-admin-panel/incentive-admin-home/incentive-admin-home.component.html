@@ -1,41 +1,43 @@
 <div #scrollContainerItem class="sections-container custom-homepage-container"
-  *ngIf="publishedPage && publishedPage.menuId === 'HM'">
-  <div *ngFor="let section of sectionsArray; let i = index; trackBy: trackByFn" [ngStyle]="{
-      'margin-top': i > 0 ? '5px' : '0',
-      'min-height': (mobileView || isWindowWidthLessThan768()) ? 'auto' : getSectionArrayMaxHeight(i),
-      'height': (mobileView || isWindowWidthLessThan768()) ? 'auto' : getSectionArrayMaxHeight(i),
-      'position': 'relative',
-      'overflow': 'visible'
-    }">
-    <div class="parent-container">
-      <div *ngFor="let item of section.items; let j = index" class="element-container" [id]="'element-' + item.id"
-        [ngStyle]="{
-        'width': mobileView ? '100%' : (item.widthPercent > 100 ? '100%' : item.widthPercent + '%'), 
-        'height':
-   mobileView || item.type === 'text' || item.type === 'greeting'
-    ? null
-    : item.heightPercent + 'vh',
+     *ngIf="publishedPage && publishedPage.menuId === 'HM'">
+    <div *ngFor="let section of sectionsArray; let i = index; trackBy: trackByFn" [ngStyle]="{
+         'margin-top' : i>
+        0 ? '5px' : '0',
+        'min-height': (mobileView || isWindowWidthLessThan768()) ? 'auto' : getSectionArrayMaxHeight(i),
+        'height': (mobileView || isWindowWidthLessThan768()) ? 'auto' : getSectionArrayMaxHeight(i),
+        'position': 'relative',
+        'overflow': 'visible'
+        }">
+        <div class="parent-container">
+            <div *ngFor="let item of section.items; let j = index" class="element-container" [id]="'element-' + item.id"
+                 [ngStyle]="{
+                 'width' : mobileView ? '100%' : (item.widthPercent>
+                100 ? '100%' : item.widthPercent + '%'),
+                'height':
+                mobileView || item.type === 'text' || item.type === 'greeting'
+                ? null
+                : item.heightPercent + 'vh',
 
-        'margin': selectedContainerType === 'widgets' ? (j === section.items.length - 1 ? '0' : '0px 0.5vw 0px 0px') :'0',
-        'top': mobileView ? 'auto' : item.yPercent + 'vh',
-        'left': mobileView ? '0' : (item.xPercent + item.widthPercent > 100 ? (100 - item.widthPercent) : item.xPercent) + '%',       
-        'z-index': item['isEdit'] || item['showChartHeading'] ? 9999 : item.zIndex,
-        'border': isPublishedView ? 'none' : ((selectedElement?.id === item.id && editingSection && isEditingSection === i) ? '2px solid #3273dc' : ((hoveredElement?.id === item.id && editingSection && isEditingSection === i) ? '1px solid #3273dc' : '1px solid transparent')),
-        'box-shadow': isPublishedView ? 'none' : (selectedElement?.id === item.id && editingSection && isEditingSection === i ? '0 0 8px rgba(50, 115, 220, 0.5)' : 'none'),
-        'cursor': isPublishedView || !editingSection || isEditingSection !== i ? 'default' : 'move',
-        'user-select': isPublishedView ? 'auto' : 'none',
-        'padding': isPublishedView ? '0' : '2px',
-        'position': mobileView ? 'relative' : 'absolute',
-        'max-width': '100%',
-        'box-sizing': 'border-box'
-      }">
-        <ng-container [ngSwitch]="item.type">
-          <!-- Greeting -->
-          <div *ngSwitchCase="'greeting'" class="text-element widget-zoom" [ngStyle]="{
+                'margin': selectedContainerType === 'widgets' ? (j === section.items.length - 1 ? '0' : '0px 0.5vw 0px 0px') :'0',
+                'top': mobileView ? 'auto' : item.yPercent + 'vh',
+                'left': mobileView ? '0' : (item.xPercent + item.widthPercent > 100 ? (100 - item.widthPercent) : item.xPercent) + '%',
+                'z-index': item['isEdit'] || item['showChartHeading'] ? 9999 : item.zIndex,
+                'border': isPublishedView ? 'none' : ((selectedElement?.id === item.id && editingSection && isEditingSection === i) ? '2px solid #3273dc' : ((hoveredElement?.id === item.id && editingSection && isEditingSection === i) ? '1px solid #3273dc' : '1px solid transparent')),
+                'box-shadow': isPublishedView ? 'none' : (selectedElement?.id === item.id && editingSection && isEditingSection === i ? '0 0 8px rgba(50, 115, 220, 0.5)' : 'none'),
+                'cursor': isPublishedView || !editingSection || isEditingSection !== i ? 'default' : 'move',
+                'user-select': isPublishedView ? 'auto' : 'none',
+                'padding': isPublishedView ? '0' : '2px',
+                'position': mobileView ? 'relative' : 'absolute',
+                'max-width': '100%',
+                'box-sizing': 'border-box'
+                }">
+                <ng-container [ngSwitch]="item.type">
+                    <!-- Greeting -->
+                    <div *ngSwitchCase="'greeting'" class="text-element widget-zoom" [ngStyle]="{
             'width': '100%',
             'height': 'auto',
             'padding': '8px',
-            'overflow': 'visible', 
+            'overflow': 'visible',
             'color': item.style?.color || '#000',
             'background-color': item.style?.backgroundColor || 'transparent',
             'font-weight': item.style?.bold ? 'bold' : 'normal',
@@ -46,13 +48,13 @@
             'white-space':  (mobileView || isWindowWidthLessThan530()) ? 'normal' : 'nowrap',
             'z-index': item.zIndex || 1
           }" [innerHTML]="getSafeHtml(item.text)">
-          </div>
+                    </div>
 
-          <!-- Text -->
-          <div *ngSwitchCase="'text'" class="text-element" [style]="{
+                    <!-- Text -->
+                    <div *ngSwitchCase="'text'" class="text-element" [style]="{
             'width': '100%',
              'height': 'auto',
-              'min-height': item.heightPercent + 'vh', 
+              'min-height': item.heightPercent + 'vh',
                'white-space': 'normal',
               'overflow-wrap': 'break-word',
             'padding': '8px',
@@ -67,94 +69,93 @@
             'line-height': '1.2',
             'word-wrap': 'break-word'
           }" [innerHTML]="getSafeHtml(item.text)">
-          </div>
+                    </div>
 
-          <!-- Image -->
-          <div *ngSwitchCase="'image'" style="width: 100%; height: 100%; position: relative;">
-            <div *ngIf="item.images; else noImage" style="width: 100%; height: 100%; position: relative;">
-              <ng-container *ngIf="(item.hyperlink || item.text); else nonClickableImage">
-                <a [href]="formatHyperlink(item.hyperlink || item.text)" target="_blank" rel="noopener noreferrer"
-                  style="display: block; width: 100%; height: 100%;">
-                  <img [src]="item.images" alt="Image" style="width: 100%; height: 100%; object-fit: cover;">
-                </a>
-              </ng-container>
-              <ng-template #nonClickableImage>
-                <img [src]="item.images" alt="Image" style="width: 100%; height: 100%; object-fit: cover;">
-              </ng-template>
-            </div>
-            <ng-template #noImage>
-              <div
-                style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
-                <i class="fas fa-image" style="font-size: 24px; margin-bottom: 8px;"></i>
-                <p style="margin: 0;">Click edit button to add image</p>
-              </div>
-            </ng-template>
-          </div>
+                    <!-- Image -->
+                    <div *ngSwitchCase="'image'" style="width: 100%; height: 100%; position: relative;">
+                        <div *ngIf="item.images; else noImage" style="width: 100%; height: 100%; position: relative;">
+                            <ng-container *ngIf="(item.hyperlink || item.text); else nonClickableImage">
+                                <a [href]="formatHyperlink(item.hyperlink || item.text)" target="_blank" rel="noopener noreferrer"
+                                   style="display: block; width: 100%; height: 100%;">
+                                    <img [src]="item.images" alt="Image" style="width: 100%; height: 100%; object-fit: cover;">
+                                </a>
+                            </ng-container>
+                            <ng-template #nonClickableImage>
+                                <img [src]="item.images" alt="Image" style="width: 100%; height: 100%; object-fit: cover;">
+                            </ng-template>
+                        </div>
+                        <ng-template #noImage>
+                            <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+                                <i class="fas fa-image" style="font-size: 24px; margin-bottom: 8px;"></i>
+                                <p style="margin: 0;">Click edit button to add image</p>
+                            </div>
+                        </ng-template>
+                    </div>
 
-          <!-- Video -->
-          <div *ngSwitchCase="'video'" class="video-container"
-            style="width: 100%; height: 100%; position: relative; overflow: hidden;">
-            <ng-container *ngIf="item.isYoutubeOrVimeo && item.videoUrl; else localVideo">
-              <div style="position: relative; width: 100%; height: 100%; padding-top: 56.25%;">
-                <iframe [src]="item.videoUrl | safeEmbedUrls:item.autoPlay:item.loop" frameborder="0"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen [attr.aria-label]="'YouTube video player for ' + item.id"></iframe>
-              </div>
-            </ng-container>
-            <ng-template #localVideo>
-              <video *ngIf="getVideoUrl(item)" [src]="getVideoUrl(item)" [autoplay]="item.autoPlay" [loop]="item.loop"
-                [controls]="true" [muted]="item.autoPlay" style="width: 100%; height: 100%; object-fit: contain;"
-                (loadstart)="onVideoLoadStart(item)" (error)="onVideoError($event, item)"
-                [attr.aria-label]="'Video player for ' + item.id">
-                Your browser does not support the video tag.
-              </video>
-              <video *ngIf="!getVideoUrl(item) && item.tempVideoUrl" [src]="item.tempVideoUrl"
-                [autoplay]="item.autoPlay" [loop]="item.loop" [controls]="true" [muted]="item.autoPlay"
-                style="width: 100%; height: 100%; object-fit: contain; border: 2px solid red;"
-                (loadstart)="onVideoLoadStart(item)" (error)="onVideoError($event, item)"
-                [attr.aria-label]="'Temporary video player for ' + item.id">
-                Your browser does not support the video tag.
-              </video>
-              <div *ngIf="!getVideoUrl(item) && !item.tempVideoUrl"
-                style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
-                <i class="fas fa-video" style="font-size: 24px; margin-bottom: 8px;"></i>
-                <p style="margin: 0;">Click edit button to add video</p>
-              </div>
-            </ng-template>
-          </div>
+                    <!-- Video -->
+                    <div *ngSwitchCase="'video'" class="video-container"
+                         style="width: 100%; height: 100%; position: relative; overflow: hidden;">
+                        <ng-container *ngIf="item.isYoutubeOrVimeo && item.videoUrl; else localVideo">
+                            <div style="position: relative; width: 100%; height: 100%; padding-top: 56.25%;">
+                                <iframe [src]="item.videoUrl | safeEmbedUrls:item.autoPlay:item.loop" frameborder="0"
+                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen [attr.aria-label]="'YouTube video player for ' + item.id"></iframe>
+                            </div>
+                        </ng-container>
+                        <ng-template #localVideo>
+                            <video *ngIf="getVideoUrl(item)" [src]="getVideoUrl(item)" [autoplay]="item.autoPlay" [loop]="item.loop"
+                                   [controls]="true" [muted]="item.autoPlay" style="width: 100%; height: 100%; object-fit: contain;"
+                                   (loadstart)="onVideoLoadStart(item)" (error)="onVideoError($event, item)"
+                                   [attr.aria-label]="'Video player for ' + item.id">
+                                Your browser does not support the video tag.
+                            </video>
+                            <video *ngIf="!getVideoUrl(item) && item.tempVideoUrl" [src]="item.tempVideoUrl"
+                                   [autoplay]="item.autoPlay" [loop]="item.loop" [controls]="true" [muted]="item.autoPlay"
+                                   style="width: 100%; height: 100%; object-fit: contain; border: 2px solid red;"
+                                   (loadstart)="onVideoLoadStart(item)" (error)="onVideoError($event, item)"
+                                   [attr.aria-label]="'Temporary video player for ' + item.id">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div *ngIf="!getVideoUrl(item) && !item.tempVideoUrl"
+                                 style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+                                <i class="fas fa-video" style="font-size: 24px; margin-bottom: 8px;"></i>
+                                <p style="margin: 0;">Click edit button to add video</p>
+                            </div>
+                        </ng-template>
+                    </div>
 
-          <!-- Audio -->
-          <div *ngSwitchCase="'audio'"
-            style="width: 100%; height: 100%; padding: 8px; display: flex; flex-direction: column;">
-            <div *ngIf="getAudioUrl(item)"
-              style="width: 100%; height: 100%; display: flex; flex-direction: column; position: relative;">
-              <div *ngIf="item.title"
-                style="font-family: HelveticaNeueBold; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: #333; text-align: left;">
-                {{ item.title }}
-              </div>
-              <div *ngIf="item.subtitle"
-                style="font-family: HelveticaNeueBold; color: #666; font-size: 13px; margin-bottom: 10px; text-align: left; font-style: italic;">
-                {{ item.subtitle }}
-              </div>
-              <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
-                <audio [src]="getAudioUrl(item)" [controls]="item.showControls !== false" [autoplay]="item.autoPlay"
-                  style="width: 100%; max-width: 100%; height: auto; min-height: 40px;"
-                  (loadedmetadata)="onAudioLoaded(audioPlayer, item)" preload="metadata">
-                </audio>
-              </div>
-            </div>
-            <div *ngIf="!getAudioUrl(item)"
-              style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
-              <i class="fas fa-volume-up" style="font-size: 24px; margin-bottom: 8px;"></i>
-              <p style="margin: 0;">No audio available. Please check the audio URL.</p>
-            </div>
-          </div>
+                    <!-- Audio -->
+                    <div *ngSwitchCase="'audio'"
+                         style="width: 100%; height: 100%; padding: 8px; display: flex; flex-direction: column;">
+                        <div *ngIf="getAudioUrl(item)"
+                             style="width: 100%; height: 100%; display: flex; flex-direction: column; position: relative;">
+                            <div *ngIf="item.title"
+                                 style="font-family: HelveticaNeueBold; font-weight: bold; margin-bottom: 5px; font-size: 16px; color: #333; text-align: left;">
+                                {{ item.title }}
+                            </div>
+                            <div *ngIf="item.subtitle"
+                                 style="font-family: HelveticaNeueBold; color: #666; font-size: 13px; margin-bottom: 10px; text-align: left; font-style: italic;">
+                                {{ item.subtitle }}
+                            </div>
+                            <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                                <audio [src]="getAudioUrl(item)" [controls]="item.showControls !== false" [autoplay]="item.autoPlay"
+                                       style="width: 100%; max-width: 100%; height: auto; min-height: 40px;"
+                                       (loadedmetadata)="onAudioLoaded(audioPlayer, item)" preload="metadata">
+                                </audio>
+                            </div>
+                        </div>
+                        <div *ngIf="!getAudioUrl(item)"
+                             style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; color: #888;">
+                            <i class="fas fa-volume-up" style="font-size: 24px; margin-bottom: 8px;"></i>
+                            <p style="margin: 0;">No audio available. Please check the audio URL.</p>
+                        </div>
+                    </div>
 
-          <!-- Button -->
-          <div *ngSwitchCase="'button'"
-            style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 4px;"
-            [ngStyle]="{
+                    <!-- Button -->
+                    <div *ngSwitchCase="'button'"
+                         style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 4px;"
+                         [ngStyle]="{
               'backgroundColor': parseButtonStyle(item.salesHeading)?.backgroundColor || '#007bff',
               'color': parseButtonStyle(item.salesHeading)?.color || '#ffffff',
               'font-weight': parseButtonStyle(item.salesHeading)?.fontWeight || 'normal',
@@ -162,402 +163,411 @@
               'text-decoration': parseButtonStyle(item.salesHeading)?.textDecoration || 'none',
               'z-index': parseButtonStyle(item.salesHeading)?.zIndex || 'auto',
               'cursor': item.chartHeading ? 'pointer' : 'default',
-              'opacity': item.chartHeading ? '1' : ''
+              'opacity': item.chartHeading ? '1' : '',
+              'padding': mobileView ? '10px 14px' : '6px 10px',
+              'text-align': 'center',
+              'white-space': 'normal',
+              'word-break': 'break-word',
+              'line-height': '1.2'
             }" (click)="onButtonClick(item)" [title]="item.chartHeading ? 'Click to visit: ' + item.chartHeading : ''">
-            <span>{{item.text || 'Click me'}}</span>
-          </div>
-
-          <!-- Pie Chart -->
-          <div *ngSwitchCase="'Pie Chart'" class="h-full min-h-full" [ngClass]="item.className">
-            <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
-              [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
-              style="display: flex; flex-direction: column;">
-              <div class="w-full flex justify-end mb-2">
-                <select [(ngModel)]="item.selectedTimePeriod" [ngModelOptions]="{standalone: true}"
-                  (ngModelChange)="onTimePeriodChange($event, item, 'Pie Chart')">
-                  <option value="currentMonth">Current Month</option>
-                  <option value="currentYear">Current Year</option>
-                  <option value="previousYear">Previous Year</option>
-                  <option value="lifetime">Lifetime</option>
-                </select>
-
-              </div>
-              <div class="w-full flex justify-between mb-2">
-                <div class="ms-2" style="max-width: calc(100% - 60px);">
-                  <div class="chart-heading">
-                    <div [innerHTML]="sanitizeHtml(item.chartHeading)">Performance Total Quantity</div>
-                    <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)">Current data overview</div>
-                  </div>
-                </div>
-                <div class="w-3/12 text-right">
-                  <div class="badgeblack"><a href="#">See More</a></div>
-                </div>
-              </div>
-              <div class="w-full flex items-center justify-center" style="overflow: hidden; height: 200px;">
-                <ngx-charts-pie-chart [view]="[item.width * 0.7, 200]" [scheme]="colorScheme"
-                  [results]="item.pieChartData" [gradient]="false" [legend]="false" [doughnut]="false">
-                  <ng-template #tooltipTemplate let-model="model">
-                    <div class="tooltip-content">
-                      <span>{{model.name}}: {{model.value}}</span>
-                    </div>
-                  </ng-template>
-                </ngx-charts-pie-chart>
-              </div>
-            </div>
-          </div>
-
-          <div *ngSwitchCase="'Line Chart'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
-            <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
-              [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent">
-              <div class="w-full flex justify-end mb-2">
-                <select [(ngModel)]="item.selectedTimePeriod"
-                  (ngModelChange)="onTimePeriodChange($event, item, 'Line Chart')">
-                  <option value="currentMonth">Current Month</option>
-                  <option value="currentYear">Current Year</option>
-                  <option value="previousYear">Previous Year</option>
-                  <option value="lifetime">Lifetime</option>
-
-                </select>
-              </div>
-              <div class="w-full flex justify-between mb-2">
-                <div class="ms-2" style="max-width: calc(100% - 60px);">
-                  <div class="chart-heading">
-                    <div [innerHTML]="sanitizeHtml(item.chartHeading)">Performance Total {{item.chartDataType |
-                      titlecase}}</div>
-                    <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)">Current data overview</div>
-                  </div>
-                </div>
-                <div class="w-3/12 text-right">
-                  <div class="badgeblack"><a href="#">See More</a></div>
-                </div>
-              </div>
-              <div class="w-full" style="height: 200px;">
-                <canvas baseChart [data]="item.lineChartData" [type]="'line'" [options]="lineChartOptions"></canvas>
-              </div>
-            </div>
-          </div>
-
-          <div *ngSwitchCase="'Bar Chart'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
-            <div class="w-full p-6 card cardblue bg-card rounded-2xl overflow-hidden h-full min-h-full"
-              [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
-              style="display: flex; flex-direction: column;">
-              <div class="w-full flex justify-end mb-2">
-                <select [(ngModel)]="item.selectedTimePeriod"
-                  (ngModelChange)="onTimePeriodChange($event, item, 'Bar Chart')">
-                  <option value="currentMonth">Current Month</option>
-                  <option value="currentYear">Current Year</option>
-                  <option value="previousYear">Previous Year</option>
-                  <option value="lifetime">Lifetime</option>
-
-                </select>
-              </div>
-              <div class="w-full flex justify-between mb-2">
-                <div class="ms-2" style="max-width: calc(100% - 60px);">
-                  <div class="chart-heading">
-                    <div [innerHTML]="sanitizeHtml(item.chartHeading)">Performance Total {{item.chartDataType |
-                      titlecase}}</div>
-                    <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)">Current data overview</div>
-                  </div>
-                </div>
-                <div class="w-3/12 text-right">
-                  <div class="badgeblack"><a href="#">See More</a></div>
-                </div>
-              </div>
-              <div class="w-full" style="height: 200px;">
-                <canvas baseChart [data]="item.barChartData" [type]="'bar'"
-                  [options]="{ responsive: true, scales: { y: { beginAtZero: true } } }"></canvas>
-              </div>
-              <div class="w-full text-center mt-2">
-                <span *ngIf="item.chartDataType === 'sales'">Sales: ${{formatNumberWithCommas(totalSales)}}</span>
-                <span *ngIf="item.chartDataType === 'points'">Points: {{formatNumberWithCommas(totalPoints)}} pts</span>
-                <span *ngIf="item.chartDataType === 'quantity'">Quantity: {{formatNumberWithCommas(totalSales)}}
-                  units</span>
-              </div>
-            </div>
-          </div>
-          <!-- Redemptions -->
-          <div *ngSwitchCase="'Redemptions'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
-            <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
-              [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
-              style="display: flex; flex-direction: column;">
-              <div class="w-full" style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
-
-                <div class="ms-2"
-                  style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; margin-bottom: 10px; ">
-
-                  <div class="mt-3 mb-2" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
-
-                  <div
-                    style="cursor: pointer; font-size: 0.875rem; color: #416fb6; text-decoration: underline; padding-top: 1.25rem;">
-                    <a>See More</a>
-                  </div>
-                </div>
-
-                <div class="w-full ms-2" style="flex-grow: 1;">
-
-                  <div class="flex justify-between items-start"
-                    style="padding-top: 5px;border-bottom: 1px solid #dee2e6;">
-                    <div class="flex flex-col">
-                      <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
-                        YTD List Price:
-                      </div>
-                      <div class="text-lg font-semibold" style="color: #416fb6;">
-                        0
-                      </div>
+                        <span>{{item.text || 'Click me'}}</span>
                     </div>
 
-                    <div class="flex flex-col text-right">
-                      <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
-                        Current Point Balance:
-                      </div>
-                      <div class="text-lg font-semibold" style="color: #416fb6;">
-                        0
-                      </div>
-                    </div>
-                  </div>
+                    <!-- Pie Chart -->
+                    <div *ngSwitchCase="'Pie Chart'" class="h-full min-h-full" [ngClass]="item.className">
+                        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
+                             [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
+                             style="display: flex; flex-direction: column;">
+                            <div class="w-full flex justify-end mb-2">
+                                <select [(ngModel)]="item.selectedTimePeriod" [ngModelOptions]="{standalone: true}"
+                                        (ngModelChange)="onTimePeriodChange($event, item, 'Pie Chart')">
+                                    <option value="currentMonth">Current Month</option>
+                                    <option value="currentYear">Current Year</option>
+                                    <option value="previousYear">Previous Year</option>
+                                    <option value="lifetime">Lifetime</option>
+                                </select>
 
-                  <div class="flex justify-center items-center"
-                    style="height: 70%; text-align: center; margin-top: 10px;">
-                    <p class="text-gray-600">No data found</p>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <!-- All -->
-          <div *ngSwitchCase="'All'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
-            <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
-              [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
-              style="display: flex; flex-direction: column;">
-              <div class="w-full" style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
-
-                <div class="ms-2"
-                  style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; margin-bottom: 10px;">
-
-                  <div class="mt-3 mb-2" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
-
-                  <div
-                    style="cursor: pointer; font-size: 0.875rem; color: #416fb6; text-decoration: underline; padding-top: 1.25rem;">
-                    <a>See More</a>
-                  </div>
-                </div>
-
-                <div class="w-full ms-2" style="flex-grow: 1;">
-
-                  <div class="flex justify-between items-start"
-                    style="padding-top: 5px; border-bottom: 1px solid #dee2e6;">
-                    <div class="flex flex-col">
-                      <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
-                        YTD List Price:
-                      </div>
-                      <div class="text-lg font-semibold" style="color: #416fb6;">
-                        0
-                      </div>
+                            </div>
+                            <div class="w-full flex justify-between mb-2">
+                                <div class="ms-2" style="max-width: calc(100% - 60px);">
+                                    <div class="chart-heading">
+                                        <div [innerHTML]="sanitizeHtml(item.chartHeading)">Performance Total Quantity</div>
+                                        <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)">Current data overview</div>
+                                    </div>
+                                </div>
+                                <div class="w-3/12 text-right">
+                                    <div class="badgeblack"><a href="#">See More</a></div>
+                                </div>
+                            </div>
+                            <div class="w-full flex items-center justify-center" style="overflow: hidden; height: 200px;">
+                                <ngx-charts-pie-chart [view]="[item.width * 0.7, 200]" [scheme]="colorScheme"
+                                                      [results]="item.pieChartData" [gradient]="false" [legend]="false" [doughnut]="false">
+                                    <ng-template #tooltipTemplate let-model="model">
+                                        <div class="tooltip-content">
+                                            <span>{{model.name}}: {{model.value}}</span>
+                                        </div>
+                                    </ng-template>
+                                </ngx-charts-pie-chart>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="flex flex-col text-right">
-                      <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
-                        Current Point Balance:
-                      </div>
-                      <div class="text-lg font-semibold" style="color: #416fb6;">
-                        0
-                      </div>
-                    </div>
-                  </div>
+                    <div *ngSwitchCase="'Line Chart'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
+                        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
+                             [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent">
+                            <div class="w-full flex justify-end mb-2">
+                                <select [(ngModel)]="item.selectedTimePeriod"
+                                        (ngModelChange)="onTimePeriodChange($event, item, 'Line Chart')">
+                                    <option value="currentMonth">Current Month</option>
+                                    <option value="currentYear">Current Year</option>
+                                    <option value="previousYear">Previous Year</option>
+                                    <option value="lifetime">Lifetime</option>
 
-                  <div class="flex justify-center items-center"
-                    style="height: 70%; text-align: center; margin-top: 10px;">
-                    <p class="text-gray-600">No data found</p>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <!-- Credit -->
-          <div *ngSwitchCase="'Credit'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
-            <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
-              [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
-              style="display: flex; flex-direction: column;">
-              <div class="w-full" style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
-
-                <div class="ms-2"
-                  style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; margin-bottom: 10px; ">
-
-                  <div class="mt-3 mb-2" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
-
-                  <div
-                    style="cursor: pointer; font-size: 0.875rem; color: #416fb6; text-decoration: underline; padding-top: 1.25rem;">
-                    <a>See More</a>
-                  </div>
-                </div>
-
-                <div class="w-full ms-2" style="flex-grow: 1; ">
-
-                  <div class="flex justify-between items-start"
-                    style="padding-top: 5px;border-bottom: 1px solid #dee2e6;">
-                    <div class="flex flex-col">
-                      <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
-                        YTD List Price:
-                      </div>
-                      <div class="text-lg font-semibold" style="color: #416fb6;">
-                        0
-                      </div>
+                                </select>
+                            </div>
+                            <div class="w-full flex justify-between mb-2">
+                                <div class="ms-2" style="max-width: calc(100% - 60px);">
+                                    <div class="chart-heading">
+                                        <div [innerHTML]="sanitizeHtml(item.chartHeading)">
+                                            Performance Total {{
+item.chartDataType |
+                      titlecase
+                                            }}
+                                        </div>
+                                        <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)">Current data overview</div>
+                                    </div>
+                                </div>
+                                <div class="w-3/12 text-right">
+                                    <div class="badgeblack"><a href="#">See More</a></div>
+                                </div>
+                            </div>
+                            <div class="w-full" style="height: 200px;">
+                                <canvas baseChart [data]="item.lineChartData" [type]="'line'" [options]="lineChartOptions"></canvas>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="flex flex-col text-right">
-                      <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
-                        Current Point Balance:
-                      </div>
-                      <div class="text-lg font-semibold" style="color: #416fb6;">
-                        0
-                      </div>
+                    <div *ngSwitchCase="'Bar Chart'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
+                        <div class="w-full p-6 card cardblue bg-card rounded-2xl overflow-hidden h-full min-h-full"
+                             [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
+                             style="display: flex; flex-direction: column;">
+                            <div class="w-full flex justify-end mb-2">
+                                <select [(ngModel)]="item.selectedTimePeriod"
+                                        (ngModelChange)="onTimePeriodChange($event, item, 'Bar Chart')">
+                                    <option value="currentMonth">Current Month</option>
+                                    <option value="currentYear">Current Year</option>
+                                    <option value="previousYear">Previous Year</option>
+                                    <option value="lifetime">Lifetime</option>
+
+                                </select>
+                            </div>
+                            <div class="w-full flex justify-between mb-2">
+                                <div class="ms-2" style="max-width: calc(100% - 60px);">
+                                    <div class="chart-heading">
+                                        <div [innerHTML]="sanitizeHtml(item.chartHeading)">
+                                            Performance Total {{
+item.chartDataType |
+                      titlecase
+                                            }}
+                                        </div>
+                                        <div class="mb-0" [innerHTML]="sanitizeHtml(item.text)">Current data overview</div>
+                                    </div>
+                                </div>
+                                <div class="w-3/12 text-right">
+                                    <div class="badgeblack"><a href="#">See More</a></div>
+                                </div>
+                            </div>
+                            <div class="w-full" style="height: 200px;">
+                                <canvas baseChart [data]="item.barChartData" [type]="'bar'"
+                                        [options]="{ responsive: true, scales: { y: { beginAtZero: true } } }"></canvas>
+                            </div>
+                            <div class="w-full text-center mt-2">
+                                <span *ngIf="item.chartDataType === 'sales'">Sales: ${{formatNumberWithCommas(totalSales)}}</span>
+                                <span *ngIf="item.chartDataType === 'points'">Points: {{formatNumberWithCommas(totalPoints)}} pts</span>
+                                <span *ngIf="item.chartDataType === 'quantity'">
+                                    Quantity: {{formatNumberWithCommas(totalSales)}}
+                                    units
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                  </div>
+                    <!-- Redemptions -->
+                    <div *ngSwitchCase="'Redemptions'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
+                        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
+                             [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
+                             style="display: flex; flex-direction: column;">
+                            <div class="w-full" style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
 
-                  <div class="flex justify-center items-center"
-                    style="height: 70%; text-align: center; margin-top: 10px;">
-                    <p class="text-gray-600">No data found</p>
-                  </div>
+                                <div class="ms-2"
+                                     style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; margin-bottom: 10px; ">
 
-                </div>
+                                    <div class="mt-3 mb-2" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
 
-              </div>
-            </div>
-          </div>
+                                    <div style="cursor: pointer; font-size: 0.875rem; color: #416fb6; text-decoration: underline; padding-top: 1.25rem;">
+                                        <a>See More</a>
+                                    </div>
+                                </div>
 
-          <!-- Messages -->
-          <div *ngSwitchCase="'Messages'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
-            <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
-              [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
-              style="display: flex; flex-direction: column;">
-              <div class="w-full" style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
+                                <div class="w-full ms-2" style="flex-grow: 1;">
 
-                <div class="ms-2"
-                  style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #dee2e6;">
+                                    <div class="flex justify-between items-start"
+                                         style="padding-top: 5px;border-bottom: 1px solid #dee2e6;">
+                                        <div class="flex flex-col">
+                                            <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
+                                                YTD List Price:
+                                            </div>
+                                            <div class="text-lg font-semibold" style="color: #416fb6;">
+                                                0
+                                            </div>
+                                        </div>
 
-                  <div class="mt-3 mb-2" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                                        <div class="flex flex-col text-right">
+                                            <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
+                                                Current Point Balance:
+                                            </div>
+                                            <div class="text-lg font-semibold" style="color: #416fb6;">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
 
-                  <div
-                    style="cursor: pointer; font-size: 0.875rem; color: #416fb6; text-decoration: underline; padding-top: 1.25rem;">
-                    <a>See More</a>
-                  </div>
-                </div>
+                                    <div class="flex justify-center items-center"
+                                         style="height: 70%; text-align: center; margin-top: 10px;">
+                                        <p class="text-gray-600">No data found</p>
+                                    </div>
 
-                <div class="w-full ms-2" style="flex-grow: 1;">
+                                </div>
 
-                  <div class="flex justify-between items-start"
-                    style="padding-top: 5px; padding-bottom: 10px; border-bottom: 1px solid #dee2e6; margin-bottom: 15px;">
-
-                    <div class="flex flex-col">
-                      <div class="text-lg font-semibold" style="color: #416fb6; margin-bottom: 5px;">
-                        Unread Messages (0)
-                      </div>
-                      <div style="font-size: 0.875rem; color: #416fb6; text-decoration: underline; cursor: pointer;">
-                        View All
-                      </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="text-base text-gray-500">
-                      Status
+                    <!-- All -->
+                    <div *ngSwitchCase="'All'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
+                        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
+                             [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
+                             style="display: flex; flex-direction: column;">
+                            <div class="w-full" style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
+
+                                <div class="ms-2"
+                                     style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; margin-bottom: 10px;">
+
+                                    <div class="mt-3 mb-2" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+
+                                    <div style="cursor: pointer; font-size: 0.875rem; color: #416fb6; text-decoration: underline; padding-top: 1.25rem;">
+                                        <a>See More</a>
+                                    </div>
+                                </div>
+
+                                <div class="w-full ms-2" style="flex-grow: 1;">
+
+                                    <div class="flex justify-between items-start"
+                                         style="padding-top: 5px; border-bottom: 1px solid #dee2e6;">
+                                        <div class="flex flex-col">
+                                            <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
+                                                YTD List Price:
+                                            </div>
+                                            <div class="text-lg font-semibold" style="color: #416fb6;">
+                                                0
+                                            </div>
+                                        </div>
+
+                                        <div class="flex flex-col text-right">
+                                            <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
+                                                Current Point Balance:
+                                            </div>
+                                            <div class="text-lg font-semibold" style="color: #416fb6;">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-center items-center"
+                                         style="height: 70%; text-align: center; margin-top: 10px;">
+                                        <p class="text-gray-600">No data found</p>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
-                  </div>
 
-                  <div class="flex justify-center items-center" style="height: 70%; text-align: center;">
-                    <p class="text-gray-600">No data found</p>
-                  </div>
+                    <!-- Credit -->
+                    <div *ngSwitchCase="'Credit'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
+                        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
+                             [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
+                             style="display: flex; flex-direction: column;">
+                            <div class="w-full" style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
 
-                </div>
+                                <div class="ms-2"
+                                     style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; margin-bottom: 10px; ">
 
-              </div>
-            </div>
-          </div>
-          <!-- Academy -->
-          <div *ngSwitchCase="'Academy'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
-            <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
-              [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
-              style="display: flex; flex-direction: column;">
-              <div class="w-full" style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
+                                    <div class="mt-3 mb-2" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
 
-                <div class="ms-2"
-                  style="display: flex; justify-content: space-between; align-items: flex-start;border-bottom: 1px solid #dee2e6;">
-                  <div class="mt-3 mb-2" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
-                  <div
-                    style="cursor: pointer; font-size: 0.875rem; color: #007bff; text-decoration: underline; padding-top: 1.25rem;">
-                    <a>See More</a>
-                  </div>
-                </div>
+                                    <div style="cursor: pointer; font-size: 0.875rem; color: #416fb6; text-decoration: underline; padding-top: 1.25rem;">
+                                        <a>See More</a>
+                                    </div>
+                                </div>
 
-                <div class="w-full ms-2" style="margin-top: 0px;">
-                  <div class="training-info mb-2">
-                    <div class="mb-0">Required Monthly Training Progress</div>
+                                <div class="w-full ms-2" style="flex-grow: 1; ">
 
-                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
-                      <div
-                        style="flex-grow: 1; height: 10px; background-color: #e9ecef; border-radius: 5px; overflow: hidden;">
-                        <div style="width: 0%; height: 100%; background-color: #007bff; border-radius: 5px;"></div>
-                      </div>
-                      <div style="font-size: 0.875rem; color: #495057;">0%</div>
+                                    <div class="flex justify-between items-start"
+                                         style="padding-top: 5px;border-bottom: 1px solid #dee2e6;">
+                                        <div class="flex flex-col">
+                                            <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
+                                                YTD List Price:
+                                            </div>
+                                            <div class="text-lg font-semibold" style="color: #416fb6;">
+                                                0
+                                            </div>
+                                        </div>
+
+                                        <div class="flex flex-col text-right">
+                                            <div class="text-sm text-gray-600 font-normal" style="margin-bottom: 2px;">
+                                                Current Point Balance:
+                                            </div>
+                                            <div class="text-lg font-semibold" style="color: #416fb6;">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-center items-center"
+                                         style="height: 70%; text-align: center; margin-top: 10px;">
+                                        <p class="text-gray-600">No data found</p>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
 
-                <div class="card-container w-full ms-2" style="flex-grow: 1; margin-top: 15px;">
-                  <div class="flex justify-center items-center"
-                    style="padding: 2rem; background: #fff; border-radius: 5px; height: 100%; border-top: 1px solid #dee2e6;">
-                    <div class="text-center">
-                      <h4 class="text-gray-600">No data found</h4>
+                    <!-- Messages -->
+                    <div *ngSwitchCase="'Messages'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
+                        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
+                             [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
+                             style="display: flex; flex-direction: column;">
+                            <div class="w-full" style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
+
+                                <div class="ms-2"
+                                     style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #dee2e6;">
+
+                                    <div class="mt-3 mb-2" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+
+                                    <div style="cursor: pointer; font-size: 0.875rem; color: #416fb6; text-decoration: underline; padding-top: 1.25rem;">
+                                        <a>See More</a>
+                                    </div>
+                                </div>
+
+                                <div class="w-full ms-2" style="flex-grow: 1;">
+
+                                    <div class="flex justify-between items-start"
+                                         style="padding-top: 5px; padding-bottom: 10px; border-bottom: 1px solid #dee2e6; margin-bottom: 15px;">
+
+                                        <div class="flex flex-col">
+                                            <div class="text-lg font-semibold" style="color: #416fb6; margin-bottom: 5px;">
+                                                Unread Messages (0)
+                                            </div>
+                                            <div style="font-size: 0.875rem; color: #416fb6; text-decoration: underline; cursor: pointer;">
+                                                View All
+                                            </div>
+                                        </div>
+
+                                        <div class="text-base text-gray-500">
+                                            Status
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-center items-center" style="height: 70%; text-align: center;">
+                                        <p class="text-gray-600">No data found</p>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
+                    <!-- Academy -->
+                    <div *ngSwitchCase="'Academy'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
+                        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
+                             [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
+                             style="display: flex; flex-direction: column;">
+                            <div class="w-full" style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
 
-              </div>
-            </div>
-          </div>
+                                <div class="ms-2"
+                                     style="display: flex; justify-content: space-between; align-items: flex-start;border-bottom: 1px solid #dee2e6;">
+                                    <div class="mt-3 mb-2" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                                    <div style="cursor: pointer; font-size: 0.875rem; color: #007bff; text-decoration: underline; padding-top: 1.25rem;">
+                                        <a>See More</a>
+                                    </div>
+                                </div>
 
-          <!-- TrainingMonth -->
-          <div *ngSwitchCase="'TrainingMonth'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
-            <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
-              [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
-              style="display: flex; flex-direction: column;">
+                                <div class="w-full ms-2" style="margin-top: 0px;">
+                                    <div class="training-info mb-2">
+                                        <div class="mb-0">Required Monthly Training Progress</div>
 
-              <div class="w-full flex justify-between items-start">
+                                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                                            <div style="flex-grow: 1; height: 10px; background-color: #e9ecef; border-radius: 5px; overflow: hidden;">
+                                                <div style="width: 0%; height: 100%; background-color: #007bff; border-radius: 5px;"></div>
+                                            </div>
+                                            <div style="font-size: 0.875rem; color: #495057;">0%</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                <div class="flex-shrink-0" style="padding-right: 1.5rem; width: 35%;">
+                                <div class="card-container w-full ms-2" style="flex-grow: 1; margin-top: 15px;">
+                                    <div class="flex justify-center items-center"
+                                         style="padding: 2rem; background: #fff; border-radius: 5px; height: 100%; border-top: 1px solid #dee2e6;">
+                                        <div class="text-center">
+                                            <h4 class="text-gray-600">No data found</h4>
+                                        </div>
+                                    </div>
+                                </div>
 
-                  <div class="ms-2">
-                    <div class="chart-heading">
-                      <div class="text-2xl font-semibold" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
-                      <div class="mb-0 text-sm" [innerHTML]="sanitizeHtml(item.text)"></div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
 
-                  <div class="ms-2 mt-2">
-                    <a style="cursor: pointer;">See More</a>
-                  </div>
-                </div>
+                    <!-- TrainingMonth -->
+                    <div *ngSwitchCase="'TrainingMonth'" class="h-full min-h-full widget-zoom" [ngClass]="item.className">
+                        <div class="w-full p-6 card cardhero bg-card rounded-2xl overflow-hidden h-full min-h-full"
+                             [style.width.%]="item.widthPercent" [style.height.%]="item.heightPercent"
+                             style="display: flex; flex-direction: column;">
 
-                <div class="flex items-center justify-center" style="width: 65%; max-width: 65%;">
-                  <div [ngStyle]="{
+                            <div class="w-full flex justify-between items-start">
+
+                                <div class="flex-shrink-0" style="padding-right: 1.5rem; width: 35%;">
+
+                                    <div class="ms-2">
+                                        <div class="chart-heading">
+                                            <div class="text-2xl font-semibold" [innerHTML]="sanitizeHtml(item.chartHeading)"></div>
+                                            <div class="mb-0 text-sm" [innerHTML]="sanitizeHtml(item.text)"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="ms-2 mt-2">
+                                        <a style="cursor: pointer;">See More</a>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-center" style="width: 65%; max-width: 65%;">
+                                    <div [ngStyle]="{
                   'width': '100%',
                   'height': mobileView ? '56vw' : '25vw',
                   'max-height': mobileView ? '300px' : '340px',
                   'min-height': mobileView ? '200px' : '200px'
                   }" class="rounded-2xl overflow-hidden">
-                    <img src="assets/images/course_default.png" style="width: 100%; height: 100%; object-fit: cover;">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                                        <img src="assets/images/course_default.png" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        </ng-container>
-      </div>
+                </ng-container>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

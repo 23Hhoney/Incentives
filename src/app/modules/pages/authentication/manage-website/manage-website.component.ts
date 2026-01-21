@@ -8255,7 +8255,15 @@ private normalizeSectionZIndices(sectionIndex: number): void {
      ===================================== */
   if (item['showChartHeading']) {
 
-    const html = (item.chartHeading || '').trim();   // ✅ from ngModel
+  let chartHeadingEditorEl = document.querySelector(
+      `#element-${item.id}-chartheading .angular-editor-textarea[contenteditable="true"]`
+    ) as HTMLElement | null;
+    if (!chartHeadingEditorEl) {
+      chartHeadingEditorEl = document.querySelector(
+        `#element-${item.id} .angular-editor-textarea[contenteditable="true"]`
+      ) as HTMLElement | null;
+    }
+    const html = (chartHeadingEditorEl?.innerHTML ?? item.chartHeading ?? '').trim();
     const plain = this.stripHtmlTags(html).trim();
 
     if (!plain) {
@@ -8272,7 +8280,15 @@ private normalizeSectionZIndices(sectionIndex: number): void {
      ===================================== */
   if (item['showTextHeading']) {
 
-    const html = (item.text || '').trim();   // ✅ from ngModel
+   let textEditorEl = document.querySelector(
+      `#element-${item.id}-text .angular-editor-textarea[contenteditable="true"]`
+    ) as HTMLElement | null;
+    if (!textEditorEl) {
+      textEditorEl = document.querySelector(
+        `#element-${item.id} .angular-editor-textarea[contenteditable="true"]`
+      ) as HTMLElement | null;
+    }
+    const html = (textEditorEl?.innerHTML ?? item.text ?? '').trim();
     const plain = this.stripHtmlTags(html).trim();
 
     if (!plain) {
@@ -8356,7 +8372,17 @@ saveSalesHeading(item: any) {
 
   if (item['showSalesHeading']) {
 
-    const salesHtml = (item.salesHeading || '').trim();   // ✅ USE NGMODEL
+    // Read directly from DOM to capture all inline styles from font/color pickers
+    // Try both selector patterns: with suffix and without suffix
+    let salesHeadingEditorEl = document.querySelector(
+      `#element-${item.id}-salesheading .angular-editor-textarea[contenteditable="true"]`
+    ) as HTMLElement | null;
+    if (!salesHeadingEditorEl) {
+      salesHeadingEditorEl = document.querySelector(
+        `#element-${item.id} .angular-editor-textarea[contenteditable="true"]`
+      ) as HTMLElement | null;
+    }
+    const salesHtml = (salesHeadingEditorEl?.innerHTML ?? item.salesHeading ?? '').trim();
     const plainText = this.stripHtmlTags(salesHtml);
 
     if (!plainText) {
@@ -8402,6 +8428,12 @@ deleteElements(sectionIndex: number, itemIndex: number): void {
   this.selectedItem = null;
   this.selectedSectionIndex = null;
   this.selectedItemIndex = null;
+
+  // Reflow widgets to remove gaps after deletion
+  if (this.selectedContainerType === 'widgets' || section.type === 'widgets') {
+    this.reflowSection(sectionIndex);
+  }
+
   if(this.selectedMenuId !== 'TOU' && this.selectedMenuId !== 'CU' && this.selectedMenuId !== 'PP' && this.selectedMenuId !== 'FAQ' && this.selectedMenuId !== 'NT' && this.selectedMenuId !== 'FD' && this.selectedMenuId !== 'AC' && this.selectedMenuId !== 'TR' && this.selectedMenuId !== 'PR') {
     this.updateSectionHeightDynamic(sectionIndex);
   }
@@ -12442,6 +12474,12 @@ applySizeKeepingColor(size: { name: string; size: string }) {
   line-height: ${lineHeight} !important;
   display: inline;
 `;
+
+  // Preserve font-family if it existed (not default HelveticaNeueLight)
+  if (extractedStyles.fontFamily && !extractedStyles.fontFamily.includes('HelveticaNeueLight')) {
+    styleString += ` font-family: ${extractedStyles.fontFamily};`;
+    console.log('Adding font-family to font size wrapper:', extractedStyles.fontFamily);
+  }
   
   if (extractedStyles.backgroundColor && extractedStyles.backgroundColor !== 'transparent' && extractedStyles.backgroundColor !== 'rgba(0, 0, 0, 0)') {
     styleString += ` background-color: ${extractedStyles.backgroundColor};`;
@@ -13092,6 +13130,11 @@ applyHeading(heading: any) {
     
     let styleString = `font-size: ${fontSize} !important; line-height: ${lineHeight} !important; font-weight: ${fontWeight}; display: inline;`;
 
+  if (extractedStyles.fontFamily && !extractedStyles.fontFamily.includes('HelveticaNeueLight')) {
+    styleString += ` font-family: ${extractedStyles.fontFamily};`;
+    console.log('Adding font-family to styleString:', extractedStyles.fontFamily);
+  }
+
   // Preserve background color if it existed
   if (extractedStyles.backgroundColor && extractedStyles.backgroundColor !== 'transparent' && extractedStyles.backgroundColor !== 'rgba(0, 0, 0, 0)') {
     styleString += ` background-color: ${extractedStyles.backgroundColor};`;
@@ -13135,9 +13178,10 @@ applyHeading(heading: any) {
   });
 }
 
-private extractStylesFromSelection(range: Range): { backgroundColor: string | null; color: string | null } {
+private extractStylesFromSelection(range: Range): { backgroundColor: string | null; color: string | null; fontFamily: string | null } {
   let backgroundColor: string | null = null;
   let color: string | null = null;
+  let fontFamily: string | null = null;
   const fragment = range.cloneContents();
   const styledElements = fragment.querySelectorAll('span, font');
   styledElements.forEach((el) => {
@@ -13148,11 +13192,20 @@ private extractStylesFromSelection(range: Range): { backgroundColor: string | nu
       if (!color && el.style.color) {
         color = el.style.color;
       }
+      if (!fontFamily && el.style.fontFamily) {
+        fontFamily = el.style.fontFamily;
+      }
       const bgAttr = el.getAttribute('style');
       if (bgAttr && !backgroundColor) {
         const bgMatch = bgAttr.match(/background(?:-color)?:\s*([^;]+)/i);
         if (bgMatch) {
           backgroundColor = bgMatch[1].trim();
+        }
+      }
+      if (bgAttr && !fontFamily) {
+        const fontMatch = bgAttr.match(/font-family:\s*([^;]+)/i);
+        if (fontMatch) {
+          fontFamily = fontMatch[1].trim();
         }
       }
     }
@@ -13178,6 +13231,10 @@ private extractStylesFromSelection(range: Range): { backgroundColor: string | nu
       if (!color && node.style.color) {
         color = node.style.color;
       }
+      if (!fontFamily && node.style.fontFamily) {
+        fontFamily = node.style.fontFamily;
+        console.log('Found fontFamily from inline style:', fontFamily, 'on element:', node.className);
+      }
       
       // Also check the style attribute directly (for rgb values)
       if (!backgroundColor) {
@@ -13190,6 +13247,18 @@ private extractStylesFromSelection(range: Range): { backgroundColor: string | nu
               backgroundColor = bgValue;
               console.log('Found backgroundColor from style attribute:', backgroundColor, 'on element:', node.className);
             }
+          }
+        }
+      }
+      
+      // Check for fontFamily in style attribute
+      if (!fontFamily) {
+        const styleAttr = node.getAttribute('style');
+        if (styleAttr) {
+          const fontMatch = styleAttr.match(/font-family:\s*([^;]+)/i);
+          if (fontMatch) {
+            fontFamily = fontMatch[1].trim();
+            console.log('Found fontFamily from style attribute:', fontFamily, 'on element:', node.className);
           }
         }
       }
@@ -13208,12 +13277,20 @@ private extractStylesFromSelection(range: Range): { backgroundColor: string | nu
           color = computed.color;
         }
       }
+      if (!fontFamily) {
+        const computed = window.getComputedStyle(node);
+        // Only use computed fontFamily if it's not the default
+        if (computed.fontFamily && !computed.fontFamily.includes('HelveticaNeueLight')) {
+          fontFamily = computed.fontFamily;
+          console.log('Found fontFamily from computed style:', fontFamily, 'on element:', node.className);
+        }
+      }
     }
     node = node.parentNode;
   }
   
-  console.log('Final extracted styles - backgroundColor:', backgroundColor, 'color:', color);
-  return { backgroundColor, color };
+  console.log('Final extracted styles - backgroundColor:', backgroundColor, 'color:', color, 'fontFamily:', fontFamily);
+  return { backgroundColor, color, fontFamily };
 }
 private updateSelectedHeading() {
   const sel = window.getSelection();
