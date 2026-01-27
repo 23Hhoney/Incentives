@@ -11979,8 +11979,33 @@ addFaq() {
     value: value || ''
   };
 
-  this.selectedFontFamily =
-    type === 'ques' ? 'HelveticaNeueBold' : 'HelveticaNeueLight';
+  // Detect font-family and font-size from existing content, or use defaults
+  if (value) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = value;
+    
+    // Look for font-family in inline styles
+    const styledEl = tempDiv.querySelector('[style*="font-family"]') as HTMLElement;
+    if (styledEl && styledEl.style.fontFamily) {
+      this.selectedFontFamily = styledEl.style.fontFamily.replace(/['"]/g, '').split(',')[0].trim();
+    } else {
+      this.selectedFontFamily = type === 'ques' ? 'HelveticaNeueBold' : 'HelveticaNeueLight';
+    }
+    
+    // Look for font-size in inline styles
+    const sizedEl = tempDiv.querySelector('[style*="font-size"]') as HTMLElement;
+    if (sizedEl && sizedEl.style.fontSize) {
+      this.selectedFontSize = parseInt(sizedEl.style.fontSize, 10).toString();
+    } else {
+      this.selectedFontSize = '14';
+    }
+  } else {
+    // No content - use defaults
+    this.selectedFontFamily = type === 'ques' ? 'HelveticaNeueBold' : 'HelveticaNeueLight';
+    this.selectedFontSize = '14';
+  }
+  
+  this.selectedHeading = null;
 
   this.showFaqDialog = true;
 
@@ -11988,9 +12013,79 @@ addFaq() {
     this.forceFontOnEditor(type);
   }, 150);
 }
-forceFontOnEditor(type: 'ques' | 'ans') {
-  const editor = document.querySelector('.angular-editor-textarea') as HTMLElement;
+
+initFaqEditor(type: 'ques' | 'ans') {
+  const editor = document.querySelector('.editor-dialog .angular-editor-textarea') as HTMLElement;
   if (!editor) return;
+
+  // Apply font family to editor container
+  const fontFamily = type === 'ques' ? 'HelveticaNeueBold' : 'HelveticaNeueLight';
+  editor.style.fontFamily = fontFamily;
+
+  if (type === 'ques') {
+    // For Question: Always ensure bold is active
+    const currentContent = editor.innerHTML?.trim();
+    const hasContent = currentContent && currentContent !== '<p><br></p>' && currentContent !== '<br>' && currentContent !== '';
+    
+    if (hasContent) {
+      // If content exists, wrap it in bold if not already
+      if (!editor.innerHTML.includes('<b>') && 
+          !editor.innerHTML.includes('<strong>') &&
+          !editor.innerHTML.includes('font-weight: bold') &&
+          !editor.innerHTML.includes('font-weight:bold')) {
+        // Wrap existing content in bold
+        editor.innerHTML = `<p><b>${editor.innerText}</b></p>`;
+      }
+    } else {
+      // No content - create empty bold paragraph with zero-width space
+      editor.innerHTML = '<p><b>\u200B</b></p>';
+    }
+    
+    // Focus editor first
+    editor.focus();
+    
+    // Position cursor inside the bold tag and trigger selection change
+    const boldEl = editor.querySelector('b, strong');
+    if (boldEl) {
+      const sel = window.getSelection();
+      const range = document.createRange();
+      
+      // Select inside the bold element
+      if (boldEl.firstChild) {
+        range.setStart(boldEl.firstChild, boldEl.firstChild.textContent?.length || 0);
+        range.setEnd(boldEl.firstChild, boldEl.firstChild.textContent?.length || 0);
+      } else {
+        range.selectNodeContents(boldEl);
+        range.collapse(false);
+      }
+      
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+      
+      // Dispatch events to trigger toolbar update
+      editor.dispatchEvent(new Event('focus', { bubbles: true }));
+      editor.dispatchEvent(new Event('input', { bubbles: true }));
+      document.dispatchEvent(new Event('selectionchange'));
+    }
+    
+  } else {
+    // For Answer: Normal text
+    editor.focus();
+    const sel = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(editor);
+    range.collapse(false);
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+  }
+}
+forceFontOnEditor(type: 'ques' | 'ans') {
+  const editor = document.querySelector('.editor-dialog .angular-editor-textarea') as HTMLElement;
+  if (!editor) return;
+
+  // Apply font family to editor container
+  const fontFamily = type === 'ques' ? 'HelveticaNeueBold' : 'HelveticaNeueLight';
+  editor.style.fontFamily = fontFamily;
 
   // Focus editor first
   editor.focus();
@@ -12087,18 +12182,58 @@ applyTypingFont(type: 'ques' | 'ans') {
   }
 
  saveFaqEdit() {
-  // Get latest content directly from the DOM editor (same approach as saveChartHeading)
+  // Get latest content directly from the DOM editor
   const editorEl = document.querySelector(
-    '.angular-editor-textarea[contenteditable="true"]'
+    '.editor-dialog .angular-editor-textarea[contenteditable="true"]'
   ) as HTMLElement | null;
 
-  const latestHtml = editorEl?.innerHTML ?? this.faqObj.value ?? '';
-  const value = latestHtml?.trim();
+  let latestHtml = editorEl?.innerHTML ?? this.faqObj.value ?? '';
+  let value = latestHtml?.trim();
 
   if (!value || !this.stripHtmlTags(value).trim()) {
     this.notificationService.errorTopRight('Value cannot be blank.');
     return;
   }
+
+  // Process HTML to ensure font-family is present in elements that need it
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = value;
+  
+  const defaultFontFamily = this.faqObj.type === 'ques' ? 'HelveticaNeueBold' : 'HelveticaNeueLight';
+  
+  // Helper function to check if any ancestor has font-family set
+  const hasAncestorWithFontFamily = (el: HTMLElement): boolean => {
+    let parent = el.parentElement;
+    while (parent && parent !== tempDiv) {
+      if (parent.style.fontFamily) {
+        return true;
+      }
+      parent = parent.parentElement;
+    }
+    return false;
+  };
+  
+  // Find all text-containing elements and ensure they have font-family
+  const allTags = tempDiv.querySelectorAll('b, strong, span, p');
+  allTags.forEach((tag: HTMLElement) => {
+    // Only add font-family if the element AND its ancestors don't have it
+    if (!tag.style.fontFamily && !hasAncestorWithFontFamily(tag)) {
+      tag.style.fontFamily = defaultFontFamily;
+    }
+  });
+  
+  // If the root content doesn't have styling, wrap it
+  if (tempDiv.children.length === 0 || 
+      (tempDiv.children.length === 1 && tempDiv.children[0].tagName === 'P' && !tempDiv.querySelector('[style*="font-family"]'))) {
+    const plainText = tempDiv.textContent || '';
+    if (this.faqObj.type === 'ques') {
+      tempDiv.innerHTML = `<p><b style="font-family: ${defaultFontFamily}; font-weight: bold;">${plainText}</b></p>`;
+    } else {
+      tempDiv.innerHTML = `<p style="font-family: ${defaultFontFamily};">${plainText}</p>`;
+    }
+  }
+  
+  value = tempDiv.innerHTML;
 
   if (this.faqObj.type === 'ques') {
     this.faqs[this.faqObj.index].question = value;
@@ -13849,34 +13984,75 @@ onPaste(e: ClipboardEvent) {
   e.preventDefault();
 
   const clipboard = e.clipboardData;
-  const html = clipboard?.getData('text/html') || '';
-  const text = clipboard?.getData('text/plain') || '';
+  // Get plain text and clean up extra spaces/nbsp
+  let text = clipboard?.getData('text/plain') || '';
+  // Remove multiple consecutive spaces and trim
+  text = text.replace(/\s+/g, ' ').trim();
+  
   const fontSize = this.selectedFontSize || '14';
   const fontSizePx = fontSize + 'px';
 
-  const fontFamily =
-    this.selectedFontFamily ||
-    this.HomePageEditorConfig.defaultFontName ||
-    'inherit';
-  if (!html) {
-    const safeHtml = `
-      <p style="font-size:${fontSizePx}; font-family:${fontFamily}">
-        ${this._escapeHtml(text)}
-      </p>
-    `;
+  // Check if pasting in FAQ dialog editors
+  const isFaqQuestionEditor = this.showFaqDialog && this.faqObj?.type === 'ques';
+  const isFaqAnswerEditor = this.showFaqDialog && this.faqObj?.type === 'ans';
+
+  // Determine font weight based on editor type
+  // FAQ Question: always bold, FAQ Answer: always normal, Others: normal
+  const fontWeight = isFaqQuestionEditor ? 'bold' : 'normal';
+
+  // Determine font family based on editor type
+  let fontFamily: string;
+  if (isFaqQuestionEditor) {
+    fontFamily = this.selectedFontFamily || this.faqPagesTallEditorConfig.defaultFontName || 'HelveticaNeueBold';
+  } else if (isFaqAnswerEditor) {
+    fontFamily = this.selectedFontFamily || this.faqAnswerEditorConfig.defaultFontName || 'HelveticaNeueLight';
+  } else {
+    fontFamily = this.selectedFontFamily || this.HomePageEditorConfig.defaultFontName || 'inherit';
+  }
+
+  // For FAQ editors, always use plain text to strip all source formatting
+  // This ensures default styling is applied regardless of source formatting
+  if (isFaqQuestionEditor || isFaqAnswerEditor) {
+    let safeHtml: string;
+    if (isFaqQuestionEditor) {
+      // For Question: wrap in <b> tag so bold button shows as active
+      safeHtml = `<b style="font-size:${fontSizePx}; font-family:${fontFamily}; font-weight:bold">${this._escapeHtml(text)}</b>`;
+    } else {
+      // For Answer: normal text
+      safeHtml = `<span style="font-size:${fontSizePx}; font-family:${fontFamily}; font-weight:normal">${this._escapeHtml(text)}</span>`;
+    }
     document.execCommand('insertHTML', false, safeHtml);
     return;
   }
+
+  // For other editors, process HTML if available
+  let html = clipboard?.getData('text/html') || '';
+  if (!html) {
+    const safeHtml = `<p style="font-size:${fontSizePx}; font-family:${fontFamily}">${this._escapeHtml(text)}</p>`;
+    document.execCommand('insertHTML', false, safeHtml);
+    return;
+  }
+  
+  // Clean up extra &nbsp; and multiple spaces from HTML before parsing
+  html = html.replace(/&nbsp;/gi, ' ');  // Replace all &nbsp; with regular space
+  html = html.replace(/\u00A0/g, ' ');   // Replace non-breaking space character with regular space
+  html = html.replace(/ {2,}/g, ' ');    // Replace multiple consecutive spaces with single space
+  
   const doc = new DOMParser().parseFromString(html, 'text/html');
 
   const normalizeNode = (node: Node) => {
     if (node.nodeType === Node.TEXT_NODE) {
-      if (!node.nodeValue?.trim()) return;
+      // Clean up text node value - remove extra spaces and nbsp
+      let textValue = node.nodeValue || '';
+      textValue = textValue.replace(/\u00A0/g, ' ');  // Replace non-breaking space with regular space
+      textValue = textValue.replace(/\s+/g, ' ');     // Replace multiple whitespace with single space
+      
+      if (!textValue.trim()) return;
 
       const span = doc.createElement('span');
       span.style.fontSize = fontSizePx;
       span.style.fontFamily = fontFamily;
-      span.textContent = node.nodeValue;
+      span.textContent = textValue;
 
       node.parentNode?.replaceChild(span, node);
       return;

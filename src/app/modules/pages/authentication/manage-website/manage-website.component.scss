@@ -584,7 +584,11 @@ z-index: 99;
 .dropdown-menu.show {
   display: block;
 }
-.faq-answer span {
+/* Only apply inherit to elements WITHOUT inline font-family style */
+.faq-answer span:not([style*="font-family"]),
+.faq-answer b:not([style*="font-family"]),
+.faq-answer strong:not([style*="font-family"]),
+.faq-answer p:not([style*="font-family"]) {
   font-family: inherit;
 }
 .dropdown-menu-user.show {
@@ -1417,13 +1421,12 @@ overflow: hidden;
   pointer-events: none; 
 }
 .widgets-edit-container {
-  align-items: center;
+  align-items: stretch;
   flex-flow: wrap;
-  position: absolute;
+  position: flex;
   z-index: 4;
-  background: white;
   gap: 10px;
-  box-shadow: rgba(1, 41, 112, 0.1) 0px 2px 20px !important;
+  box-shadow: rgba(1, 41, 112, 0.1) 0px 2px  0px !important;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -1668,8 +1671,30 @@ transform-origin: top left;
 // }
 .parent-container {
   height: fit-content;
-  display: grid !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
 }
+
+/* When parent-container is inside widget-height, center the widgets */
+.widget-height .parent-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  flex-wrap: nowrap !important;
+  gap: 15px !important;
+  width: 100% !important;
+  padding: 10px !important;
+  box-sizing: border-box !important;
+}
+
+.widget-height .parent-container > .element-container {
+  position: relative !important;
+  flex: 0 0 auto !important;
+}
+
 .added-section-editing-area {
   height: fit-content !important;
   justify-content: center; 
@@ -3881,6 +3906,18 @@ color: #000;
 .widget-height {
 min-height: 66vh !important;
 height: 66vh !important;
+display: flex !important;
+justify-content: center !important;
+align-items: flex-start !important;
+flex-wrap: nowrap !important;
+gap: 10px !important;
+padding: 0 10px !important;
+box-sizing: border-box !important;
+}
+
+.widget-height > .element-container {
+  position: relative !important;
+  flex: 0 1 auto !important;
 }
 
 .add-section-btn {
@@ -4018,7 +4055,8 @@ margin-bottom: 0.75rem;
 }
 
 .faq-number {
-font-weight: bold;
+font-weight: 700;
+font-family: 'HelveticaNeueBold', 'Helvetica Neue', Arial, sans-serif;
 margin-right: 0.5rem; /* spacing between number and text */
 flex-shrink: 0;    
 line-height: 1.5;   /* match text line-height */
@@ -4057,6 +4095,8 @@ flex: 1;
   padding: 0;
   line-height: 1.5;
   font-size: inherit;
+  font-weight: 700;
+  font-family: 'HelveticaNeueBold', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .faq-edit-content {
@@ -4533,9 +4573,9 @@ canvas[baseChart] {
     }
   }
   
-  /* Element containers in widget sections use absolute positioning */
+  /* Element containers in widget sections - use relative for flex centering */
   .widget-height .element-container {
-    position: absolute;
+    position: relative;
   }
   
   [class*="chart-container-"] {
@@ -5011,5 +5051,17 @@ canvas[baseChart] {
     svg {
       overflow: hidden !important;
     }
+  }
+}
+// .element-container:has(.inner-btn) {
+//   @media (min-width: 769px) {
+//     width: fit-content !important;
+//   }
+// }
+
+.inner-btn{
+  @media (max-width: 768px) {
+    font-size: 16px !important;
+    padding: 14px 9px !important;
   }
 }

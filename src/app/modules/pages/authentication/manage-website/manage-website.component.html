@@ -1772,9 +1772,7 @@
 
                 <div *ngFor="let item of section.items; let j = index" class="element-container" [id]="'element-' + item.id" [ngStyle]="{
                 'margin': selectedContainerType === 'widgets' ? 
-                  (j === 0 ? '0px 1.5vw' : 
-                    j === section.items.length - 1 ? '0px -0.5vw' : 
-                    '0px 0.5vw') : 
+                  '0' : 
                   (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || 
                     selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' || 
                     selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR' ? 
@@ -1782,8 +1780,8 @@
                 'width': mobileView ? '100%' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? '100%' : item.widthPercent + 'vw',
                 'min-height': (item.type === 'text' || item.type === 'greeting')? item.heightPercent + 'vh' : null,
                 'height': mobileView && selectedMenuId === 'HM' ? 'auto' : (item.type === 'text' || item.type === 'greeting') ? 'auto' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' || selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR') ? '100%' : item.heightPercent + 'vh',
-                'top': mobileView ? 'auto' : ((selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') && editingSection) ? '0' : (selectedMenuId === 'TOU' || selectedMenuId === 'FAQ' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? '0vh' : item.yPercent + 'vh',
-                'left': mobileView ? '0' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' || selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR') && section.type !== 'widgets' ? '0' : (item.originalXPercent != null ? item.originalXPercent : item.xPercent) + 'vw',
+                'top': mobileView ? 'auto' : selectedContainerType === 'widgets' ? 'auto' : ((selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') && editingSection) ? '0' : (selectedMenuId === 'TOU' || selectedMenuId === 'FAQ' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? '0vh' : item.yPercent + 'vh',
+                'left': mobileView ? '0' : selectedContainerType === 'widgets' ? 'auto' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' || selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR') && section.type !== 'widgets' ? '0' : (item.originalXPercent != null ? item.originalXPercent : item.xPercent) + 'vw',
                 'z-index': ( item['showChartHeading'] || item['showTextHeading'] || item['showSalesHeading'] || showPRAddFrom) ? 29 : item.zIndex,
                 'border': isPublishedView ? 'none' :
                 (highlightedElementIds.has(item.id)
@@ -1797,7 +1795,8 @@
                 'cursor': (isPublishedView || !editingSection || isEditingSection !== i) || selectedMenuId !== 'HM' ? 'default' : 'move',
                 'user-select': isPublishedView ? 'auto' : 'none',
                 'padding': isPublishedView ? '0' : '2px',
-                'position': mobileView ? 'relative' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? 'relative' : 'absolute'
+                display: selectedContainerType === 'widgets' ?'content' : 'block',
+                'position': mobileView ? 'relative' : selectedContainerType === 'widgets' ? 'relative' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? 'relative' : 'absolute'
               }"
                   (mousedown)="selectedContainerType === 'widgets' || isPublishedView || !editingSection || isEditingSection !== i || selectedMenuId !== 'HM' || mobileView || item['showChartHeading'] || item['showTextHeading'] ? null : onMouseDown($event, i, j)"
                   (mouseover)="selectedContainerType === 'widgets' || isPublishedView || !editingSection || isEditingSection !== i ? null : onElementHover(item)"
@@ -1975,7 +1974,7 @@
                           add audio</p>
                       </div>
                     </div>
-                  <div *ngSwitchCase="'button'" class="widget-zoom" [ngStyle]="{
+                  <div *ngSwitchCase="'button'" class="widget-zoom inner-btn" [ngStyle]="{
                       'width': '100%',
                       'height': '100%',
                       'display': 'flex',
@@ -2342,6 +2341,7 @@
                                   class="close-icon" style="cursor: pointer; color: #666;">close</mat-icon> -->
                                 </div>
 
+                              <div (paste)="onPaste($event)">
                               <angular-editor [config]="faqObj.type === 'ques' ? faqPagesTallEditorConfig : faqAnswerEditorConfig" [(ngModel)]="faqObj.value" style="margin-bottom: 15px;">
                                 <ng-template #customButtons let-executeCommandFn="executeCommandFn">
                                   <ae-toolbar-set>
@@ -2515,6 +2515,7 @@
                                   </ae-toolbar-set>
                                 </ng-template>
                               </angular-editor>
+                              </div>
 
 
                                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
