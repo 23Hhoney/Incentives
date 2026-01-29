@@ -1569,8 +1569,8 @@
                 </div>
               </div>
 
-               <div [ngClass]="[(selectedMenuId === 'HM' || editChild) && selectedMenuId !== 'FAQ'  && selectedMenuId !== 'PP'  && selectedMenuId !== 'CU'  && selectedMenuId !== 'AC'  && selectedMenuId != 'NT' && selectedMenuId != 'FD' && selectedMenuId != 'TOU' && selectedMenuId !== 'TR'  && selectedMenuId !== 'PR' ? 'parent-container' : 'tou-published', selectedMenuId === 'FD' ? 'feedback-no-scroll' : '']"
-                [ngStyle]="{'overflow-x': 'hidden', 'overflow-y': selectedMenuId === 'FD' ? 'hidden' : 'auto'}" [class.mobile-height-auto]="mobileView">
+               <div [ngClass]="[(selectedMenuId === 'HM' || editChild) && selectedMenuId !== 'FAQ'  && selectedMenuId !== 'PP'  && selectedMenuId !== 'CU'  && selectedMenuId !== 'AC'  && selectedMenuId != 'NT' && selectedMenuId != 'FD' && selectedMenuId != 'TOU' && selectedMenuId !== 'TR'  && selectedMenuId !== 'PR' ? 'parent-container' : 'tou-published', selectedMenuId === 'FD' ? 'feedback-no-scroll' : '', (selectedContainerType === 'widgets' && hasChartInSection(section)) ? 'parent-flex-charts' : '']"
+                [ngStyle]="{'display': (selectedContainerType === 'widgets' && hasChartInSection(section)) ? 'flex' : 'block', 'overflow-x': 'hidden', 'overflow-y': selectedMenuId === 'FD' ? 'hidden' : 'auto'}" [class.mobile-height-auto]="mobileView">
                
 
                 <div *ngIf="containerPopup && isEditingSection === i && !mobileView" class="container-popup shadow-lg">
@@ -1771,8 +1771,10 @@
               </div>
 
                 <div *ngFor="let item of section.items; let j = index" class="element-container" [id]="'element-' + item.id" [ngStyle]="{
-                'margin': selectedContainerType === 'widgets' ? 
-                  '0' : 
+                'margin': selectedContainerType === 'widgets' && !hasChartInSection(section) ? 
+                  (j === 0 ? '0px 1.5vw' : 
+                    j === section.items.length - 1 ? '0px -0.5vw' : 
+                    '0px 0.5vw') : 
                   (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || 
                     selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' || 
                     selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR' ? 
@@ -1780,8 +1782,8 @@
                 'width': mobileView ? '100%' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? '100%' : item.widthPercent + 'vw',
                 'min-height': (item.type === 'text' || item.type === 'greeting')? item.heightPercent + 'vh' : null,
                 'height': mobileView && selectedMenuId === 'HM' ? 'auto' : (item.type === 'text' || item.type === 'greeting') ? 'auto' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' || selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR') ? '100%' : item.heightPercent + 'vh',
-                'top': mobileView ? 'auto' : selectedContainerType === 'widgets' ? 'auto' : ((selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') && editingSection) ? '0' : (selectedMenuId === 'TOU' || selectedMenuId === 'FAQ' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? '0vh' : item.yPercent + 'vh',
-                'left': mobileView ? '0' : selectedContainerType === 'widgets' ? 'auto' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' || selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR') && section.type !== 'widgets' ? '0' : (item.originalXPercent != null ? item.originalXPercent : item.xPercent) + 'vw',
+                'top': mobileView ? 'auto' : selectedContainerType === 'widgets' && hasChartInSection(section) ? 'auto' : ((selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') && editingSection) ? '0' : (selectedMenuId === 'TOU' || selectedMenuId === 'FAQ' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? '0vh' : item.yPercent + 'vh',
+                'left': mobileView ? '0' : selectedContainerType === 'widgets' && hasChartInSection(section) ? 'auto' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' || selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR') && section.type !== 'widgets' ? '0' : (item.originalXPercent != null ? item.originalXPercent : item.xPercent) + 'vw',                
                 'z-index': ( item['showChartHeading'] || item['showTextHeading'] || item['showSalesHeading'] || showPRAddFrom) ? 29 : item.zIndex,
                 'border': isPublishedView ? 'none' :
                 (highlightedElementIds.has(item.id)
@@ -1795,8 +1797,7 @@
                 'cursor': (isPublishedView || !editingSection || isEditingSection !== i) || selectedMenuId !== 'HM' ? 'default' : 'move',
                 'user-select': isPublishedView ? 'auto' : 'none',
                 'padding': isPublishedView ? '0' : '2px',
-                display: selectedContainerType === 'widgets' ?'content' : 'block',
-                'position': mobileView ? 'relative' : selectedContainerType === 'widgets' ? 'relative' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? 'relative' : 'absolute'
+                'position': mobileView ? 'relative' : selectedContainerType === 'widgets' && hasChartInSection(section) ? 'relative' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? 'relative' : 'absolute'
               }"
                   (mousedown)="selectedContainerType === 'widgets' || isPublishedView || !editingSection || isEditingSection !== i || selectedMenuId !== 'HM' || mobileView || item['showChartHeading'] || item['showTextHeading'] ? null : onMouseDown($event, i, j)"
                   (mouseover)="selectedContainerType === 'widgets' || isPublishedView || !editingSection || isEditingSection !== i ? null : onElementHover(item)"
@@ -2254,8 +2255,7 @@
                                 style="display: flex; flex-direction: column; width: 100%;word-break: break-word;"
                                 [ngClass]="{ 'card rounded-2xl card-body': isPublishedView }">
                             
-                                <div class="mt-4 faq-sections" *ngFor="let faq of faqs; let faqI = index">
-                                  <!-- Question (same structure/classes as non-published) -->
+                              <div class="mt-4 faq-sections" *ngFor="let faq of faqs; let faqI = index" #faqItem>                                  <!-- Question (same structure/classes as non-published) -->
                                   <div class="faq-item">
                                     <span class="faq-number">{{ faqI + 1 }}.</span>
                                     <p class="faq-answer" [innerHTML]="sanitizeHtml(faq.question)"></p>

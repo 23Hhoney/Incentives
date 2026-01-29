@@ -20,7 +20,6 @@ import { COLUMN_TYPE, DataGridColumnHeader } from 'app/shared/component/data-gri
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { AngularEditorComponent, AngularEditorConfig } from "@kolkov/angular-editor";
 import { AuthService } from 'app/core/auth/auth.service';
-
 interface PageElement {
   id: string;
   containerId: string;
@@ -136,6 +135,8 @@ interface PageElement {
   buttonUnderline?: boolean;
   buttonStyle?:any;
   isEdit?: boolean;
+  // Optional runtime chart view (width, height) for ngx-charts
+  chartView?: number[];
    pieChartData?: any[];
   lineChartData?: any;
   barChartData?: any;
@@ -187,11 +188,15 @@ lockedDraftId: string | null = null;
   { name: 'Line Chart' },
   { name: 'Bar Chart' }
 ];
+  readonly CHART_TYPES = ['pie chart', 'line chart', 'bar chart'];
+  readonly TRANSACTION_TYPES = ['all', 'credit', 'redemptions'];
+  readonly USER_PARTICIPATION_TYPES = ['messages', 'academy', 'trainingmonth'];
 
   moment = moment;
   scheduledDate: Date = new Date();
   isOn: boolean = true;
  @ViewChild('scrollContainerItem') scrollContainerItem!: ElementRef;
+ @ViewChildren('faqItem') faqItems!: QueryList<ElementRef>;
  @ViewChild('faqEditContainer') faqEditContainer!: ElementRef<HTMLDivElement>;
   selectedImages: string[] = [];
   currentImageIndex: number = 0;
@@ -5250,7 +5255,7 @@ getPublishedContainers() {
               showControls: true,
               selectedTimePeriod: items.chartDropdown || 'currentYear',
               chartDataType: items.chartDataType,
-              chartView: (items.type === 'Pie Chart' || items.type === 'Line Chart' || items.type === 'Bar Chart') ? [160, 160] : undefined,
+              chartView: (items.type === 'Pie Chart' || items.type === 'Line Chart' || items.type === 'Bar Chart') ? (parsedStyles && parsedStyles.chartView ? parsedStyles.chartView : (items.chartView || undefined)) : undefined,
               pieChartData: items.type === 'Pie Chart' ? this.pieChartDataSets[items.chartDropdown || 'currentMonth']?.[items.chartDataType || 'quantity'] || [] : undefined,
               lineChartData: items.type === 'Line Chart' ? this.lineChartDataSets[items.chartDropdown || 'currentYear']?.[items.chartDataType || 'quantity'] || { labels: [], datasets: [] } : undefined,
               barChartData: items.type === 'Bar Chart' ? this.barChartDataSets[items.chartDropdown || 'currentYear']?.[items.chartDataType || 'quantity']?.data || { labels: [], datasets: [] } : undefined,
@@ -6377,8 +6382,12 @@ getSectionArrayMaxHeight(sectionIndex: number): string {
 }
 
 isTouchingBoundary(item: any, sectionIndex: number): boolean {
-  // Check if item is at the very top of the section (yPercent == 0 or close)
-  return item.yPercent <= 0 || item.top === 0;
+ const nearTopThreshold = 2;
+  if (item == null) return false;
+  const yPercent = typeof item.yPercent === 'number' ? item.yPercent : (item.top === 0 ? 0 : 100);
+  if (yPercent <= 0) return true;
+  if ((item as any).isNewlyAdded && yPercent <= nearTopThreshold) return true;
+  return yPercent <= nearTopThreshold || item.top === 0;
 }
 
   
@@ -6855,7 +6864,9 @@ disableEditing(i: number) {
             height: container.heightPercent ?? 25,
             zindex: container.zIndex ?? 1,
             croppedWidth: container.croppedWidth ?? undefined,
-            croppedHeight: container.croppedHeight ?? undefined
+            croppedHeight: container.croppedHeight ?? undefined,
+            // Persist runtime chart view so saved/published pages keep the edit-mode size
+            chartView: container.chartView ?? undefined
           },
           
           
@@ -7846,6 +7857,8 @@ isNonInteractiveWidget(type: string): boolean {
     barChartData: type === 'Bar Chart' ? this.barChartDataSets['currentYear'][chartDataType || 'quantity'].data : undefined
   };
 
+  // mark as newly added so toolbar logic can treat it like touching the top when appropriate
+  (newElement as any).isNewlyAdded = true;
   this.currentSelectedNewElement = JSON.stringify(newElement);
   this.sectionsArray[sectionIndex].items.push(newElement);
   this.selectedElement = newElement;
@@ -7859,6 +7872,9 @@ isNonInteractiveWidget(type: string): boolean {
     this.showGridBlocks[sectionIndex] = false;
     this.changeDetectorRef.detectChanges();
   }, 2000);
+
+  // clear the temporary newly-added marker shortly after render so it doesn't persist
+  setTimeout(() => { (newElement as any).isNewlyAdded = false; }, 1200);
 
   if (this.selectedContainerType === 'freeForm') {
     this.updateSectionHeightDynamic(sectionIndex);
@@ -11951,27 +11967,40 @@ closeModelsf() {
   faqs = [];
   faqObj = null;
   showFaqDialog = false
-
 addFaq() {
-  this.faqs.push({
-    question: ``,
-    answer: ``
-  });
-
-  // ✅ Wait for DOM + layout
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const el = this.faqEditContainer?.nativeElement;
-      if (el) {
-        el.scrollTo({
-          top: el.scrollHeight,
-          behavior: 'smooth'
-        });
-      }
-    });
-  });
+  this.faqs.push({ question: '', answer: '' });
+  this.forceScrollToBottom();
 }
 
+forceScrollToBottom() {
+  const inner = this.faqEditContainer?.nativeElement;
+
+  // OUTER scroll container (page)
+  const outer = document.querySelector(
+    '.sections-container.sections-grid'
+  ) as HTMLElement;
+
+  let attempts = 0;
+  const maxAttempts = 15;
+
+  const tryScroll = () => {
+    attempts++;
+
+    if (inner) {
+      inner.scrollTop = inner.scrollHeight + 400;
+    }
+
+    if (outer) {
+      outer.scrollTop = outer.scrollHeight + 400;
+    }
+
+    if (attempts < maxAttempts) {
+      setTimeout(tryScroll, 50);
+    }
+  };
+
+  setTimeout(tryScroll, 0);
+}
  editQuestion(type, index, value) {
   this.faqObj = {
     type,
@@ -12291,6 +12320,28 @@ applyTypingFont(type: 'ques' | 'ans') {
 
   getVisibleItems(items: any[]) {
     return items.filter(i => !i.isDeleted);
+  }
+
+  hasChartInSection(section: any): boolean {
+    if (!section || !Array.isArray(section.items)) {
+      return false;
+    }
+
+    const normalizedTypes = section.items
+      .map((item: any) => item?.type)
+      .filter(Boolean)
+      .map((t: string) => t.trim().toLowerCase());
+
+    console.log(
+      'Section:', section?.id,
+      'Detected types:', normalizedTypes
+    );
+
+    return normalizedTypes.some(t =>
+      this.CHART_TYPES.includes(t) ||
+      this.TRANSACTION_TYPES.includes(t) ||
+      this.USER_PARTICIPATION_TYPES.includes(t)
+    );
   }
 
   get sectionContainerStyles(): { [key: string]: string } {

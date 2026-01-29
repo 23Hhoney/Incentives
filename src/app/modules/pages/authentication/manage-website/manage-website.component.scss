@@ -1421,12 +1421,13 @@ overflow: hidden;
   pointer-events: none; 
 }
 .widgets-edit-container {
-  align-items: stretch;
+  align-items: center;
   flex-flow: wrap;
-  position: flex;
+  position: absolute;
   z-index: 4;
+  background: white;
   gap: 10px;
-  box-shadow: rgba(1, 41, 112, 0.1) 0px 2px  0px !important;
+  box-shadow: rgba(1, 41, 112, 0.1) 0px 2px 20px !important;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -1671,30 +1672,8 @@ transform-origin: top left;
 // }
 .parent-container {
   height: fit-content;
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: flex-start !important;
-  gap: 10px !important;
+  display: grid !important;
 }
-
-/* When parent-container is inside widget-height, center the widgets */
-.widget-height .parent-container {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: flex-start !important;
-  flex-wrap: nowrap !important;
-  gap: 15px !important;
-  width: 100% !important;
-  padding: 10px !important;
-  box-sizing: border-box !important;
-}
-
-.widget-height .parent-container > .element-container {
-  position: relative !important;
-  flex: 0 0 auto !important;
-}
-
 .added-section-editing-area {
   height: fit-content !important;
   justify-content: center; 
@@ -2677,7 +2656,8 @@ z-index: 1;
 }
 
 .element-options-bottom {
-  top: 45px; 
+ // top: 45px; 
+ // z-index: 9999;
 }
 .element-option {
   cursor: pointer;
@@ -3906,18 +3886,6 @@ color: #000;
 .widget-height {
 min-height: 66vh !important;
 height: 66vh !important;
-display: flex !important;
-justify-content: center !important;
-align-items: flex-start !important;
-flex-wrap: nowrap !important;
-gap: 10px !important;
-padding: 0 10px !important;
-box-sizing: border-box !important;
-}
-
-.widget-height > .element-container {
-  position: relative !important;
-  flex: 0 1 auto !important;
 }
 
 .add-section-btn {
@@ -4573,9 +4541,9 @@ canvas[baseChart] {
     }
   }
   
-  /* Element containers in widget sections - use relative for flex centering */
+  /* Element containers in widget sections use absolute positioning */
   .widget-height .element-container {
-    position: relative;
+    position: absolute;
   }
   
   [class*="chart-container-"] {

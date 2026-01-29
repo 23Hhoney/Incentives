@@ -747,52 +747,10 @@ hr {
 
 }
 
-.responsive-line-chart {
-  width: 100% !important;
-  max-width: 768px;
-  height: 384px !important;
-  max-height: 384px;
-  display: block;
-  margin: 0 auto;
-}
-.chart-container {
-  width: 100%;
-  max-width: 100%;
-  height: 384px;
-  max-height: 384px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-@media (max-width: 992px) {
-  .chart-container {
-    height: 260px;
-    max-height: 260px;
-  }
-}
-
-@media (max-width: 768px) {
-  .chart-container {
-    height: 180px;
-    max-height: 180px;
-  }
-}
-
-@media (max-width: 992px) {
-  .responsive-line-chart {
-    max-width: 100%;
-    height: 260px !important;
-    max-height: 260px;
-  }
-}
-
-@media (max-width: 768px) {
-  .responsive-line-chart {
-    max-width: 100%;
-    height: 180px !important;
-    max-height: 180px;
+.inner-btn{
+  @media (max-width: 768px) {
+    font-size: 16px !important;
+    padding: 14px 9px !important;
   }
 }

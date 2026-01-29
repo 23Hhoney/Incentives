@@ -566,7 +566,7 @@
             </div>
           </div>
 
-          <div *ngSwitchCase="'button'"
+          <div *ngSwitchCase="'button'" class="inner-btn"
             style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 4px;"
             [ngStyle]="{
                           'backgroundColor': parseButtonStyle(item.salesHeading)?.backgroundColor || '#007bff',
@@ -576,7 +576,11 @@
                           'text-decoration': parseButtonStyle(item.salesHeading)?.textDecoration || 'none',
                           'z-index': parseButtonStyle(item.salesHeading)?.zIndex || 'auto',
                           'cursor': item.chartHeading ? 'pointer' : 'default',
-                          'opacity': item.chartHeading ? '1' : ''
+                          'opacity': item.chartHeading ? '1' : '',
+                          'text-align': 'center',
+                      'white-space': 'normal',
+                      'word-break': 'break-word',
+                      'line-height': '1.2'
                         }" (click)="onButtonClick(item)"
             [title]="item.chartHeading ? 'Click to visit: ' + item.chartHeading : ''">
             <span>{{item.text || 'Click me'}}</span>
