@@ -1790,10 +1790,7 @@ private readonly SECTION_MAX_VH = 1200;
       section.items.forEach((item, itemIndex) => {
         if (item.className === 'Pie Chart' || item.className === 'Line Chart' || item.className === 'Bar Chart') {
           chartsFound = true;
-          // Set a good default size immediately
-          if (!item['chartView'] || item['chartView'][0] < 150) {
-            item['chartView'] = [160, 160];
-          }
+          // Compute chart size from container; do not force a fixed default here
           this.setChartSize(item, sectionIndex, itemIndex);
         }
       });
@@ -5684,7 +5681,7 @@ getContainersForDraft() {
               buttonStyle: buttonStyle,
               selectedTimePeriod: items.chartDropdown || 'currentYear',
               chartDataType: items.chartDataType,
-              chartView: (items.type === 'Pie Chart' || items.type === 'Line Chart' || items.type === 'Bar Chart') ? [160, 160] : undefined,
+              chartView: undefined,
               pieChartData: items.type === 'Pie Chart' ? this.pieChartDataSets[items.chartDropdown || 'currentMonth']?.[items.chartDataType || 'quantity'] || [] : undefined,
               lineChartData: items.type === 'Line Chart' ? this.lineChartDataSets[items.chartDropdown || 'currentYear']?.[items.chartDataType || 'quantity'] || { labels: [], datasets: [] } : undefined,
               barChartData: items.type === 'Bar Chart' ? this.barChartDataSets[items.chartDropdown || 'currentYear']?.[items.chartDataType || 'quantity']?.data || { labels: [], datasets: [] } : undefined,
@@ -6119,7 +6116,7 @@ getContainers() {
               showControls: true,
               selectedTimePeriod: items.chartDropdown || 'currentYear',
               chartDataType: items.chartDataType,
-              chartView: (items.type === 'Pie Chart' || items.type === 'Line Chart' || items.type === 'Bar Chart') ? [160, 160] : undefined,
+              chartView: undefined,
               pieChartData: items.type === 'Pie Chart' ? this.pieChartDataSets[items.chartDropdown || 'currentMonth']?.[items.chartDataType || 'quantity'] || [] : undefined,
               lineChartData: items.type === 'Line Chart' ? this.lineChartDataSets[items.chartDropdown || 'currentYear']?.[items.chartDataType || 'quantity'] || { labels: [], datasets: [] } : undefined,
               barChartData: items.type === 'Bar Chart' ? this.barChartDataSets[items.chartDropdown || 'currentYear']?.[items.chartDataType || 'quantity']?.data || { labels: [], datasets: [] } : undefined,
@@ -9494,20 +9491,14 @@ getButtonStyle(item: any) {
         const padding = 20;
         const availableWidth = width - padding;
         const availableHeight = height - padding;
-        
+
         // Use minimum to ensure pie fits in both dimensions
         const minDimension = Math.min(availableWidth, availableHeight);
-        
-        // If container is too small or not ready, use default
-        if (minDimension < 100) {
-          item.chartView = [160, 160];
-        } else {
-          // Use 90% of minDimension for good size
-          const safeSize = Math.floor(minDimension * 0.90);
-          // Limit between 150 and 280 pixels
-          const finalSize = Math.max(150, Math.min(safeSize, 280));
-          item.chartView = [finalSize, finalSize];
-        }
+
+        // Use 90% of minDimension for a good size and clamp to reasonable bounds
+        const safeSize = Math.floor(minDimension * 0.9);
+        const finalSize = Math.max(80, Math.min(safeSize || 80, 280));
+        item.chartView = [finalSize, finalSize];
       } else {
         const padding = 40;
         const availableWidth = Math.max(150, width - padding);
@@ -9516,11 +9507,7 @@ getButtonStyle(item: any) {
       }
       this.changeDetectorRef.detectChanges();
     } else {
-      // Container not found, set default
-      if (item.className === 'Pie Chart') {
-        item.chartView = [160, 160];
-        this.changeDetectorRef.detectChanges();
-      }
+      // Container not found yet; leave chartView undefined so retry logic can compute it
     }
   }
   updateSectionHeightDynamic(sectionIndex: number): void {
@@ -9601,9 +9588,26 @@ getButtonStyle(item: any) {
       // Let content define the height
     }
   }
-  getDynamicSectionHeight(sectionIndex: number): number {
+
+  sectionHasRenderedChart(sectionIndex: number): boolean {
+  return !!document.querySelector(
+    `.chart-container-${sectionIndex}-0,
+     .chart-container-${sectionIndex}-1,
+     .chart-container-${sectionIndex}-2,
+     ngx-charts-pie-chart,
+     ngx-charts-chart`
+  );
+}
+
+ getDynamicSectionHeight(sectionIndex: number): number | null {
     const section = this.sectionsArray[sectionIndex];
+    
+
     const items = section?.items || [];
+    if (this.sectionHasRenderedChart(sectionIndex)) {
+    console.log('Chart found in DOM → disabling section height');
+    return null;
+  }
 
     if (items.length === 0) return 16;
 
@@ -12331,11 +12335,6 @@ applyTypingFont(type: 'ques' | 'ans') {
       .map((item: any) => item?.type)
       .filter(Boolean)
       .map((t: string) => t.trim().toLowerCase());
-
-    console.log(
-      'Section:', section?.id,
-      'Detected types:', normalizedTypes
-    );
 
     return normalizedTypes.some(t =>
       this.CHART_TYPES.includes(t) ||

@@ -1781,8 +1781,16 @@
                     '0' : '0'),
                 'width': mobileView ? '100%' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? '100%' : item.widthPercent + 'vw',
                 'min-height': (item.type === 'text' || item.type === 'greeting')? item.heightPercent + 'vh' : null,
-                'height': mobileView && selectedMenuId === 'HM' ? 'auto' : (item.type === 'text' || item.type === 'greeting') ? 'auto' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' || selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR') ? '100%' : item.heightPercent + 'vh',
-                'top': mobileView ? 'auto' : selectedContainerType === 'widgets' && hasChartInSection(section) ? 'auto' : ((selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') && editingSection) ? '0' : (selectedMenuId === 'TOU' || selectedMenuId === 'FAQ' || selectedMenuId === 'CU' || selectedMenuId == 'PP' || selectedMenuId == 'NT' || selectedMenuId == 'FD' || selectedMenuId == 'AC' || selectedMenuId == 'TR' || selectedMenuId == 'PR') ? '0vh' : item.yPercent + 'vh',
+               'height': mobileView && selectedMenuId === 'HM' ? 'auto'
+  : hasChartInSection(section) ? 'auto'
+  : (item.type === 'text' || item.type === 'greeting') ? 'auto'
+  : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' ||
+     selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' ||
+     selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR')
+    ? '100%'
+    : item.heightPercent + 'vh',
+
+
                 'left': mobileView ? '0' : selectedContainerType === 'widgets' && hasChartInSection(section) ? 'auto' : (selectedMenuId === 'FAQ' || selectedMenuId === 'TOU' || selectedMenuId === 'CU' || selectedMenuId === 'PP' || selectedMenuId === 'NT' || selectedMenuId === 'FD' || selectedMenuId === 'AC' || selectedMenuId === 'TR' || selectedMenuId === 'PR') && section.type !== 'widgets' ? '0' : (item.originalXPercent != null ? item.originalXPercent : item.xPercent) + 'vw',                
                 'z-index': ( item['showChartHeading'] || item['showTextHeading'] || item['showSalesHeading'] || showPRAddFrom) ? 29 : item.zIndex,
                 'border': isPublishedView ? 'none' :
@@ -7480,7 +7488,7 @@
                 </div>
               </div>
             </div>
-          </div>
+       
         </div>
       </div>
     </div>

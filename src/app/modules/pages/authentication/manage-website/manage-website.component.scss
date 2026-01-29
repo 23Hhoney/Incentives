@@ -1683,12 +1683,18 @@ transform-origin: top left;
   position: relative;
 min-height: 0 !important;
   transition: height 0.2s ease-in-out;
-  overflow: visible; 
+ 
 }
 .added-section-editing-area {
   width: 100%;
   overflow: visible;
 }
+
+.added-section-editing-area {
+  height: auto;
+  overflow: visible;
+}
+
 .added-section-editing-area.section-margin {
   margin-top: 30px;
 }
@@ -4825,7 +4831,7 @@ canvas[baseChart] {
 //   }
   
   [class*="chart-container-"] {
-    min-height: 160px;
+    min-height: auto;
   }
   
   .p-6 {
